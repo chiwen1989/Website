@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-TW" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>遊戲網站 - GameWeb</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <div class="app-container">
+      <!-- 背景裝飾元素 -->
+      <div class="bg-shape shape-1"></div>
+      <div class="bg-shape shape-2"></div>
+      
+      <!-- 左邊選單 -->
+      <aside class="sidebar glass-effect">
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <i class="fa-solid fa-gamepad logo-icon"></i>
+          </div>
+          <h1>GameWeb</h1>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="menu" id="menu">
+          <ul>
+            <li>
+              <a href="#home" class="menu-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+            <li>
+              <a href="#games" class="menu-item">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>遊戲庫</span>
+              </a>
+            </li>
+            <li>
+              <a href="#news" class="menu-item">
+                <i class="fa-solid fa-newspaper"></i>
+                <span>最新消息</span>
+              </a>
+            </li>
+            <li>
+              <a href="#community" class="menu-item">
+                <i class="fa-solid fa-users"></i>
+                <span>社群</span>
+              </a>
+            </li>
+            <li>
+              <a href="#settings" class="menu-item">
+                <i class="fa-solid fa-gear"></i>
+                <span>設定</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <p>&copy; 2026 GameWeb</p>
+        </div>
+      </aside>
+
+      <!-- 右邊內容區域 -->
+      <main class="content glass-effect-light">
+        <header class="content-header">
+          <div class="header-text">
+            <h2>歡迎來到 <span class="gradient-text">GameWeb</span></h2>
+            <p>探索最新的遊戲資訊和社群活動</p>
+          </div>
+          <div class="user-profile">
+            <div class="avatar">
+                <img src="https://ui-avatars.com/api/?name=User&background=random" alt="User Avatar">
+            </div>
+            <span class="username">PlayerOne</span>
+          </div>
+        </header>
+
+        <div class="content-body">
+          <!-- 首頁區塊 -->
+          <section id="home" class="page-section active fade-in">
+            <div class="section-header">
+                <h3>精選推薦</h3>
+                <a href="#games" class="view-all">查看全部 <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="hero-card">
+                <div class="hero-content">
+                    <span class="badge new">最新發布</span>
+                    <h2>星際邊境：奧德賽</h2>
+                    <p>探索無盡的宇宙，建立你的帝國，與數百萬玩家即時對戰。</p>
+                    <button class="btn-primary">立即遊玩</button>
+                </div>
+                <div class="hero-image">
+                    <!-- 這裡可以使用 CSS 生成一個佔位圖或漸層 -->
+                    <div class="placeholder-img gradient-1"></div>
+                </div>
+            </div>
+
+            <h3 class="mt-4">熱門遊戲</h3>
+            <div class="cards-grid">
+              <div class="card glass-card">
+                <div class="card-img-wrapper">
+                    <div class="placeholder-img gradient-2"></div>
+                </div>
+                <div class="card-content">
+                    <h4>Cyber Legends</h4>
+                    <p>沉浸式賽博龐克 RPG。</p>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i> 4.9
+                    </div>
+                </div>
+              </div>
+              <div class="card glass-card">
+                <div class="card-img-wrapper">
+                    <div class="placeholder-img gradient-3"></div>
+                </div>
+                <div class="card-content">
+                    <h4>Mystic Forest</h4>
+                    <p>奇幻冒險解謎遊戲。</p>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i> 4.7
+                    </div>
+                </div>
+              </div>
+              <div class="card glass-card">
+                <div class="card-img-wrapper">
+                    <div class="placeholder-img gradient-4"></div>
+                </div>
+                <div class="card-content">
+                    <h4>Speed Racer X</h4>
+                    <p>極速賽車體驗。</p>
+                    <div class="rating">
+                        <i class="fa-solid fa-star"></i> 4.5
+                    </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 遊戲庫區塊 -->
+          <section id="games" class="page-section fade-in">
+            <h3>遊戲庫</h3>
+            <div class="filter-bar">
+                <button class="filter-btn active">全部</button>
+                <button class="filter-btn">動作</button>
+                <button class="filter-btn">冒險</button>
+                <button class="filter-btn">策略</button>
+            </div>
+            <div class="game-list">
+              <div class="game-item glass-card">
+                <div class="game-img-wrapper">
+                    <div class="placeholder-img gradient-1"></div>
+                </div>
+                <div class="game-info">
+                  <h4>星際邊境：奧德賽</h4>
+                  <div class="tags">
+                    <span class="tag">策略</span>
+                    <span class="tag">科幻</span>
+                  </div>
+                  <p>發行日期：2026-01-15</p>
+                  <div class="rating-row">
+                    <span class="rating-score">4.8</span>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                  </div>
+                </div>
+                <button class="btn-secondary">詳情</button>
+              </div>
+              
+               <div class="game-item glass-card">
+                <div class="game-img-wrapper">
+                    <div class="placeholder-img gradient-2"></div>
+                </div>
+                <div class="game-info">
+                  <h4>Cyber Legends</h4>
+                  <div class="tags">
+                    <span class="tag">RPG</span>
+                    <span class="tag">動作</span>
+                  </div>
+                  <p>發行日期：2026-01-20</p>
+                  <div class="rating-row">
+                    <span class="rating-score">4.9</span>
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                  </div>
+                </div>
+                <button class="btn-secondary">詳情</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 最新消息區塊 -->
+          <section id="news" class="page-section fade-in">
+            <h3>最新消息</h3>
+            <div class="news-grid">
+                <article class="news-item glass-card">
+                  <div class="news-date">
+                    <span class="day">25</span>
+                    <span class="month">1月</span>
+                  </div>
+                  <div class="news-content">
+                      <h4>新遊戲發布公告</h4>
+                      <p>我們很高興宣布即將推出的新遊戲。敬請期待詳細資訊。</p>
+                      <a href="#" class="read-more">閱讀更多</a>
+                  </div>
+                </article>
+                <article class="news-item glass-card">
+                  <div class="news-date">
+                    <span class="day">20</span>
+                    <span class="month">1月</span>
+                  </div>
+                  <div class="news-content">
+                      <h4>季度維護通知</h4>
+                      <p>平台將在本週末進行定期維護，服務暫時中斷。</p>
+                      <a href="#" class="read-more">閱讀更多</a>
+                  </div>
+                </article>
+            </div>
+          </section>
+
+          <!-- 社群區塊 -->
+          <section id="community" class="page-section fade-in">
+            <h3>社群中心</h3>
+            <div class="community-stats">
+              <div class="stat glass-card">
+                <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                <h5>10,000+</h5>
+                <p>活躍玩家</p>
+              </div>
+              <div class="stat glass-card">
+                <div class="stat-icon"><i class="fa-solid fa-comments"></i></div>
+                <h5>500+</h5>
+                <p>社群貼文</p>
+              </div>
+              <div class="stat glass-card">
+                <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                <h5>100+</h5>
+                <p>每日活動</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- 設定區塊 -->
+          <section id="settings" class="page-section fade-in">
+            <h3>設定</h3>
+            <div class="settings-container glass-card">
+                <div class="settings-group">
+                  <h4>外觀</h4>
+                  <label class="toggle-switch">
+                    <span>深色模式</span>
+                    <input type="checkbox" id="themeToggle" checked />
+                    <span class="slider"></span>
+                  </label>
+                  <label class="toggle-switch">
+                    <span>簡約模式</span>
+                    <input type="checkbox" id="minimalistMode" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+                <div class="settings-group">
+                    <h4>通知</h4>
+                    <label class="toggle-switch">
+                        <span>接收通知</span>
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                    </label>
+                    <label class="toggle-switch">
+                        <span>聲音效果</span>
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>
