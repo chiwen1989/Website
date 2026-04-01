@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Around The House | 頂級花園鐵門</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* === 變數定義 (Style A: 專業清新 SaaS 版) === */
+        :root {
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            /* 品牌色：結合花園的自然綠與現代工藝的科技藍 */
+            --primary: #10B981; 
+            --secondary: #0EA5E9;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 40px -5px rgba(16, 185, 129, 0.1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* === 基礎設定 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* === 動畫定義 === */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes floatReverse {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(20px) rotate(-5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .animate-up {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        /* === 導覽列 === */
+        header {
+            padding: 24px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* === 按鈕樣式 === */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 32px;
+            border-radius: 99px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-sm {
+            padding: 10px 24px;
+            font-size: 1rem;
+        }
+
+        /* === 英雄區 (Hero Section) === */
+        .hero {
+            position: relative;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            overflow: hidden;
+        }
+
+        /* 幾何圖形與柔和光暈背景 */
+        .hero-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blob-1 {
+            position: absolute;
+            top: -10%; left: -5%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(255,255,255,0) 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .blob-2 {
+            position: absolute;
+            bottom: -10%; right: -5%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(14,165,233,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: floatReverse 10s ease-in-out infinite;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            max-width: 900px;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        /* === 價值主張卡片區 (Features) === */
+        .features {
+            padding: 100px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 48px 40px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* 微互動：卡片懸浮位移 */
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .feature-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* === 底部呼籲行動 (CTA) === */
+        .cta-section {
+            padding: 100px 5%;
+            text-align: center;
+            background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.03));
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 24px;
+        }
+
+        /* === Footer === */
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 柔和光暈與懸浮幾何背景 -->
+    <div class="hero-bg">
+        <div class="blob-1"></div>
+        <div class="blob-2"></div>
+        <!-- 緩慢浮動的抽象微粒子/SVG裝飾 -->
+        <svg style="position: absolute; top: 20%; left: 15%; opacity: 0.5; animation: float 6s infinite;" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="4" fill="#0EA5E9"/>
+        </svg>
+        <svg style="position: absolute; bottom: 30%; right: 20%; opacity: 0.3; animation: floatReverse 7s infinite;" width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="12" height="12" rx="3" stroke="#10B981" stroke-width="2"/>
+        </svg>
+    </div>
+
+    <!-- 導覽列 -->
+    <header class="animate-up">
+        <div class="logo">Around The <span>House</span></div>
+        <a href="#contact" class="btn btn-primary btn-sm">聯絡我們</a>
+    </header>
+
+    <!-- 英雄區 (Hero Section) -->
+    <section class="hero">
+        <h1 class="animate-up delay-1">鍛造極致美學<br>守護您的專屬花園</h1>
+        <p class="animate-up delay-2">跳脫傳統生硬框架，Around The House 將現代精緻工藝融入鐵門設計。優雅的線條與頂級的材質，為您的庭院打造第一道完美防線。</p>
+        <div class="animate-up delay-3">
+            <a href="#contact" class="btn btn-primary">立即聯絡我們</a>
+        </div>
+    </section>
+
+    <!-- 價值主張區 (Features) -->
+    <section class="features">
+        
+        <!-- 卡片 1 -->
+        <div class="feature-card animate-up delay-1">
+            <div class="feature-icon">
+                <!-- 品質保證 Icon -->
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <h3>品質保證</h3>
+            <p>嚴選高規格防鏽鋼材，經過現代化抗候塗層處理。不畏風吹雨淋，確保花園鐵門歷久彌新，提供最堅固的居家安全防護。</p>
+        </div>
+
+        <!-- 卡片 2 -->
+        <div class="feature-card animate-up delay-2">
+            <div class="feature-icon">
+                <!-- 做工精細 Icon -->
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h3>做工精細</h3>
+            <p>傳承職人鍛造精神，結合現代 CNC 精準切割技術。每一道弧度與鏤空線條，皆展現幾何與力學的完美融合，宛如戶外藝術品。</p>
+        </div>
+
+        <!-- 卡片 3 -->
+        <div class="feature-card animate-up delay-3">
+            <div class="feature-icon">
+                <!-- 細節處理 Icon -->
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+            </div>
+            <h3>細節處理</h3>
+            <p>從隱藏式靜音鉸鏈到無縫焊接技術，甚至是客製化的金屬烤漆色澤。我們在您看不見的地方同樣嚴苛，成就完美的開關體驗。</p>
+        </div>
+
+    </section>
+
+    <!-- 底部呼籲行動 (CTA) -->
+    <section id="contact" class="cta-section animate-up delay-3">
+        <h2>準備好升級您的庭院品味了嗎？</h2>
+        <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 1.1rem;">由專業團隊為您丈量、設計與安裝，打造專屬於您的完美鐵門。</p>
+        <a href="#" class="btn btn-primary">聯絡我們・預約諮詢</a>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer>
+        &copy; 2024 Around The House. All rights reserved. 
+    </footer>
+
+</body>
+</html>
