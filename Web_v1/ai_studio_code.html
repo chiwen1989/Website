@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Around The House | 頂級花園鐵門</title>
+    <title>Around The House | Premium Garden Gates</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* === 變數定義 (Style A: 專業清新 SaaS 版) === */
+        /* === 變數定義 === */
         :root {
             --bg-color: #F8FAFC;
             --card-bg: #FFFFFF;
             --text-main: #0F172A;
             --text-muted: #64748B;
-            /* 品牌色：結合花園的自然綠與現代工藝的科技藍 */
             --primary: #10B981; 
             --secondary: #0EA5E9;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -22,11 +21,7 @@
         }
 
         /* === 基礎設定 === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
@@ -36,11 +31,9 @@
             overflow-x: hidden;
         }
 
-        a {
-            text-decoration: none;
-        }
+        a { text-decoration: none; }
 
-        /* === 動畫定義 === */
+        /* === 動畫 === */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -58,11 +51,7 @@
             100% { transform: translateY(0px) rotate(0deg); }
         }
 
-        .animate-up {
-            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-
+        .animate-up { animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
         .delay-3 { animation-delay: 0.6s; }
@@ -90,6 +79,46 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* === 語言切換器 (改為點擊按鈕) === */
+        .lang-switcher {
+            display: flex;
+            align-items: center;
+            margin-right: 24px;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .lang-btn:hover {
+            color: var(--primary);
+        }
+
+        .lang-btn.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .lang-sep {
+            color: #E2E8F0;
+            user-select: none;
+            padding: 0 2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
         /* === 按鈕樣式 === */
         .btn {
             display: inline-flex;
@@ -114,12 +143,9 @@
             box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.4);
         }
 
-        .btn-sm {
-            padding: 10px 24px;
-            font-size: 1rem;
-        }
+        .btn-sm { padding: 10px 24px; font-size: 1rem; }
 
-        /* === 英雄區 (Hero Section) === */
+        /* === 英雄區 === */
         .hero {
             position: relative;
             min-height: 85vh;
@@ -132,7 +158,6 @@
             overflow: hidden;
         }
 
-        /* 幾何圖形與柔和光暈背景 */
         .hero-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -173,7 +198,7 @@
             max-width: 600px;
         }
 
-        /* === 價值主張卡片區 (Features) === */
+        /* === 價值主張區 === */
         .features {
             padding: 100px 5%;
             max-width: 1200px;
@@ -194,7 +219,6 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
 
-        /* 微互動：卡片懸浮位移 */
         .feature-card:hover {
             transform: translateY(-10px) scale(1.02);
             box-shadow: var(--shadow-lg);
@@ -212,36 +236,20 @@
             margin-bottom: 24px;
         }
 
-        .feature-icon svg {
-            width: 32px;
-            height: 32px;
-        }
+        .feature-icon svg { width: 32px; height: 32px; }
 
-        .feature-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 16px;
-            color: var(--text-main);
-        }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 16px; color: var(--text-main); }
+        .feature-card p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; }
 
-        .feature-card p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        /* === 底部呼籲行動 (CTA) === */
+        /* === CTA === */
         .cta-section {
             padding: 100px 5%;
             text-align: center;
             background: linear-gradient(to bottom, transparent, rgba(16, 185, 129, 0.03));
         }
 
-        .cta-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 24px;
-        }
+        .cta-section h2 { font-size: 2.5rem; margin-bottom: 24px; }
 
-        /* === Footer === */
         footer {
             text-align: center;
             padding: 40px;
@@ -254,80 +262,146 @@
 </head>
 <body>
 
-    <!-- 柔和光暈與懸浮幾何背景 -->
     <div class="hero-bg">
         <div class="blob-1"></div>
         <div class="blob-2"></div>
-        <!-- 緩慢浮動的抽象微粒子/SVG裝飾 -->
-        <svg style="position: absolute; top: 20%; left: 15%; opacity: 0.5; animation: float 6s infinite;" width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="4" fill="#0EA5E9"/>
-        </svg>
-        <svg style="position: absolute; bottom: 30%; right: 20%; opacity: 0.3; animation: floatReverse 7s infinite;" width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="12" height="12" rx="3" stroke="#10B981" stroke-width="2"/>
-        </svg>
     </div>
 
-    <!-- 導覽列 -->
     <header class="animate-up">
         <div class="logo">Around The <span>House</span></div>
-        <a href="#contact" class="btn btn-primary btn-sm">聯絡我們</a>
+        <div class="nav-right">
+            <!-- 點擊式語言切換器 -->
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="changeLanguage('zh', this)">繁</button>
+                <span class="lang-sep">|</span>
+                <button class="lang-btn" onclick="changeLanguage('en', this)">EN</button>
+                <span class="lang-sep">|</span>
+                <button class="lang-btn" onclick="changeLanguage('de', this)">DE</button>
+            </div>
+            <a href="#contact" class="btn btn-primary btn-sm" data-i18n="nav_contact">聯絡我們</a>
+        </div>
     </header>
 
-    <!-- 英雄區 (Hero Section) -->
     <section class="hero">
-        <h1 class="animate-up delay-1">鍛造極致美學<br>守護您的專屬花園</h1>
-        <p class="animate-up delay-2">跳脫傳統生硬框架，Around The House 將現代精緻工藝融入鐵門設計。優雅的線條與頂級的材質，為您的庭院打造第一道完美防線。</p>
+        <h1 class="animate-up delay-1" data-i18n="hero_title">鍛造極致美學<br>守護您的專屬花園</h1>
+        <p class="animate-up delay-2" data-i18n="hero_desc">跳脫傳統生硬框架，Around The House 將現代精緻工藝融入鐵門設計。優雅的線條與頂級的材質，為您的庭院打造第一道完美防線。</p>
         <div class="animate-up delay-3">
-            <a href="#contact" class="btn btn-primary">立即聯絡我們</a>
+            <a href="#contact" class="btn btn-primary" data-i18n="hero_btn">立即聯絡我們</a>
         </div>
     </section>
 
-    <!-- 價值主張區 (Features) -->
     <section class="features">
-        
-        <!-- 卡片 1 -->
+        <!-- Card 1 -->
         <div class="feature-card animate-up delay-1">
             <div class="feature-icon">
-                <!-- 品質保證 Icon -->
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
             </div>
-            <h3>品質保證</h3>
-            <p>嚴選高規格防鏽鋼材，經過現代化抗候塗層處理。不畏風吹雨淋，確保花園鐵門歷久彌新，提供最堅固的居家安全防護。</p>
+            <h3 data-i18n="f1_title">品質保證</h3>
+            <p data-i18n="f1_desc">嚴選高規格防鏽鋼材，經過現代化抗候塗層處理。不畏風吹雨淋，確保花園鐵門歷久彌新，提供最堅固的居家安全防護。</p>
         </div>
 
-        <!-- 卡片 2 -->
+        <!-- Card 2 -->
         <div class="feature-card animate-up delay-2">
             <div class="feature-icon">
-                <!-- 做工精細 Icon -->
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <h3>做工精細</h3>
-            <p>傳承職人鍛造精神，結合現代 CNC 精準切割技術。每一道弧度與鏤空線條，皆展現幾何與力學的完美融合，宛如戶外藝術品。</p>
+            <h3 data-i18n="f2_title">做工精細</h3>
+            <p data-i18n="f2_desc">傳承職人鍛造精神，結合現代 CNC 精準切割技術。每一道弧度與鏤空線條，皆展現幾何與力學的完美融合，宛如戶外藝術品。</p>
         </div>
 
-        <!-- 卡片 3 -->
+        <!-- Card 3 -->
         <div class="feature-card animate-up delay-3">
             <div class="feature-icon">
-                <!-- 細節處理 Icon -->
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
             </div>
-            <h3>細節處理</h3>
-            <p>從隱藏式靜音鉸鏈到無縫焊接技術，甚至是客製化的金屬烤漆色澤。我們在您看不見的地方同樣嚴苛，成就完美的開關體驗。</p>
+            <h3 data-i18n="f3_title">細節處理</h3>
+            <p data-i18n="f3_desc">從隱藏式靜音鉸鏈到無縫焊接技術，甚至是客製化的金屬烤漆色澤。我們在您看不見的地方同樣嚴苛，成就完美的開關體驗。</p>
         </div>
-
     </section>
 
-    <!-- 底部呼籲行動 (CTA) -->
     <section id="contact" class="cta-section animate-up delay-3">
-        <h2>準備好升級您的庭院品味了嗎？</h2>
-        <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 1.1rem;">由專業團隊為您丈量、設計與安裝，打造專屬於您的完美鐵門。</p>
-        <a href="#" class="btn btn-primary">聯絡我們・預約諮詢</a>
+        <h2 data-i18n="cta_title">準備好升級您的庭院品味了嗎？</h2>
+        <p style="color: var(--text-muted); margin-bottom: 32px; font-size: 1.1rem;" data-i18n="cta_desc">由專業團隊為您丈量、設計與安裝，打造專屬於您的完美鐵門。</p>
+        <a href="#" class="btn btn-primary" data-i18n="cta_btn">聯絡我們・預約諮詢</a>
     </section>
 
-    <!-- 頁尾 -->
     <footer>
         &copy; 2024 Around The House. All rights reserved. 
     </footer>
+
+    <script>
+        const translations = {
+            zh: {
+                nav_contact: "聯絡我們",
+                hero_title: "鍛造極致美學<br>守護您的專屬花園",
+                hero_desc: "跳脫傳統生硬框架，Around The House 將現代精緻工藝融入鐵門設計。優雅的線條與頂級的材質，為您的庭院打造第一道完美防線。",
+                hero_btn: "立即聯絡我們",
+                f1_title: "品質保證",
+                f1_desc: "嚴選高規格防鏽鋼材，經過現代化抗候塗層處理。不畏風吹雨淋，確保花園鐵門歷久彌新，提供最堅固的居家安全防護。",
+                f2_title: "做工精細",
+                f2_desc: "傳承職人鍛造精神，結合現代 CNC 精準切割技術。每一道弧度與鏤空線條，皆展現幾何與力學的完美融合，宛如戶外藝術品。",
+                f3_title: "細節處理",
+                f3_desc: "從隱藏式靜音鉸鏈到無縫焊接技術，甚至是客製化的金屬烤漆色澤。我們在您看不見的地方同樣嚴苛，成就完美的開關體驗。",
+                cta_title: "準備好升級您的庭院品味了嗎？",
+                cta_desc: "由專業團隊為您丈量、設計與安裝，打造專屬於您的完美鐵門。",
+                cta_btn: "聯絡我們・預約諮詢"
+            },
+            en: {
+                nav_contact: "Contact",
+                hero_title: "Forging Ultimate Aesthetics<br>Protecting Your Private Garden",
+                hero_desc: "Breaking away from traditional rigid frames, Around The House integrates modern exquisite craftsmanship into iron gate design. Elegant lines and premium materials create the perfect first line of defense for your courtyard.",
+                hero_btn: "Contact Us Now",
+                f1_title: "Quality Assurance",
+                f1_desc: "Carefully selected high-specification anti-rust steel, treated with modern weather-resistant coatings. Resisting wind and rain, ensuring your garden gate remains new for years, providing the most solid home security.",
+                f2_title: "Exquisite Craftsmanship",
+                f2_desc: "Inheriting the spirit of artisanal forging combined with modern CNC precision cutting technology. Every curve and hollow line showcases a perfect fusion of geometry and mechanics, like an outdoor piece of art.",
+                f3_title: "Attention to Detail",
+                f3_desc: "From concealed silent hinges to seamless welding technology, and even customized metal paint colors. We are equally rigorous in places you can't see, achieving a perfect opening and closing experience.",
+                cta_title: "Ready to upgrade your courtyard's style?",
+                cta_desc: "Our professional team will measure, design, and install it for you, creating your perfect iron gate.",
+                cta_btn: "Contact Us · Book a Consultation"
+            },
+            de: {
+                nav_contact: "Kontakt",
+                hero_title: "Ästhetik in Perfektion<br>Schutz für Ihren Garten",
+                hero_desc: "Abseits traditioneller, starrer Rahmen integriert Around The House moderne, exquisite Handwerkskunst in das Design von Eisentoren. Elegante Linien und erstklassige Materialien schaffen die perfekte erste Verteidigungslinie für Ihren Innenhof.",
+                hero_btn: "Jetzt kontaktieren",
+                f1_title: "Qualitätssicherung",
+                f1_desc: "Sorgfältig ausgewählter hochspezifizierter rostfreier Stahl, behandelt mit modernen witterungsbeständigen Beschichtungen. Wind und Regen trotzen und sicherstellen, dass Ihr Gartentor über Jahre hinweg wie neu aussieht und den sichersten Schutz für Ihr Zuhause bietet.",
+                f2_title: "Exquisite Handwerkskunst",
+                f2_desc: "Die Tradition der handwerklichen Schmiedekunst gepaart mit moderner CNC-Präzisionstechnologie. Jede Kurve und jede Linie zeigt die perfekte Verschmelzung von Geometrie und Mechanik – wie ein Kunstwerk für den Außenbereich.",
+                f3_title: "Liebe zum Detail",
+                f3_desc: "Von verborgenen, geräuschlosen Scharnieren bis hin zur nahtlosen Schweißtechnologie und sogar maßgeschneiderten Metallfarben. Wir sind auch an Stellen, die Sie nicht sehen können, ebenso streng, um ein perfektes Öffnungs- und Schließerlebnis zu gewährleisten.",
+                cta_title: "Bereit, den Stil Ihres Innenhofs aufzuwerten?",
+                cta_desc: "Unser professionelles Team misst, entwirft und installiert für Sie, um Ihr perfektes Eisentor zu schaffen.",
+                cta_btn: "Kontaktieren Sie uns · Beratung vereinbaren"
+            }
+        };
+
+        function changeLanguage(lang, element) {
+            // 1. 更新文字內容
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    if (translations[lang][key].includes('<br>')) {
+                        el.innerHTML = translations[lang][key];
+                    } else {
+                        el.innerText = translations[lang][key];
+                    }
+                }
+            });
+            
+            // 2. 更新按鈕的「啟用」狀態 (視覺反饋)
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            element.classList.add('active');
+
+            // 3. 更新 HTML lang 屬性
+            document.documentElement.lang = lang;
+        }
+    </script>
 
 </body>
 </html>
