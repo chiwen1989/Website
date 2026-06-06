@@ -1,12 +1,824 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>RO EP20 不死者 - 主線任務流程攻略</title>
+    <style>
+      :root {
+        --bg-body: #808080;
+        --bg-card: #a0a0a0;
+        --primary: #000000;
+        --accent: #333333;
+        --text-main: #000000;
+        --text-dim: #444444;
+        --success: #10b981;
+        --danger: #ef4444;
+        --border: #000000;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        line-height: 1.6;
+        padding-bottom: 50px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+
+      /* Main Container */
+      .container {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 0 15px;
+      }
+
+      .section-title {
+        margin: 30px 0 15px;
+        padding-left: 15px;
+        border-left: 4px solid var(--primary);
+        font-size: 1.25rem;
+        color: var(--primary);
+      }
+
+      /* Quest Card */
+      .quest-card {
+        background: var(--bg-card);
+        border: 2px dashed var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        transition:
+          transform 0.2s,
+          background-color 0.2s;
+      }
+
+      .quest-card:hover {
+        background-color: #b0b0b0;
+        transform: translateY(-2px);
+      }
+
+      .quest-check {
+        margin-top: 5px;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: var(--primary);
+      }
+
+      .quest-content {
+        flex: 1;
+      }
+
+      .quest-text {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .quest-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        font-size: 0.85rem;
+      }
+
+      .badge {
+        padding: 2px 8px;
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.1);
+        color: var(--primary);
+        border: 1px dashed var(--border);
+      }
+
+      .badge-danger {
+        background: rgba(239, 68, 68, 0.1);
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+
+      .navi-box {
+        display: inline-flex;
+        align-items: center;
+        background: #facc15; /* Bright Yellow */
+        padding: 2px 8px;
+        border-radius: 0px;
+        font-family: "Courier New", Courier, monospace;
+        color: #000000;
+        cursor: pointer;
+        user-select: none;
+        border: 2px dashed #000000;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 800;
+        transition: all 0.1s;
+      }
+
+      .navi-box:hover {
+        background: #fde047;
+      }
+
+      .navi-box:active {
+        background: #eab308;
+      }
+
+      .navi-box::after {
+        content: "📋";
+        margin-left: 8px;
+        font-size: 0.8rem;
+      }
+
+      .highlight {
+        color: #ff3e3e; /* Bright Red/Orange for contrast */
+        font-weight: 800;
+        text-decoration: underline;
+      }
+
+      /* Toast Notification */
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--success);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 30px;
+        font-weight: bold;
+        display: none;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Checkbox behavior */
+      .quest-card.completed {
+        opacity: 0.6;
+        border-style: dashed;
+      }
+
+      .quest-card.completed .quest-text {
+        text-decoration: line-through;
+        color: var(--text-dim);
+      }
+
+      @media (max-width: 600px) {
+        .header-content h1 {
+          font-size: 1.2rem;
+        }
+        .quest-card {
+          padding: 12px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello, World!</h1>
-    <p>This is a sample HTML document.</p>
+    <div class="container" id="quest-container">
+      <h1 style="margin-bottom: 20px; color: var(--primary)">
+        EP20 不死者 - 主線任務全流程
+      </h1>
+      <!-- Chapter 1 -->
+      <h2 class="section-title">一、 任務啟動與初步調查</h2>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            1. 冰霜堡壘內部：向左走到底與「呼嚕嚕」對話。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 33/185')">
+            /navi icas_in 33/185
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">2. 伊斯加爾特入口處：與「骷嚕嚕」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi icecastle 27/126')">
+            /navi icecastle 27/126
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            3. 冰霜堡壘內部：向右走到底與「雷文」對話。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 262/202')">
+            /navi icas_in 262/202
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            4. 完成後，使用 [<span class="highlight">蝴蝶翅膀</span>]
+            回城，接著使用 [<span class="highlight">集結</span>] 傳送至蛇巢點
+            NPC。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            5.
+            古代冰風的峽谷東部：與門口「哈鋼」對話，跟隨導引與「雷拉爾」對話多次，觸發兩次自動傳送。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_back5 350/75')">
+            /navi jor_back5 350/75
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            6. 地圖右上角：與「米利安」對話並觸發自動傳送，再次對話。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_back5 353/357')">
+            /navi jor_back5 353/357
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter 2 -->
+      <h2 class="section-title">二、 堡壘周邊與探險副本</h2>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            1.
+            <span class="highlight">集結</span
+            >後進入冰霜堡壘內部：向右走到底與「雷文」對話。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 262/202')">
+            /navi icas_in 262/202
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            2. 往上走與「呼嚕嚕」對話，完成後使用 [<span class="highlight"
+              >蝴蝶翅膀</span
+            >]。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 259/219')">
+            /navi icas_in 259/219
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">3. 旅館內：與「查路路」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 92/113')">
+            /navi icas_in 92/113
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">4. 藥水店：與「脫路路」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 113/41')">
+            /navi icas_in 113/41
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            5. 地圖右上方：與「石像」對話，完成後使用 [<span class="highlight"
+              >集結</span
+            >]。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icecastle 210/242')">
+            /navi icecastle 210/242
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            6. 冰霜堡壘內部：分別與「呼嚕嚕」及「貝俊德」對話，完成後使用 [<span
+              class="highlight"
+              >蝴蝶翅膀</span
+            >] 及 [<span class="highlight">集結</span>]。
+          </div>
+          <div class="quest-meta">
+            <div class="navi-box" onclick="copyText('/navi icas_in 259/219')">
+              呼嚕嚕: /navi icas_in 259/219
+            </div>
+            <div class="navi-box" onclick="copyText('/navi icas_in 260/205')">
+              貝俊德: /navi icas_in 260/205
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            7. 冰霜堡壘門口：[先退出組隊並重新個人組隊]
+            與「雷拉爾」對話開啟副本「峽谷探索」。
+          </div>
+          <div class="quest-meta">
+            <span class="badge badge-danger">需重新個人組隊</span>
+            <div class="navi-box" onclick="copyText('/navi icecastle 201/171')">
+              /navi icecastle 201/171
+            </div>
+          </div>
+          <div
+            style="font-size: 0.85rem; color: var(--text-dim); margin-top: 8px"
+          >
+            流程：雷拉爾 -> 陌生白音 (藍帽子) -> 雷拉爾 -> 白貓 (重複對話至結束)
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            8. 副本結束後：[回到組隊] 並使用 [<span class="highlight">集結</span
+            >]。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            9. 冰霜堡壘內部：向右走到底與「米利安」及「雷基」對話。使用 [<span
+              class="highlight"
+              >蝴蝶翅膀</span
+            >]、[<span class="highlight">集結</span>]、並前往 [蛇巢]。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 259/200')">
+            /navi icas_in 259/200
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter 3 -->
+      <h2 class="section-title">三、 蛇城根部與教團調查</h2>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            1. 蛇巢大門前：[使用<span class="highlight">變身</span>卷軸]
+            與「雷基」及「呼嚕嚕」對話，傳送至「蛇城的根部一樓」。
+          </div>
+          <div class="quest-meta">
+            <span class="badge"
+              >必須保持蠕蟲<span class="highlight">變身</span></span
+            >
+            <div class="navi-box" onclick="copyText('/navi jor_nest 38/270')">
+              /navi jor_nest 38/270
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            2. 蛇城的根部一樓：與「蠕蟲巫師」對話，擊殺 5
+            隻「高級蠕蟲巫師」。完成後由左上方傳點前往二樓。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            3.
+            蛇城的根部二樓：往右上角觸發自動傳送，與「雷基」、「米利安」、「呼嚕嚕」對話。由左上方傳點前往「神聖的根部」。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">4. 神聖的根部：與「蠕蟲」對話兩次。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 162/86')">
+            /navi jor_sanct 162/86
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            5. 收集任務：下方傳點收集 3 個「蛇莓果」，回報「蠕蟲」。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 162/86')">
+            /navi jor_sanct 162/86
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">6. 再次與「蠕蟲」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 185/128')">
+            /navi jor_sanct 185/128
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter 4 -->
+      <h2 class="section-title">四、 鋼德家族與根部區域任務</h2>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">1. 與「蠕蟲」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 42/105')">
+            /navi jor_sanct 42/105
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            2. 鋼德家族任務 (建議由下而上逆時針完成)：
+          </div>
+          <div class="quest-meta">
+            <span class="badge">科米亞: [ 1, 1, 1, 2, 2 ]</span>
+            <span class="badge">法末修: 巨大的暗灰羽毛 x20</span>
+            <span class="badge">納西歐拉米: 對話</span>
+            <span class="badge"
+              >霍希比: [ 2, 1, 2, 1, 1, 1 ] + 可波的冠毛 x30</span
+            >
+            <span class="badge">愛麗里: [ 2, 3, 2 ]</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">3. 環境互動：與「塔」及「水坑」對話。</div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            4.
+            根部二樓互動：分別與「垃圾場」、「倉庫」、「堆積如山的雜物」對話。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">5. 神聖的根部：與「沙列鋼德」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 156/171')">
+            /navi jor_sanct 156/171
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">6. 隱藏路徑：與「監督官」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 22/283')">
+            /navi jor_sanct 22/283
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            7. 擊殺任務：擊殺「蝴蝶怪」金 1 隻、紫 2 隻。完成後回報「監督官」。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_sanct 22/283')">
+            /navi jor_sanct 22/283
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">8. 迷宮進度：前往各黃色 + 號點觸發傳送。</div>
+          <div class="quest-meta">
+            <div class="navi-box" onclick="copyText('/navi jor_maze 13/48')">
+              點1: 13/48
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 17/154')">
+              點2: 17/154
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 140/71')">
+              副本點: 140/71
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chapter 5 -->
+      <h2 class="section-title">五、 多人副本與尾聲</h2>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            1. 多人副本「流兵地帶」：與各 NPC 對話後離開。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            2. 副本出口：與「? NPC」對話，往右移動並使用 [<span
+              class="highlight"
+              >集結</span
+            >]。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            3. 冰霜堡壘內部：與「雷達爾」對話，完成後使用 [<span
+              class="highlight"
+              >蝴蝶翅膀</span
+            >]。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icas_in 255/255')">
+            /navi icas_in 255/255
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            4. 伊斯加爾特瀑布：與「潛水白音」多次對話。
+          </div>
+          <div class="quest-meta">
+            <span class="badge">需求: 冰凍蟲殼 x3, 閃亮海帶莖 x3</span>
+            <div class="navi-box" onclick="copyText('/navi icecastle 141/210')">
+              /navi icecastle 141/210
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            5. 回報任務：回到瀑布與「潛水白音」對話，完成後重複此步驟。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi icecastle 141/210')">
+            /navi icecastle 141/210
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">6. 後續調查：開啟副本「小小的小潮」。</div>
+          <div class="quest-meta">
+            <div class="navi-box" onclick="copyText('/navi jor_twice 238/329')">
+              可路路: 238/329
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_twice 158/242')">
+              雷文: 158/242
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            7. 副本「小小的小潮」：跟隨「雷拉爾」移動並對話。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">8. 副本結束：擊殺 5 隻指定怪並回報任務。</div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            9. 前往迷宮：由左下角傳點移動，與 NPC 對話 [需保持<span
+              class="highlight"
+              >變身</span
+            >狀態]。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_maze 142/69')">
+            /navi jor_maze 142/69
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            10. 迷宮調查：依序前往 5 個黃色 + 號對話。
+          </div>
+          <div class="quest-meta">
+            <div class="navi-box" onclick="copyText('/navi jor_maze 54/237')">
+              1
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 281/189')">
+              2
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 154/241')">
+              3
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 148/34')">
+              4
+            </div>
+            <div class="navi-box" onclick="copyText('/navi jor_maze 199/34')">
+              5
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            11. 傳出後對話：依序與「白貓」、「雷茲」對話並跟隨引導。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            12. 傳送之陣前往蛇巢：從上方的門進入找到「樹根」。
+          </div>
+          <div class="navi-box" onclick="copyText('/navi jor_root1 32/74')">
+            /navi jor_root1 32/74
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            13. 樹根調查：與小地圖 3 個黃色 + 號對話。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">14. 神聖的根部：前往最後標記點對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_snact 133/85')">
+            /navi jor_snact 133/85
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">15. 最終對話：與「主教」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi jor_snact 150/206')">
+            /navi jor_snact 150/206
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            16. 最終副本「被分離的聖地」：擊殺「拉斯甘德」後離開。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">
+            17. 回報傳送：出副本與「奧來利」對話，傳回伊斯加爾特。
+          </div>
+        </div>
+      </div>
+
+      <div class="quest-card">
+        <input type="checkbox" class="quest-check" />
+        <div class="quest-content">
+          <div class="quest-text">18. 正式結束：與「博克林德」對話。</div>
+          <div class="navi-box" onclick="copyText('/navi icas_in2 252/117')">
+            /navi icas_in2 252/117
+          </div>
+          <span
+            class="badge"
+            style="display: block; width: fit-content; margin-top: 8px"
+            >恭喜完成 EP20！</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div id="toast">已複製到剪貼簿！</div>
+
+    <script>
+      function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          const toast = document.getElementById("toast");
+          toast.style.display = "block";
+          setTimeout(() => {
+            toast.style.display = "none";
+          }, 1500);
+        });
+      }
+
+      // Progress persistence
+      document.querySelectorAll(".quest-check").forEach((checkbox, index) => {
+        const card = checkbox.closest(".quest-card");
+
+        // Load state
+        if (localStorage.getItem("quest-" + index) === "true") {
+          checkbox.checked = true;
+          card.classList.add("completed");
+        }
+
+        checkbox.addEventListener("change", () => {
+          if (checkbox.checked) {
+            card.classList.add("completed");
+            localStorage.setItem("quest-" + index, "true");
+          } else {
+            card.classList.remove("completed");
+            localStorage.setItem("quest-" + index, "false");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
