@@ -174,6 +174,66 @@
         color: var(--text-dim);
       }
 
+      /* Material Table */
+      .material-section {
+        background: #f8fafc;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      .material-toggle {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 4px 12px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+
+      .material-content {
+        display: block;
+      }
+
+      .material-content.hidden {
+        display: none;
+      }
+
+      .material-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 0.9rem;
+      }
+
+      .material-table th,
+      .material-table td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+        vertical-align: middle;
+      }
+
+      .item-icon {
+        width: 24px;
+        height: 24px;
+        vertical-align: middle;
+        margin-right: 8px;
+        image-rendering: pixelated; /* RO icons look better pixelated */
+      }
+
+      .material-table th {
+        background-color: #f1f5f9;
+        font-weight: bold;
+      }
+
       @media (max-width: 600px) {
         .header-content h1 {
           font-size: 1.2rem;
@@ -189,6 +249,119 @@
       <h1 style="margin-bottom: 20px; color: var(--primary)">
         EP20 不死者 - 主線任務全流程
       </h1>
+
+      <!-- Material Requirements -->
+      <div class="material-section">
+        <button
+          class="material-toggle"
+          onclick="toggleMaterials()"
+          id="toggle-btn"
+        >
+          隱藏
+        </button>
+        <h2
+          style="
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          "
+        >
+          📋 任務材料需求預備
+        </h2>
+        <div class="material-content" id="material-content">
+          <p
+            style="
+              font-size: 0.9rem;
+              color: var(--text-dim);
+              margin-bottom: 10px;
+            "
+          >
+            在開始任務前，建議先準備好以下材料：
+          </p>
+          <table class="material-table">
+            <thead>
+              <tr>
+                <th>材料名稱</th>
+                <th>數量</th>
+                <th>取得/用途</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <img src="images/wing.png" class="item-icon" alt="蝴蝶翅膀" />
+                  <strong>蝴蝶翅膀</strong>
+                </td>
+                <td>至少 10 個</td>
+                <td>用於快速回城</td>
+              </tr>
+              <tr>
+                <td>
+                  <img
+                    src="images/scroll.png"
+                    class="item-icon"
+                    alt="蠕蟲變身卷軸"
+                  />
+                  <strong>蠕蟲變身卷軸</strong>
+                </td>
+                <td>至少 3 個</td>
+                <td>進入蛇城區域對話必備</td>
+              </tr>
+              <tr>
+                <td>
+                  <img
+                    src="images/feather_gray.png"
+                    class="item-icon"
+                    alt="巨大的暗灰羽毛"
+                  />
+                  <strong>巨大的暗灰羽毛</strong>
+                </td>
+                <td>20 個</td>
+                <td>四、鋼德家族任務 (法末修鋼德)</td>
+              </tr>
+              <tr>
+                <td>
+                  <img
+                    src="images/feather_copos.png"
+                    class="item-icon"
+                    alt="可波的冠毛"
+                  />
+                  <strong>可波的冠毛</strong>
+                </td>
+                <td>30 個</td>
+                <td>四、鋼德家族任務 (霍希比剛得)</td>
+              </tr>
+              <tr>
+                <td>
+                  <img
+                    src="images/shell.png"
+                    class="item-icon"
+                    alt="冰凍蟲殼"
+                  />
+                  <strong>冰凍蟲殼</strong>
+                </td>
+                <td>3 個</td>
+                <td>五、尾聲調查 (潛水白音) 註: 可於打怪任務同時再拾取</td>
+              </tr>
+              <tr>
+                <td>
+                  <img
+                    src="images/seaweed.png"
+                    class="item-icon"
+                    alt="閃亮海帶莖"
+                  />
+                  <strong>閃亮海帶莖</strong>
+                </td>
+                <td>3 個</td>
+                <td>五、尾聲調查 (潛水白音) 註: 可於打怪任務同時再拾取</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Chapter 1 -->
       <h2 class="section-title">一、 任務啟動與初步調查</h2>
 
@@ -230,9 +403,14 @@
         <input type="checkbox" class="quest-check" />
         <div class="quest-content">
           <div class="quest-text">
-            4. 完成後，使用 [<span class="highlight">蝴蝶翅膀</span>]
-            回城，接著使用 [<span class="highlight">集結</span>] 傳送至蛇巢點
-            NPC。
+            4. 完成後，使用 [<img
+              src="images/wing.png"
+              class="item-icon"
+              style="margin-right: 2px"
+            /><span class="highlight">蝴蝶翅膀</span>] 回城，接著使用 [<span
+              class="highlight"
+              >集結</span
+            >] 傳送至蛇巢點 NPC。
           </div>
         </div>
       </div>
@@ -400,12 +578,20 @@
         <input type="checkbox" class="quest-check" />
         <div class="quest-content">
           <div class="quest-text">
-            1. 蛇巢大門前：[使用<span class="highlight">變身</span>卷軸]
+            1. 蛇巢大門前：[使用<img
+              src="images/scroll.png"
+              class="item-icon"
+              style="margin-right: 2px"
+            /><span class="highlight">變身</span>卷軸]
             與「雷基」及「呼嚕嚕」對話，傳送至「蛇城的根部一樓」。
           </div>
           <div class="quest-meta">
             <span class="badge"
-              >必須保持蠕蟲<span class="highlight">變身</span></span
+              >必須保持蠕蟲<img
+                src="images/scroll.png"
+                class="item-icon"
+                style="margin-right: 2px; height: 16px; width: 16px"
+              /><span class="highlight">變身</span></span
             >
             <div class="navi-box" onclick="copyText('/navi jor_nest 38/270')">
               /navi jor_nest 38/270
@@ -487,10 +673,22 @@
           </div>
           <div class="quest-meta">
             <span class="badge">科米亞: [ 1, 1, 1, 2, 2 ]</span>
-            <span class="badge">法末修: 巨大的暗灰羽毛 x20</span>
+            <span class="badge"
+              >法末修:
+              <img
+                src="images/feather_gray.png"
+                class="item-icon"
+                style="height: 16px; width: 16px; margin-right: 2px"
+              />巨大的暗灰羽毛 x20</span
+            >
             <span class="badge">納西歐拉米: 對話</span>
             <span class="badge"
-              >霍希比: [ 2, 1, 2, 1, 1, 1 ] + 可波的冠毛 x30</span
+              >霍希比: [ 2, 1, 2, 1, 1, 1 ] +
+              <img
+                src="images/feather_copos.png"
+                class="item-icon"
+                style="height: 16px; width: 16px; margin-right: 2px"
+              />可波的冠毛 x30</span
             >
             <span class="badge">愛麗里: [ 2, 3, 2 ]</span>
           </div>
@@ -610,7 +808,19 @@
             4. 伊斯加爾特瀑布：與「潛水白音」多次對話。
           </div>
           <div class="quest-meta">
-            <span class="badge">需求: 冰凍蟲殼 x3, 閃亮海帶莖 x3</span>
+            <span class="badge"
+              >需求:
+              <img
+                src="images/shell.png"
+                class="item-icon"
+                style="height: 16px; width: 16px; margin-right: 2px"
+              />冰凍蟲殼 x3,
+              <img
+                src="images/seaweed.png"
+                class="item-icon"
+                style="height: 16px; width: 16px; margin-right: 2px"
+              />閃亮海帶莖 x3</span
+            >
             <div class="navi-box" onclick="copyText('/navi icecastle 141/210')">
               /navi icecastle 141/210
             </div>
@@ -665,10 +875,11 @@
         <input type="checkbox" class="quest-check" />
         <div class="quest-content">
           <div class="quest-text">
-            9. 前往迷宮：由左下角傳點移動，與 NPC 對話 [需保持<span
-              class="highlight"
-              >變身</span
-            >狀態]。
+            9. 前往迷宮：由左下角傳點移動，與 NPC 對話 [需保持<img
+              src="images/scroll.png"
+              class="item-icon"
+              style="margin-right: 2px"
+            /><span class="highlight">變身</span>狀態]。
           </div>
           <div class="navi-box" onclick="copyText('/navi jor_maze 142/69')">
             /navi jor_maze 142/69
@@ -789,6 +1000,28 @@
     <div id="toast">已複製到剪貼簿！</div>
 
     <script>
+      function toggleMaterials() {
+        const content = document.getElementById("material-content");
+        const btn = document.getElementById("toggle-btn");
+        if (content.classList.contains("hidden")) {
+          content.classList.remove("hidden");
+          btn.textContent = "隱藏";
+          localStorage.setItem("material-hidden", "false");
+        } else {
+          content.classList.add("hidden");
+          btn.textContent = "顯示";
+          localStorage.setItem("material-hidden", "true");
+        }
+      }
+
+      // Initialize material toggle state
+      window.addEventListener("DOMContentLoaded", () => {
+        if (localStorage.getItem("material-hidden") === "true") {
+          document.getElementById("material-content").classList.add("hidden");
+          document.getElementById("toggle-btn").textContent = "顯示";
+        }
+      });
+
       function copyText(text) {
         navigator.clipboard.writeText(text).then(() => {
           const toast = document.getElementById("toast");
