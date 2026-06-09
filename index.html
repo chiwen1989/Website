@@ -103,6 +103,71 @@
             background: #4b5563;
         }
 
+        .btn-reset {
+            background: #450a0a;
+            color: #f87171;
+            border: 1px solid #991b1b;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-reset:hover {
+            background: #7f1d1d;
+            color: #fee2e2;
+        }
+
+        .btn-reset svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            background: #1f2937;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 900;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .btn-top:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .footer-actions {
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px dashed var(--border);
+            text-align: right;
+            padding-bottom: 60px;
+        }
+
         .table-wrapper {
             overflow-x: auto;
         }
@@ -289,7 +354,7 @@
         #toast {
             position: fixed;
             bottom: 32px;
-            right: 32px;
+            left: 32px;
             background: var(--primary);
             color: white;
             padding: 12px 24px;
@@ -1033,11 +1098,26 @@
                 </div>
             </div>
         </div>
+
+        <footer class="footer-actions">
+            <button id="reset-progress" class="btn-reset">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                清除所有進度並重新開始
+            </button>
+        </footer>
     </div>
+
+    <button id="back-to-top" class="btn-top" title="回到頂部">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    </button>
 
     <div id="toast">已複製座標到剪貼簿</div>
 
     <script>
+        // Common UI Elements
+        const toast = document.getElementById('toast');
+        const questSteps = document.querySelectorAll('.step-item');
+
         // UI Logic: Materials Toggle
         const toggleBtn = document.getElementById('toggle-materials');
         const materialsContent = document.getElementById('materials-content');
@@ -1057,7 +1137,7 @@
         });
 
         // Progress Logic
-        const questSteps = document.querySelectorAll('.step-item');
+        const resetBtn = document.getElementById('reset-progress');
         
         function saveProgress() {
             const progress = {};
@@ -1097,8 +1177,43 @@
             });
         });
 
+        resetBtn.addEventListener('click', () => {
+            if (confirm('確定要清除所有已完成的任務進度嗎？這將會重置所有勾選狀態。')) {
+                localStorage.removeItem('ro_modern_ep20_progress');
+                questSteps.forEach(step => {
+                    step.querySelector('.custom-cb').checked = false;
+                    step.classList.remove('completed');
+                });
+                
+                // Show temporary reset toast
+                const originalText = toast.textContent;
+                toast.textContent = '進度已全部重置';
+                toast.classList.add('show');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.textContent = originalText;
+                    }, 300);
+                }, 2000);
+            }
+        });
+
+        // Back to Top Logic
+        const backToTopBtn = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        });
+
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
         // Navi Logic
-        const toast = document.getElementById('toast');
         document.querySelectorAll('.btn-navi').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
