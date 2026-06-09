@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RO EP20 不死者 - 專業任務攻略</title>
+    <title>EP20 不死者 - 任務攻略</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
@@ -15,7 +15,7 @@
             --danger: #f87171;
             --success: #10b981;
             --bg-body: #000000;
-            --bg-card: #111827;
+            --bg-card: rgba(17, 24, 39, 0.8);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --border: rgba(255, 255, 255, 0.2);
@@ -31,6 +31,10 @@
 
         body {
             background-color: var(--bg-body);
+            background-image: url('images/bg.png');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
             color: var(--text-main);
             font-family: 'Inter', -apple-system, system-ui, sans-serif;
             line-height: 1.5;
@@ -49,16 +53,28 @@
         }
 
         h1 {
-            font-size: 1.75rem;
-            font-weight: 800;
+            font-size: 4rem;
+            font-weight: 900;
             color: var(--text-main);
             letter-spacing: -0.025em;
-            margin-bottom: 4px;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 1);
+            background: rgba(0, 0, 0, 0.6);
+            display: inline-block;
+            padding: 10px 40px;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
         }
 
         .subtitle {
-            color: var(--text-muted);
+            color: #ffffff;
             font-size: 0.9rem;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.5);
+            display: table;
+            margin: 8px auto 0;
+            padding: 4px 20px;
+            border-radius: 20px;
         }
 
         .card {
@@ -72,7 +88,7 @@
 
         .card-header {
             padding: 12px 20px;
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             border-bottom: 1px dashed var(--border);
             display: flex;
             justify-content: space-between;
@@ -132,7 +148,7 @@
             position: fixed;
             bottom: 32px;
             right: 32px;
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             color: var(--text-main);
             border: 1px solid var(--border);
             width: 44px;
@@ -179,7 +195,7 @@
         }
 
         th {
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             text-align: left;
             padding: 10px 16px;
             font-weight: 600;
@@ -195,19 +211,21 @@
         .section-title {
             font-size: 1.1rem;
             font-weight: 700;
-            margin: 32px 0 16px;
+            margin: 40px 0 20px;
             color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            width: fit-content;
         }
 
         .section-title::before {
-            content: '';
-            width: 3px;
-            height: 18px;
-            background: var(--primary);
-            border-radius: 2px;
+            display: none;
         }
 
         .step-item {
@@ -228,7 +246,7 @@
         }
 
         .step-item.completed {
-            background: #0f172a;
+            background: rgba(15, 23, 42, 0.5);
             opacity: 0.5;
         }
 
@@ -249,7 +267,7 @@
             border-radius: 4px;
             cursor: pointer;
             appearance: none;
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             position: relative;
             transition: all 0.2s;
         }
@@ -285,7 +303,7 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-bottom: 8px;
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             padding: 6px 12px;
             border-radius: 6px;
             border-left: 3px solid #4b5563;
@@ -301,7 +319,7 @@
             width: fit-content;
             align-items: center;
             gap: 6px;
-            background: #052e16;
+            background: rgba(5, 46, 22, 0.8);
             color: #4ade80;
             padding: 4px 12px;
             border: 1px solid #10b981;
@@ -315,7 +333,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: #1f2937;
+            background: rgba(31, 41, 55, 0.8);
             color: var(--text-main);
             border: 1px solid #374151;
             padding: 6px 12px;
@@ -333,7 +351,7 @@
         .btn-navi:hover {
             border-color: var(--primary);
             color: var(--primary);
-            background: #111827;
+            background: rgba(17, 24, 39, 0.8);
         }
 
         .btn-navi svg {
@@ -375,7 +393,7 @@
         .summary-box {
             margin-top: 16px;
             padding: 12px 20px;
-            background: #0f172a;
+            background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--success);
             border-radius: 0;
         }
@@ -390,7 +408,7 @@
             text-align: center;
             padding: 40px 20px;
             margin-top: 40px;
-            background: linear-gradient(135deg, #064e3b 0%, #111827 100%);
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(17, 24, 39, 0.8) 100%);
             border: 1px solid var(--success);
             border-radius: var(--radius);
         }
@@ -408,7 +426,8 @@
 
         @media (max-width: 640px) {
             body { padding: 24px 16px; }
-            h1 { font-size: 1.8rem; }
+            h1 { font-size: 2.5rem; padding: 10px 20px; }
+            .subtitle { font-size: 0.8rem; }
             .step-item { padding: 16px; flex-direction: column; gap: 12px; }
             .checkbox-wrapper { padding-top: 0; }
         }
@@ -419,13 +438,13 @@
     <div class="container">
         <header>
             <h1>RO EP20 不死者</h1>
-            <p class="subtitle">主線任務全流程攻略系統</p>
+            <p class="subtitle">RO EP20 - 主線任務全流程攻略</p>
         </header>
 
         <!-- 任務材料 Dashboard -->
         <section class="card">
             <div class="card-header">
-                <h2>任務材料需求預備</h2>
+                <h2>任務材料需求</h2>
                 <button id="toggle-materials" class="btn-toggle">折疊</button>
             </div>
             <div id="materials-content" class="table-wrapper">
@@ -467,13 +486,13 @@
                             <td><img src="images/frozen_insect_shell.png" class="item-icon" alt="冰凍蟲殼"></td>
                             <td>冰凍蟲殼</td>
                             <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付</td>
+                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
                         </tr>
                         <tr>
                             <td><img src="images/shining_seaweed_stem.png" class="item-icon" alt="閃亮海帶莖"></td>
                             <td>閃亮海帶莖</td>
                             <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付</td>
+                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
                         </tr>
                     </tbody>
                 </table>
@@ -499,7 +518,7 @@
                 <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
                 <div class="step-content">
                     <span class="step-main-text">前置檢查：前往伊斯加爾特入口處與「Horuru」對話</span>
-                    <div class="step-sub-text">※ 若未完成前置「埋蛤蜊任務」，請先點擊下方按鈕處理。</div>
+                    <div class="step-sub-text">※ 若未完成前置「埋蛤蜊任務」，請先完成後可接取。</div>
                     <button class="btn-navi" data-navi="/navi icecastle 27/126">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         前置任務座標：/navi icecastle 27/126
