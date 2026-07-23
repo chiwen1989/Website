@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Da Ka - 打卡</title>
+<style>
+  body{font-family:system-ui;padding:1rem;min-width:300px;max-width:600px;margin:0 auto;text-align:center;}
+  #log{margin-top:.5rem;text-align:left;}
+  .entry{display:flex;justify-content:center;align-items:center;margin:.2rem 0;}
+  .entry input[type=checkbox]{margin-right:.5rem;}
+  button{padding:.3rem .6rem;}
+  #nowLabel{font-size:1.2rem;font-weight:bold;color:#00c8ff;margin-top:.5rem;}
+  .dropdown{position:relative;display:inline-block;}
+  #exportMenu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid #ccc;border-radius:4px;z-index:10;min-width:80px;}
+  #exportMenu div{padding:.4rem 1rem;cursor:pointer;text-align:left;}
+  #exportMenu div:hover{background:#eee;}
+  @media (max-width:480px){body{padding:.5rem;}}
+</style>
+</head>
+<body>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+  <button id="addBtn">🕒 打卡</button>
+  <div>
+    <div class="dropdown">
+      <button id="exportBtn">匯出 ▼</button>
+      <div id="exportMenu">
+        <div onclick="exportAs('csv')">CSV</div>
+        <div onclick="exportAs('txt')">TXT</div>
+        <div onclick="exportAs('md')">MD</div>
+      </div>
+    </div>
+    <button id="clearBtn" style="font-size:.8rem;">清除全部</button>
+  </div>
+</div>
+<div id="log"></div>
+<p id="totalLabel"></p>
+<p id="nowLabel"></p>
+<script>
+const log = document.getElementById('log');
+const totalLabel = document.getElementById('totalLabel');
+const exportMenu = document.getElementById('exportMenu');
+let times = JSON.parse(localStorage.getItem('times')||'[]');
+
+function fmtDate(d){
+  const Y=d.getFullYear(), M=d.getMonth()+1, D=d.getDate();
+  const h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'), s=String(d.getSeconds()).padStart(2,'0');
+  const ampm=h<12?'am':'pm';
+  const h12=h%12||12;
+  return `${Y} 年 ${M} 月 ${D} 日 ${h12}:${m}:${s} ${ampm}`;
+}
+function fmtEntry(d){
+  const Y=d.getFullYear(), M=d.getMonth()+1, D=d.getDate();
+  const h=d.getHours(), m=String(d.getMinutes()).padStart(2,'0'), s=String(d.getSeconds()).padStart(2,'0');
+  const ampm=h<12?'am':'pm';
+  const h12=h%12||12;
+  return `${Y}/${M}/${D} ${h12}:${m}:${s} ${ampm}`;
+}
+
+function render(){
+  log.innerHTML='';
+  times.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='entry';
+    const cb=document.createElement('input');
+    cb.type='checkbox';
+    cb.dataset.idx=i;
+    cb.checked=item.checked;
+    cb.addEventListener('change',onCheck);
+    const span=document.createElement('span');
+    span.textContent=fmtEntry(new Date(item.t));
+    div.append(cb,span);
+    log.appendChild(div);
+  });
+  calcTotal();
+}
+
+function addEntry(){
+  times.push({t:Date.now(),checked:false});
+  localStorage.setItem('times',JSON.stringify(times));
+  render();
+}
+
+function onCheck(e){
+  const idx=Number(e.target.dataset.idx);
+  times[idx].checked=e.target.checked;
+  localStorage.setItem('times',JSON.stringify(times));
+  calcTotal();
+}
+
+function calcTotal(){
+  const checked=times.filter(t=>t.checked).map(t=>t.t).sort((a,b)=>a-b);
+  if(checked.length<2){totalLabel.textContent='請勾選兩筆以上時間以計算總時數';return;}
+  const ms=checked[checked.length-1]-checked[0];
+  const sec=Math.floor(ms/1000);
+  const h=Math.floor(sec/3600);
+  const m=Math.floor((sec%3600)/60);
+  const s=sec%60;
+  totalLabel.textContent=`已勾選總時數：${h} 小時 ${m} 分 ${s} 秒`;
+}
+
+function calcTotalAll(){
+  const allT=times.map(t=>t.t).sort((a,b)=>a-b);
+  if(allT.length<2)return '';
+  const ms=allT[allT.length-1]-allT[0];
+  const sec=Math.floor(ms/1000);
+  const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  return `${h}小時${m}分${s}秒`;
+}
+
+function exportAs(type){
+  exportMenu.style.display='none';
+  if(!times.length){alert('尚無時間資料');return;}
+  const date=new Date().toISOString().slice(0,10);
+  const total=calcTotalAll();
+  let content='',blob,filename,mime;
+  if(type==='csv'){
+    const header='No.,DateTime,Checked\n';
+    const rows=times.map((t,i)=>`${i+1},${fmtEntry(new Date(t.t))},${t.checked?'✓':''}`).join('\n');
+    content='\uFEFF'+(total?`${header}${rows}\nTotal,${total},`:`${header}${rows}`);
+    blob=new Blob([content],{type:'text/csv;charset=utf-8'});
+    filename=`timeclock_${date}.csv`;
+  } else if(type==='txt'){
+    const lines=times.map((t,i)=>`${i+1}. ${fmtEntry(new Date(t.t))} ${t.checked?'✓':''}`);
+    content=(total?`${lines.join('\n')}\n總時數：${total}`:`${lines.join('\n')}`);
+    blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+    filename=`timeclock_${date}.txt`;
+  } else if(type==='md'){
+    const lines=times.map((t,i)=>`| ${i+1} | ${fmtEntry(new Date(t.t))} | ${t.checked?'✓':''} |`);
+    const header='| No. | DateTime | Checked |\n|---|---|---|';
+    content=(total?`${header}\n${lines.join('\n')}\n| **Total** | **${total}** | |`:`${header}\n${lines.join('\n')}`);
+    blob=new Blob([content],{type:'text/markdown;charset=utf-8'});
+    filename=`timeclock_${date}.md`;
+  }
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function clearAll(){
+  if(!confirm('確定清除全部時間？'))return;
+  times=[];
+  localStorage.removeItem('times');
+  render();
+}
+
+function updateNow(){
+  document.getElementById('nowLabel').textContent=fmtDate(new Date());
+}
+
+// 匯出選單切換
+document.getElementById('exportBtn').onclick=()=>{
+  exportMenu.style.display=exportMenu.style.display==='block'?'none':'block';
+};
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.dropdown'))exportMenu.style.display='none';
+});
+
+// Init
+document.getElementById('addBtn').onclick=addEntry;
+document.getElementById('clearBtn').onclick=clearAll;
+render();
+setInterval(updateNow,1000);
+updateNow();
+</script>
+</body>
+</html>
