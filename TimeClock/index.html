@@ -10,6 +10,10 @@
     font-family:'Zpix';src:url('https://cdn.jsdelivr.net/npm/zpix@3.1.0/dist/Zpix.woff2') format('woff2');
   }
   *{box-sizing:border-box;margin:0;padding:0;image-rendering:pixelated;}
+  </style>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <style>
   body{
     font-family:'Zpix','Press Start 2P',monospace;
     color:#e0e2eb;
@@ -136,105 +140,186 @@
     <p><span class="label">Rest —</span> <span class="val val-rest" id="restTotalLabel"></span></p>
   </div>
   <div id="nowLabel"></div>
-</div>
-<div id="printArea" style="display:none;"></div>
-<script>
-const log = document.getElementById('log');
-const totalLabel = document.getElementById('totalLabel');
-const workTotalLabel = document.getElementById('workTotalLabel');
-const restTotalLabel = document.getElementById('restTotalLabel');
-const exportMenu = document.getElementById('exportMenu');
-let times = JSON.parse(localStorage.getItem('times')||'[]');
-function fmtDuration(ms){
-  if(ms<0)return '';
-  const sec=Math.floor(ms/1000),h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
-  return `${h}h ${m}m ${s}s`;
-}
-function fmtDate(d){
-  const Y=d.getFullYear(),M=d.getMonth()+1,D=d.getDate();
-  const h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
-  const ampm=h<12?'AM':'PM',h12=h%12||12;
-  return `${Y} 年 ${M} 月 ${D} 日 ${h12}:${m}:${s} ${ampm}`;
-}
-function fmtEntry(d){
-  const Y=d.getFullYear(),M=d.getMonth()+1,D=d.getDate();
-  const h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
-  const ampm=h<12?'AM':'PM',h12=h%12||12;
-  return `${Y}/${M}/${D} ${h12}:${m}:${s} ${ampm}`;
-}
-function render(){
-  log.innerHTML='';
-  const groups={};
-  times.forEach((item,i)=>{
-    const d=new Date(item.t);
-    const key=`${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
-    if(!groups[key])groups[key]=[];
-    groups[key].push({item,i});
-  });
-  Object.entries(groups).reverse().forEach(([date,entries])=>{
-    const details=document.createElement('details');
-    const summary=document.createElement('summary');
-    summary.textContent=date;details.appendChild(summary);details.open=true;
-    entries.reverse().forEach(({item,i})=>{
-      const div=document.createElement('div');div.className='entry';
-      const cb=document.createElement('input');cb.type='checkbox';cb.dataset.idx=i;cb.checked=item.checked;
-      cb.addEventListener('change',onCheck);
-      const span=document.createElement('span');span.textContent=fmtEntry(new Date(item.t));
-      span.className=item.type==='rest'?'entry-rest':'entry-work';
-      const del=document.createElement('button');del.textContent='✖';del.className='delBtn';
-      del.onclick=(e)=>{e.stopPropagation();removeEntry(i);};
-      div.append(cb,span,del);details.appendChild(div);
-    });log.appendChild(details);
-  });calcTotal();
-}
-function removeEntry(idx){times.splice(idx,1);localStorage.setItem('times',JSON.stringify(times));render();}
-function addEntry(){times.push({t:Date.now(),checked:false,type:'work'});localStorage.setItem('times',JSON.stringify(times));render();}
-function addRestEntry(){times.push({t:Date.now(),checked:false,type:'rest'});localStorage.setItem('times',JSON.stringify(times));render();}
-function onCheck(e){const idx=Number(e.target.dataset.idx);times[idx].checked=e.target.checked;localStorage.setItem('times',JSON.stringify(times));calcTotal();}
-function calcTotal(){
-  const checked=times.filter(t=>t.checked);
-  const all=checked.map(t=>t.t).sort((a,b)=>a-b),work=checked.filter(t=>t.type==='work').map(t=>t.t).sort((a,b)=>a-b),rest=checked.filter(t=>t.type==='rest').map(t=>t.t).sort((a,b)=>a-b);
-  if(all.length<2){totalLabel.textContent='— Pick 2+ —';}else{totalLabel.textContent=fmtDuration(all[all.length-1]-all[0]);}
-  workTotalLabel.textContent=work.length<2?'':fmtDuration(work[work.length-1]-work[0]);
-  restTotalLabel.textContent=rest.length<2?'':fmtDuration(rest[rest.length-1]-rest[0]);
-}
-function calcTotalAllByType(type){const arr=times.filter(t=>t.type===type).map(t=>t.t).sort((a,b)=>a-b);if(arr.length<2)return '';return fmtDuration(arr[arr.length-1]-arr[0]);}
-function exportAs(type){
-  exportMenu.style.display='none';if(!times.length){alert('尚無時間資料');return;}
-  const date=new Date().toISOString().slice(0,10),totalWork=calcTotalAllByType('work'),totalRest=calcTotalAllByType('rest');
-  let content='',blob,filename;
-  if(type==='csv'){
-    const header='No.,DateTime,Checked,Type\n';
-    const rows=times.map((t,i)=>`${i+1},${fmtEntry(new Date(t.t))},${t.checked?'✓':''},${t.type}`).join('\n');
-    content='\uFEFF'+header+rows+`\nTotal Work,${totalWork}\nTotal Rest,${totalRest}`;
-    blob=new Blob([content],{type:'text/csv;charset=utf-8'});filename=`timeclock_${date}.csv`;
-  }else if(type==='txt'){
-    const lines=times.map((t,i)=>`${i+1}. ${fmtEntry(new Date(t.t))} ${t.checked?'✓':''} (${t.type})`);
-    content=lines.join('\n')+`\nWORK ${totalWork} | REST ${totalRest}`;
-    blob=new Blob([content],{type:'text/plain;charset=utf-8'});filename=`timeclock_${date}.txt`;
-  }else if(type==='md'){
-    const lines=times.map((t,i)=>`| ${i+1} | ${fmtEntry(new Date(t.t))} | ${t.checked?'✓':''} | ${t.type} |`);
-    content='| No. | DateTime | Checked | Type |\n|---|---|---|---|\n'+lines.join('\n')+`\n| **Total Work** | **${totalWork}** |   |   |\n| **Total Rest** | **${totalRest}** |   |   |`;
-    blob=new Blob([content],{type:'text/markdown;charset=utf-8'});filename=`timeclock_${date}.md`;
-  }else if(type==='pdf'){printPDF();return;}
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
-}
-function clearAll(){if(!confirm('確定清除全部時間？'))return;times=[];localStorage.removeItem('times');render();}
-function printPDF(){
-  const rows=times.map((t,i)=>`<tr><td>${i+1}</td><td>${fmtEntry(new Date(t.t))}</td><td>${t.checked?'✓':''}</td><td>${t.type}</td></tr>`).join('\n');
-  const pa=document.getElementById('printArea');pa.style.display='block';
-  pa.innerHTML=`<table border="1" cellpadding="4" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:monospace;font-size:12pt;"><thead><tr><th>No.</th><th>DateTime</th><th>Checked</th><th>Type</th></tr></thead><tbody>${rows}</tbody></table><p style="margin-top:12pt;"><b>Total Work:</b> ${calcTotalAllByType('work')}</p><p><b>Total Rest:</b> ${calcTotalAllByType('rest')}</p><p style="margin-top:12pt;"><b>Generated:</b> ${fmtDate(new Date())}</p>`;
-  window.print();pa.style.display='none';
-}
-function updateNow(){document.getElementById('nowLabel').textContent=fmtDate(new Date());}
-document.getElementById('exportBtn').onclick=()=>{exportMenu.style.display=exportMenu.style.display==='block'?'none':'block';};
-document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))exportMenu.style.display='none';});
-function initBtns(){
-  document.getElementById('addBtn').onclick=(e)=>{e.stopPropagation();addEntry();};
-  document.getElementById('restBtn').onclick=(e)=>{e.stopPropagation();addRestEntry();};
-  document.getElementById('clearBtn').onclick=clearAll;
-}
-initBtns();render();setInterval(updateNow,1000);updateNow();
-</script>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyB7k0Zz6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6",
+      authDomain: "timeclock-sync-98222.firebaseapp.com",
+      databaseURL: "https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "timeclock-sync-98222",
+      storageBucket: "timeclock-sync-98222.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abcdef123456"
+    };
+  
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    // userId — localStorage 固定，重整不變
+    let userId = localStorage.getItem('daKaUserId');
+    if (!userId) {
+      userId = 'user-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+      localStorage.setItem('daKaUserId', userId);
+    }
+  
+    // DOM elements
+    const log = document.getElementById('log');
+    const totalLabel = document.getElementById('totalLabel');
+    const workTotalLabel = document.getElementById('workTotalLabel');
+    const restTotalLabel = document.getElementById('restTotalLabel');
+    const exportMenu = document.getElementById('exportMenu');
+    const nowLabel = document.getElementById('nowLabel');
+    let times = [];
+  
+    // Firebase functions replaced with REST fetch versions (see later definitions)
+    // Time formatting functions
+    function fmtDuration(ms){
+      if(ms<0)return '';
+      const sec=Math.floor(ms/1000),h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+      return `${h}h ${m}m ${s}s`;
+    }
+    function fmtDate(d){
+      const Y=d.getFullYear(),M=d.getMonth()+1,D=d.getDate();
+      const h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
+      const ampm=h<12?'AM':'PM',h12=h%12||12;
+      return `${Y} 年 ${M} 月 ${D} 日 ${h12}:${m}:${s} ${ampm}`;
+    }
+    function fmtEntry(d){
+      const Y=d.getFullYear(),M=d.getMonth()+1,D=d.getDate();
+      const h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0'),s=String(d.getSeconds()).padStart(2,'0');
+      const ampm=h<12?'AM':'PM',h12=h%12||12;
+      return `${Y}/${M}/${D} ${h12}:${m}:${s} ${ampm}`;
+    }
+  
+    // Render function
+    function render(){
+      log.innerHTML='';
+      const groups={};
+      times.forEach((item,i)=>{
+        const d=new Date(item.t);
+        const key=`${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`;
+        if(!groups[key])groups[key]=[];
+        groups[key].push({item,i});
+      });
+      Object.entries(groups).reverse().forEach(([date,entries])=>{
+        const details=document.createElement('details');
+        const summary=document.createElement('summary');
+        summary.textContent=date;details.appendChild(summary);details.open=true;
+        entries.reverse().forEach(({item,i})=>{
+          const div=document.createElement('div');div.className='entry';
+          const cb=document.createElement('input');cb.type='checkbox';cb.dataset.idx=i;cb.checked=item.checked;
+          cb.addEventListener('change',onCheck);
+          const span=document.createElement('span');span.textContent=fmtEntry(new Date(item.t));
+          span.className=item.type==='rest'?'entry-rest':'entry-work';
+          const del=document.createElement('button');del.textContent='✖';del.className='delBtn';
+          del.onclick=(e)=>{e.stopPropagation();removeEntry(i);};
+          div.append(cb,span,del);details.appendChild(div);
+        });log.appendChild(details);
+      });calcTotal();
+    }
+  
+    // Data manipulation functions
+    function removeEntry(idx){times.splice(idx,1);saveToFirebase();render();}
+    function addEntry(){times.push({t:Date.now(),checked:false,type:'work'});saveToFirebase();render();}
+    function addRestEntry(){times.push({t:Date.now(),checked:false,type:'rest'});saveToFirebase();render();}
+    function onCheck(e){const idx=Number(e.target.dataset.idx);times[idx].checked=e.target.checked;saveToFirebase();calcTotal();}
+    function calcTotal(){
+      const checked=times.filter(t=>t.checked);
+      const all=checked.map(t=>t.t).sort((a,b)=>a-b),work=checked.filter(t=>t.type==='work').map(t=>t.t).sort((a,b)=>a-b),rest=checked.filter(t=>t.type==='rest').map(t=>t.t).sort((a,b)=>a-b);
+      if(all.length<2){totalLabel.textContent='— Pick 2+ —';}else{totalLabel.textContent=fmtDuration(all[all.length-1]-all[0]);}
+      workTotalLabel.textContent=work.length<2?'':fmtDuration(work[work.length-1]-work[0]);
+      restTotalLabel.textContent=rest.length<2?'':fmtDuration(rest[rest.length-1]-rest[0]);
+    }
+    function calcTotalAllByType(type){const arr=times.filter(t=>t.type===type).map(t=>t.t).sort((a,b)=>a-b);if(arr.length<2)return '';return fmtDuration(arr[arr.length-1]-arr[0]);}
+  
+    // Export functions
+    function exportAs(type){
+      exportMenu.style.display='none';if(!times.length){alert('尚無時間資料');return;}
+      const date=new Date().toISOString().slice(0,10),totalWork=calcTotalAllByType('work'),totalRest=calcTotalAllByType('rest');
+      let content='',blob,filename;
+      if(type==='csv'){
+        const header='No.,DateTime,Checked,Type\n';
+        const rows=times.map((t,i)=>`${i+1},${fmtEntry(new Date(t.t))},${t.checked?'✓':''},${t.type}`).join('\n');
+        content='\uFEFF'+header+rows+`\nTotal Work,${totalWork}\nTotal Rest,${totalRest}`;
+        blob=new Blob([content],{type:'text/csv;charset=utf-8'});filename=`timeclock_${date}.csv`;
+      }else if(type==='txt'){
+        const lines=times.map((t,i)=>`${i+1}. ${fmtEntry(new Date(t.t))} ${t.checked?'✓':''} (${t.type})`);
+        content=lines.join('\n')+`\nWORK ${totalWork} | REST ${totalRest}`;
+        blob=new Blob([content],{type:'text/plain;charset=utf-8'});filename=`timeclock_${date}.txt`;
+      }else if(type==='md'){
+        const lines=times.map((t,i)=>`| ${i+1} | ${fmtEntry(new Date(t.t))} | ${t.checked?'✓':''} | ${t.type} |`);
+        content='| No. | DateTime | Checked | Type |\n|---|---|---|---|\n'+lines.join('\n')+`\n| **Total Work** | **${totalWork}** |   |   |\n| **Total Rest** | **${totalRest}** |   |   |`;
+        blob=new Blob([content],{type:'text/markdown;charset=utf-8'});filename=`timeclock_${date}.md`;
+      }else if(type==='pdf'){printPDF();return;}
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);
+    }
+  
+    // Utility functions
+    // clearAll defined above using REST fetch (no duplicate)
+    function printPDF(){
+      const rows=times.map((t,i)=>`<tr><td>${i+1}</td><td>${fmtEntry(new Date(t.t))}</td><td>${t.checked?'✓':''}</td><td>${t.type}</td></tr>`).join('\n');
+      const pa=document.getElementById('printArea');pa.style.display='block';
+      pa.innerHTML=`<table border="1" cellpadding="4" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:monospace;font-size:12pt;"><thead><tr><th>No.</th><th>DateTime</th><th>Checked</th><th>Type</th></tr></thead><tbody>${rows}</tbody></table><p style="margin-top:12pt;"><b>Total Work:</b> ${calcTotalAllByType('work')}</p><p><b>Total Rest:</b> ${calcTotalAllByType('rest')}</p><p style="margin-top:12pt;"><b>Generated:</b> ${fmtDate(new Date())}</p>`;
+      window.print();pa.style.display='none';
+    }
+    function updateNow(){document.getElementById('nowLabel').textContent=fmtDate(new Date());}
+  
+    // Button event handlers
+    function initBtns(){
+      document.getElementById('addBtn').onclick=(e)=>{e.stopPropagation();addEntry();};
+      document.getElementById('restBtn').onclick=(e)=>{e.stopPropagation();addRestEntry();};
+      document.getElementById('exportBtn').onclick=()=>{exportMenu.style.display=exportMenu.style.display==='block'?'none':'block';};
+      document.addEventListener('click',e=>{if(!e.target.closest('.dropdown'))exportMenu.style.display='none';});
+      document.getElementById('clearBtn').onclick=clearAll;
+    }
+  
+    const firebaseDBUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
+    const firebaseUserUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
+    
+    const loadFromFirebase = () => {
+      return fetch(firebaseDBUrl)
+        .then(r => r.json())
+        .then(data => {
+          times = data ? Object.values(data) : [];
+          render();
+        })
+        .catch(err => { console.error('load error', err); times = []; render(); });
+    };
+    
+    const saveToFirebase = () => {
+      return fetch(firebaseDBUrl, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(times)})
+        .then(()=>console.log('saved to firebase'))
+        .catch(err => console.error('save error', err));
+    };
+    
+    const clearAll = () => {
+      if (!confirm('確定清除全部時間？')) return;
+      times = [];
+      fetch(firebaseUserUrl, {method: 'DELETE'}).catch(err => console.error('clear error', err));
+      render();
+    };
+    
+    // Firebase realtime sync — poll every 1s (file:// blocks WS)
+    let lastSnapshot = '';
+    function syncFromFirebase() {
+      fetch(firebaseDBUrl)
+        .then(r => r.json())
+        .then(data => {
+          const snap = JSON.stringify(data);
+          if (snap === lastSnapshot) return;
+          console.log('sync data', data);
+          lastSnapshot = snap;
+          times = data ? Object.values(data) : [];
+          render();
+        })
+        .catch(err => console.error('sync error', err));
+    }
+    setInterval(syncFromFirebase, 1000);
+    window.addEventListener('load', () => { syncFromFirebase(); });
+    initBtns();
+    render();
+    setInterval(updateNow,1000);
+    updateNow();
+    </script>
 </body>
 </html>
