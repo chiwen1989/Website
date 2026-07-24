@@ -156,11 +156,8 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     // userId — localStorage 固定，重整不變
-    let userId = localStorage.getItem('daKaUserId');
-    if (!userId) {
-      userId = 'user-' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-      localStorage.setItem('daKaUserId', userId);
-    }
+    let userId = 'user-123';
+    localStorage.setItem('daKaUserId', userId);
   
     // DOM elements
     const log = document.getElementById('log');
@@ -305,17 +302,13 @@
       fetch(firebaseDBUrl)
         .then(r => r.json())
         .then(data => {
-          const snap = JSON.stringify(data);
-          if (snap === lastSnapshot) return;
-          console.log('sync data', data);
-          lastSnapshot = snap;
           times = data ? Object.values(data) : [];
           render();
         })
         .catch(err => console.error('sync error', err));
     }
     setInterval(syncFromFirebase, 1000);
-    window.addEventListener('load', () => { syncFromFirebase(); });
+    window.addEventListener('load', syncFromFirebase);
     initBtns();
     render();
     setInterval(updateNow,1000);
