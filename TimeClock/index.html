@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>打卡工具</title>
-<meta name="description" content="像素RPG風格打卡工具">
+<title>Da Ka - 打卡</title>
+<style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
   @font-face{
     font-family:'Zpix';src:url('https://cdn.jsdelivr.net/npm/zpix@3.1.0/dist/Zpix.woff2') format('woff2');
@@ -208,33 +208,18 @@
           cb.addEventListener('change',onCheck);
           const span=document.createElement('span');span.textContent=fmtEntry(new Date(item.t));
           span.className=item.type==='rest'?'entry-rest':'entry-work';
-          const noteSpan = document.createElement('span');
-          noteSpan.className = 'entry-note';
-          noteSpan.contentEditable = 'true';
-          noteSpan.dataset.idx = i;
-          noteSpan.innerText = item.note || '點擊新增備註';
-          noteSpan.oninput = () => updateNote(Number(noteSpan.dataset.idx), noteSpan.innerText);
-          noteSpan.style.marginLeft = '.3rem';
-          noteSpan.style.fontFamily = "'Zpix','Press Start 2P',monospace";
-          noteSpan.style.fontSize = '7px';
-          noteSpan.style.color = '#e0e2eb';
-          noteSpan.style.background = '#13131f';
-          noteSpan.style.border = '1px solid #31376f';
-          noteSpan.style.padding = '.1rem .3rem';
-          noteSpan.style.cursor = 'text';
           const del=document.createElement('button');del.textContent='✖';del.className='delBtn';
           del.onclick=(e)=>{e.stopPropagation();removeEntry(i);};
-          div.append(cb,span,noteSpan,del);details.appendChild(div);
+          div.append(cb,span,del);details.appendChild(div);
         });log.appendChild(details);
       });calcTotal();
     }
   
     // Data manipulation functions
     function removeEntry(idx){times.splice(idx,1);saveToFirebase();render();}
-    function addEntry(){times.push({t:Date.now(),checked:false,type:'work',note:''});saveToFirebase();render();}
-    function addRestEntry(){times.push({t:Date.now(),checked:false,type:'rest',note:''});saveToFirebase();render();}
+    function addEntry(){times.push({t:Date.now(),checked:false,type:'work'});saveToFirebase();render();}
+    function addRestEntry(){times.push({t:Date.now(),checked:false,type:'rest'});saveToFirebase();render();}
     function onCheck(e){const idx=Number(e.target.dataset.idx);times[idx].checked=e.target.checked;saveToFirebase();calcTotal();}
-    function updateNote(idx, note){times[idx].note = note;saveToFirebase();}
     function calcTotal(){
       const checked=times.filter(t=>t.checked);
       const all=checked.map(t=>t.t).sort((a,b)=>a-b),work=checked.filter(t=>t.type==='work').map(t=>t.t).sort((a,b)=>a-b),rest=checked.filter(t=>t.type==='rest').map(t=>t.t).sort((a,b)=>a-b);
