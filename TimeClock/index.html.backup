@@ -902,11 +902,6 @@
         <strong id="shoppingTotalLabel">—</strong>
         <em>購物類型區間</em>
       </div>
-      <div class="metric">
-        <span>最後同步</span>
-        <strong id="lastSyncLabel">尚未同步</strong>
-        <em>每 2 秒檢查一次</em>
-      </div>
     </div>
   </section>
 </div>
@@ -944,12 +939,10 @@
   const workCountStat = document.getElementById('workCountStat');
   const shoppingCountStat = document.getElementById('shoppingCountStat');
   const exportMenu = document.getElementById('exportMenu');
-  const nowLabel = document.getElementById('nowLabel');
   const nowMiniLabel = document.getElementById('nowMiniLabel');
   const sideNowLabel = document.getElementById('sideNowLabel');
   const syncBadge = document.getElementById('syncBadge');
   const syncStateLabel = document.getElementById('syncStateLabel');
-  const lastSyncLabel = document.getElementById('lastSyncLabel');
   const updatedAtLabel = document.getElementById('updatedAtLabel');
   const listHint = document.getElementById('listHint');
 
@@ -1021,7 +1014,7 @@
   }
 
   function csvEscape(value) {
-    return `"${String(value ?? '').replaceAll('"', '""')}"`;
+    return `"${String(value ?? '').replace(/"/g, '""')}"`;
   }
 
   function setSyncState(state, touchedAt) {
@@ -1029,7 +1022,6 @@
     if (touchedAt) lastSyncAt = touchedAt;
     syncBadge.textContent = state;
     syncStateLabel.textContent = state;
-    lastSyncLabel.textContent = lastSyncAt || '尚未同步';
     updatedAtLabel.textContent = lastSyncAt || '—';
   }
 
@@ -1261,7 +1253,6 @@
 
   function updateNow() {
     const now = fmtDate(new Date());
-    if (nowLabel) nowLabel.textContent = now;
     nowMiniLabel.textContent = now;
     sideNowLabel.textContent = now;
   }
@@ -1288,24 +1279,6 @@
     return normalizeTimes(Object.values(data));
   }
 
-  function loadFromFirebase() {
-    return fetch(firebaseDBUrl)
-      .then(r => r.json())
-      .then(data => {
-        const remote = normalizeRemoteSnapshot(data);
-        if (JSON.stringify(remote) !== JSON.stringify(times)) {
-          times = remote;
-          persistLocalCache();
-          render();
-        }
-        setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
-      })
-      .catch(err => {
-        console.error('load error', err);
-        setSyncState('OFFLINE', lastSyncAt || '離線');
-      });
-  }
-
   function saveToFirebase() {
     persistLocalCache();
     setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
@@ -1317,7 +1290,7 @@
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         const stamp = new Date().toLocaleTimeString('zh-Hant');
-        setSyncState('SYNCING', stamp);
+        setSyncState('SYNCED', stamp);
       })
       .catch(err => {
         console.error('save error', err);
@@ -1333,16 +1306,22 @@
     fetch(firebaseUserUrl, { method: 'DELETE' }).catch(err => console.error('clear error', err));
   }
 
-  function syncFromFirebase() {
-    loadFromFirebase();
-  }
-
   initBtns();
   render();
   updateNow();
   setInterval(updateNow, 1000);
-  setInterval(syncFromFirebase, 2000);
-  window.addEventListener('load', syncFromFirebase);
+  // Use Firebase realtime listener instead of polling every 2s.
+  const firebaseRef = firebase.database().ref(`users/${userId}/times`);
+  firebaseRef.on('value', snapshot => {
+    setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
+    const remote = normalizeRemoteSnapshot(snapshot.val());
+    if (JSON.stringify(remote) !== JSON.stringify(times)) {
+      times = remote;
+      persistLocalCache();
+      render();
+    }
+    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+  });
 </script>
 </body>
 </html>
