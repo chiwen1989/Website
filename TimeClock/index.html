@@ -1033,7 +1033,10 @@
 
   function getGroupedTimes() {
     const groups = {};
-    times.forEach((item, index) => {
+    const indexedTimes = times.map((item, index) => ({ item, index }));
+    indexedTimes.sort((a, b) => b.item.t - a.item.t);
+
+    indexedTimes.forEach(({ item, index }) => {
       const d = new Date(item.t);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       if (!groups[key]) groups[key] = [];
