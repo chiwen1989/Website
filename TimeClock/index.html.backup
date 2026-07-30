@@ -920,7 +920,6 @@
   };
 
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
 
   let userId = localStorage.getItem('daKaUserId') || 'user-123';
   localStorage.setItem('daKaUserId', userId);
@@ -1026,9 +1025,11 @@
   }
 
   function queueSave() {
-    persistLocalCache();
     if (saveTimer) clearTimeout(saveTimer);
-    saveTimer = setTimeout(saveToFirebase, 220);
+    saveTimer = setTimeout(() => {
+      persistLocalCache();
+      saveToFirebase();
+    }, 220);
   }
 
   function getGroupedTimes() {
@@ -1092,10 +1093,13 @@
       return;
     }
 
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
     groups.forEach(([date, entries]) => {
       const details = document.createElement('details');
       details.className = 'group';
-      details.open = true;
+      details.open = date === todayKey;
 
       const summary = document.createElement('summary');
       const totalChecked = entries.filter(({ item }) => item.checked).length;
@@ -1305,6 +1309,7 @@
     if (!confirm('確定清除全部時間？')) return;
     times = [];
     persistLocalCache();
+    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
     render();
     fetch(firebaseUserUrl, { method: 'DELETE' }).catch(err => console.error('clear error', err));
   }
