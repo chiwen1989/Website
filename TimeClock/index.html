@@ -54,6 +54,18 @@
     position: relative;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    height: 100%;
+    margin:0;
+  }
+  html {
+    height:100%;
+    margin:0;
+  }
+  #scroller {
+    min-height:100vh;
+    height:100%;
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
   }
 
   /* Coding Terminal Ambient Header Overlay */
@@ -193,7 +205,7 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: flex-end;
-    gap: 8px;
+    gap: 16px;
   }
 
   .btn {
@@ -780,6 +792,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 </head>
 <body>
+<div id="ptr-indicator"></div>
+<div id="scroller">
 <div class="app">
   <header class="topbar">
     <div class="brand">
@@ -794,6 +808,7 @@
     </div>
 
     <div class="actions">
+      <button class="btn btn-primary" id="refreshBtn">🔄 重新整理</button>
       <button class="btn btn-primary" id="commuteBtn">🚆 通勤</button>
       <button class="btn btn-work" id="workBtn">🛠 工作</button>
       <button class="btn btn-shopping" id="shoppingBtn">🛒 購物</button>
@@ -905,8 +920,7 @@
     </div>
   </section>
 </div>
-
-<div id="printArea"></div>
+</div>
 
 <script>
   const firebaseConfig = {
@@ -1269,6 +1283,7 @@
     document.getElementById('workBtn').onclick = () => addEntry('work');
     document.getElementById('shoppingBtn').onclick = () => addEntry('shopping');
     document.getElementById('clearBtn').onclick = clearAll;
+    document.getElementById('refreshBtn').onclick = () => location.reload();
     document.getElementById('exportBtn').onclick = () => {
       exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block';
     };
