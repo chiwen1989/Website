@@ -49,12 +49,10 @@
     color: var(--text-primary);
     font-size: 12px;
     line-height: 1.5;
-    min-height: 100vh;
-    padding: 20px 16px 40px;
+    height: 100vh;
+    overflow: hidden;
     position: relative;
-    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    height: 100%;
     margin:0;
   }
   html {
@@ -788,186 +786,268 @@
     }
   }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<!-- Firebase SDK (required for authentication and database) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <div id="ptr-indicator"></div>
 <div id="scroller">
-<div class="app">
-  <header class="topbar">
-    <div class="brand">
-      <h1>Da Ka - 打卡</h1>
-      <p>單頁通勤、工作、購物、備註、匯出、同步</p>
+  <!-- 登入畫面 -->
+  <div id="authContainer" style="display:flex;align-items:center;justify-content:center;min-height:80vh;text-align:center;">
+    <div class="panel" style="max-width:400px;padding:40px;">
+      <h2 style="margin-bottom:16px;font-family:'JetBrains Mono',monospace;">Da Ka - 打卡</h2>
+      <p style="color:var(--text-muted);margin-bottom:24px;">請使用 Google 帳號登入以同步資料</p>
+      <button id="btnLogin" class="btn btn-primary" style="width:100%;padding:14px;font-size:14px;">Google 登入</button>
     </div>
+  </div>
 
-    <div class="status-row">
-      <div class="pill pill--ok"><strong id="syncBadge">OFFLINE</strong></div>
-      <div class="pill"><strong id="recordCountLabel">0</strong> 筆記錄</div>
-      <div class="pill pill--selected"><strong id="selectedCountLabel">0</strong> 筆已勾選</div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-primary" id="refreshBtn">🔄 重新整理</button>
-      <button class="btn btn-primary" id="commuteBtn">🚆 通勤</button>
-      <button class="btn btn-work" id="workBtn">🛠 工作</button>
-      <button class="btn btn-shopping" id="shoppingBtn">🛒 購物</button>
-      <div class="dropdown">
-        <button class="btn btn-ghost" id="exportBtn">匯出 ▼</button>
-        <div id="exportMenu" aria-label="匯出選單">
-          <button type="button" data-export="csv">CSV</button>
-          <button type="button" data-export="txt">TXT</button>
-          <button type="button" data-export="md">MD</button>
-        </div>
-      </div>
-      <button class="btn btn-danger" id="clearBtn">清除全部</button>
-    </div>
-  </header>
-
-  <main class="layout">
-    <section class="panel panel--primary">
-      <div class="panel-header">
-        <div>
-          <h3>記錄區</h3>
-          <small>依日期分組顯示，可直接編輯備註</small>
-        </div>
-        <small id="listHint">請勾選兩筆以上時間以計算總時數</small>
-      </div>
-      <div class="panel-body">
-        <div id="log"></div>
-      </div>
-      <div class="toolbar-note">
-        同步版使用 Firebase Realtime Database，並保留本機快取以便離線瀏覽。
-      </div>
-    </section>
-
-    <aside class="panel">
-      <div class="panel-header">
-        <div>
-          <h4>摘要面板</h4>
-          <small>快速查看當前狀態</small>
-        </div>
-        <small id="nowMiniLabel"></small>
-      </div>
-      <div class="panel-body">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <span>總筆數</span>
-            <strong id="recordStat">0</strong>
-            <small>全部記錄</small>
-          </div>
-          <div class="stat-card">
-            <span>已勾選</span>
-            <strong id="checkedStat">0</strong>
-            <small>計算區間用</small>
-          </div>
-          <div class="stat-card">
-            <span>通勤數</span>
-            <strong id="commuteCountStat">0</strong>
-            <small>通勤類型</small>
-          </div>
-          <div class="stat-card">
-            <span>工作數</span>
-            <strong id="workCountStat">0</strong>
-            <small>工作類型</small>
-          </div>
-          <div class="stat-card">
-            <span>購物數</span>
-            <strong id="shoppingCountStat">0</strong>
-            <small>購物類型</small>
-          </div>
+  <!-- 主應用程式 -->
+  <div id="appContainer" style="display:none;">
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <h1>Da Ka - 打卡</h1>
+          <p>單頁通勤、工作、購物、備註、匯出、同步</p>
         </div>
 
-        <ul class="info-list">
-          <li><span class="label">儲存方式</span><span class="value">localStorage + Firebase</span></li>
-          <li><span class="label">目前時間</span><span class="value" id="sideNowLabel">—</span></li>
-          <li><span class="label">同步狀態</span><span class="value" id="syncStateLabel">OFFLINE</span></li>
-          <li><span class="label">最近更新</span><span class="value" id="updatedAtLabel">—</span></li>
-          <li><span class="label">使用者 ID</span><span class="value" id="userIdLabel">—</span></li>
-        </ul>
-      </div>
-    </aside>
-  </main>
+        <div class="status-row">
+          <div class="pill pill--ok"><strong id="syncBadge">OFFLINE</strong></div>
+          <div class="pill"><strong id="recordCountLabel">0</strong> 筆記錄</div>
+          <div class="pill pill--selected"><strong id="selectedCountLabel">0</strong> 筆已勾選</div>
+        </div>
 
-  <section class="hero">
-    <div class="hero-copy">
-      <h2>打卡摘要</h2>
-      <p>
-        下方是目前選取時間的總工時、通勤、工作、購物與同步狀態。你可以先看上方記錄，再往下核對統計。
-      </p>
+        <div class="actions">
+          <button class="btn btn-primary" id="refreshBtn">🔄 重新整理</button>
+          <button class="btn btn-primary" id="commuteBtn">🚆 通勤</button>
+          <button class="btn btn-work" id="workBtn">🛠 工作</button>
+          <button class="btn btn-shopping" id="shoppingBtn">🛒 購物</button>
+          <div class="dropdown">
+            <button class="btn btn-ghost" id="exportBtn">匯出 ▼</button>
+            <div id="exportMenu" aria-label="匯出選單">
+              <button type="button" data-export="csv">CSV</button>
+              <button type="button" data-export="txt">TXT</button>
+              <button type="button" data-export="md">MD</button>
+            </div>
+          </div>
+          <button class="btn btn-danger" id="clearBtn">清除全部</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="panel panel--primary">
+          <div class="panel-header">
+            <div>
+              <h3>記錄區</h3>
+              <small>依日期分組顯示，可直接編輯備註</small>
+            </div>
+            <small id="listHint">請勾選兩筆以上時間以計算總時數</small>
+          </div>
+          <div class="panel-body">
+            <div id="log"></div>
+          </div>
+          <div class="toolbar-note">
+            同步版使用 Firebase Realtime Database，並保留本機快取以便離線瀏覽。
+          </div>
+        </section>
+
+        <aside class="panel">
+          <div class="panel-header">
+            <div>
+              <h4>摘要面板</h4>
+              <small>快速查看當前狀態</small>
+            </div>
+            <small id="nowMiniLabel"></small>
+          </div>
+          <div class="panel-body">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <span>總筆數</span>
+                <strong id="recordStat">0</strong>
+                <small>全部記錄</small>
+              </div>
+              <div class="stat-card">
+                <span>已勾選</span>
+                <strong id="checkedStat">0</strong>
+                <small>計算區間用</small>
+              </div>
+              <div class="stat-card">
+                <span>通勤數</span>
+                <strong id="commuteCountStat">0</strong>
+                <small>通勤類型</small>
+              </div>
+              <div class="stat-card">
+                <span>工作數</span>
+                <strong id="workCountStat">0</strong>
+                <small>工作類型</small>
+              </div>
+              <div class="stat-card">
+                <span>購物數</span>
+                <strong id="shoppingCountStat">0</strong>
+                <small>購物類型</small>
+              </div>
+            </div>
+
+            <ul class="info-list">
+              <li><span class="label">儲存方式</span><span class="value">localStorage + Firebase</span></li>
+              <li><span class="label">目前時間</span><span class="value" id="sideNowLabel">—</span></li>
+              <li><span class="label">同步狀態</span><span class="value" id="syncStateLabel">OFFLINE</span></li>
+              <li><span class="label">最近更新</span><span class="value" id="updatedAtLabel">—</span></li>
+              <li><span class="label">使用者 ID</span><span class="value" id="userIdLabel">—</span></li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <h2>打卡摘要</h2>
+          <p>
+            下方是目前選取時間的總工時、通勤、工作、購物與同步狀態。你可以先看上方記錄，再往下核對統計。
+          </p>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric">
+            <span>總工時</span>
+            <strong id="totalLabel">—</strong>
+            <em>勾選兩筆以上自動計算</em>
+          </div>
+          <div class="metric">
+            <span>通勤</span>
+            <strong id="commuteTotalLabel">—</strong>
+            <em>通勤類型區間</em>
+          </div>
+          <div class="metric">
+            <span>工作</span>
+            <strong id="workTotalLabel">—</strong>
+            <em>工作類型區間</em>
+          </div>
+          <div class="metric">
+            <span>購物</span>
+            <strong id="shoppingTotalLabel">—</strong>
+            <em>購物類型區間</em>
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="hero-metrics">
-      <div class="metric">
-        <span>總工時</span>
-        <strong id="totalLabel">—</strong>
-        <em>勾選兩筆以上自動計算</em>
-      </div>
-      <div class="metric">
-        <span>通勤</span>
-        <strong id="commuteTotalLabel">—</strong>
-        <em>通勤類型區間</em>
-      </div>
-      <div class="metric">
-        <span>工作</span>
-        <strong id="workTotalLabel">—</strong>
-        <em>工作類型區間</em>
-      </div>
-      <div class="metric">
-        <span>購物</span>
-        <strong id="shoppingTotalLabel">—</strong>
-        <em>購物類型區間</em>
-      </div>
-    </div>
-  </section>
-</div>
+  </div>
 </div>
 
 <script>
   const firebaseConfig = {
-    apiKey: 'AIzaSyB7k0Zz6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6Y6',
-    authDomain: 'timeclock-sync-98222.firebaseapp.com',
-    databaseURL: 'https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app',
-    projectId: 'timeclock-sync-98222',
-    storageBucket: 'timeclock-sync-98222.appspot.com',
-    messagingSenderId: '123456789012',
-    appId: '1:123456789012:web:abcdef123456'
-  };
+      apiKey: 'AIzaSyB7okTxletMZ9Egzf-nC3_yB5GM8gk5IL4',
+      authDomain: 'timeclock-sync-98222.firebaseapp.com',
+      databaseURL: 'https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app',
+      projectId: 'timeclock-sync-98222',
+      storageBucket: 'timeclock-sync-98222.appspot.com',
+      messagingSenderId: '123456789012',
+      appId: '1:123456789012:web:abcdef123456'
+    };
+    firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const MY_EMAIL = 'chiwen1989@gmail.com';
 
-  firebase.initializeApp(firebaseConfig);
-
-  let userId = localStorage.getItem('daKaUserId') || 'user-123';
-  localStorage.setItem('daKaUserId', userId);
-  document.getElementById('userIdLabel').textContent = userId;
-
-  const log = document.getElementById('log');
-  const totalLabel = document.getElementById('totalLabel');
-  const commuteTotalLabel = document.getElementById('commuteTotalLabel');
-  const workTotalLabel = document.getElementById('workTotalLabel');
-  const shoppingTotalLabel = document.getElementById('shoppingTotalLabel');
-  const recordCountLabel = document.getElementById('recordCountLabel');
-  const selectedCountLabel = document.getElementById('selectedCountLabel');
-  const recordStat = document.getElementById('recordStat');
-  const checkedStat = document.getElementById('checkedStat');
-  const commuteCountStat = document.getElementById('commuteCountStat');
-  const workCountStat = document.getElementById('workCountStat');
-  const shoppingCountStat = document.getElementById('shoppingCountStat');
-  const exportMenu = document.getElementById('exportMenu');
-  const nowMiniLabel = document.getElementById('nowMiniLabel');
-  const sideNowLabel = document.getElementById('sideNowLabel');
-  const syncBadge = document.getElementById('syncBadge');
-  const syncStateLabel = document.getElementById('syncStateLabel');
-  const updatedAtLabel = document.getElementById('updatedAtLabel');
-  const listHint = document.getElementById('listHint');
-
-  const firebaseDBUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
-  const firebaseUserUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
-  const localCacheKey = 'daKaLocalTimes';
-  const TYPE_META = { commute: { label: '通勤', className: 'tag-commute' }, work: { label: '工作', className: 'tag-work' }, shopping: { label: '購物', className: 'tag-shopping' } };
-
-  let times = loadLocalCache();
+  let userId = null;
+  let log = null;
+  let totalLabel = null;
+  let commuteTotalLabel = null;
+  let workTotalLabel = null;
+  let shoppingTotalLabel = null;
+  let recordCountLabel = null;
+  let selectedCountLabel = null;
+  let recordStat = null;
+  let checkedStat = null;
+  let commuteCountStat = null;
+  let workCountStat = null;
+  let shoppingCountStat = null;
+  let exportMenu = null;
+  let nowMiniLabel = null;
+  let sideNowLabel = null;
+  let syncBadge = null;
+  let syncStateLabel = null;
+  let updatedAtLabel = null;
+  let listHint = null;
+  let times = [];
   let syncState = 'OFFLINE';
   let lastSyncAt = '';
   let saveTimer = null;
+  let firebaseDBUrl = null;
+  let firebaseUserUrl = null;
+  let localCacheKey = 'daKaLocalTimes';
+  let TYPE_META = { commute: { label: '通勤', className: 'tag-commute' }, work: { label: '工作', className: 'tag-work' }, shopping: { label: '購物', className: 'tag-shopping' } };
+
+  auth.onAuthStateChanged(user => {
+    const authBox = document.getElementById('authContainer');
+    const appBox = document.getElementById('appContainer');
+    if (user) {
+      if (user.email !== MY_EMAIL) {
+        alert('未授權的帳號，拒絕存取！');
+        auth.signOut();
+        return;
+      }
+      userId = user.uid;
+      document.getElementById('userIdLabel').textContent = userId;
+      authBox.style.display = 'none';
+      appBox.style.display = 'block';
+      initAfterAuth();
+    } else {
+      authBox.style.display = 'block';
+      appBox.style.display = 'none';
+    }
+  });
+
+  document.getElementById('btnLogin').addEventListener('click', () => {
+    auth.signInWithPopup(provider).catch(err => console.error('登入失敗', err));
+  });
+
+  function initAfterAuth() {
+      log = document.getElementById('log');
+      totalLabel = document.getElementById('totalLabel');
+      commuteTotalLabel = document.getElementById('commuteTotalLabel');
+      workTotalLabel = document.getElementById('workTotalLabel');
+      shoppingTotalLabel = document.getElementById('shoppingTotalLabel');
+      recordCountLabel = document.getElementById('recordCountLabel');
+      selectedCountLabel = document.getElementById('selectedCountLabel');
+      recordStat = document.getElementById('recordStat');
+      checkedStat = document.getElementById('checkedStat');
+      commuteCountStat = document.getElementById('commuteCountStat');
+      workCountStat = document.getElementById('workCountStat');
+      shoppingCountStat = document.getElementById('shoppingCountStat');
+      exportMenu = document.getElementById('exportMenu');
+      nowMiniLabel = document.getElementById('nowMiniLabel');
+      sideNowLabel = document.getElementById('sideNowLabel');
+      syncBadge = document.getElementById('syncBadge');
+      syncStateLabel = document.getElementById('syncStateLabel');
+      updatedAtLabel = document.getElementById('updatedAtLabel');
+      listHint = document.getElementById('listHint');
+
+      firebaseDBUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
+      firebaseUserUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
+
+      times = loadLocalCache();
+      syncState = 'OFFLINE';
+      lastSyncAt = '';
+      saveTimer = null;
+
+      initBtns();
+      render();
+      updateNow();
+      setInterval(updateNow, 1000);
+      // Use Firebase realtime listener instead of polling every 2s.
+      const firebaseRef = firebase.database().ref(`users/${userId}/times`);
+      firebaseRef.on('value', snapshot => {
+        setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
+        const remote = normalizeRemoteSnapshot(snapshot.val());
+        if (JSON.stringify(remote) !== JSON.stringify(times)) {
+          times = remote;
+          persistLocalCache();
+          render();
+        }
+        setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+      });
+  }
 
   function normalizeTimes(list) {
     if (!Array.isArray(list)) return [];
@@ -1272,10 +1352,13 @@
     URL.revokeObjectURL(a.href);
   }
 
-  function updateNow() {
-    const now = fmtDate(new Date());
-    nowMiniLabel.textContent = now;
-    sideNowLabel.textContent = now;
+  function clearAll() {
+    if (!confirm('確定清除全部時間？')) return;
+    times = [];
+    persistLocalCache();
+    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+    render();
+    saveToFirebase(); // 同時清除 Firebase 上的時段資料
   }
 
   function initBtns() {
@@ -1295,6 +1378,12 @@
     });
   }
 
+  function updateNow() {
+    const now = fmtDate(new Date());
+    nowMiniLabel.textContent = now;
+    sideNowLabel.textContent = now;
+  }
+
   function normalizeRemoteSnapshot(data) {
     if (!data) return [];
     if (Array.isArray(data)) return normalizeTimes(data);
@@ -1304,13 +1393,8 @@
   function saveToFirebase() {
     persistLocalCache();
     setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
-    return fetch(firebaseDBUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(times)
-    })
-      .then(r => {
-        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return firebase.database().ref(`users/${userId}/times`).set(times)
+      .then(() => {
         const stamp = new Date().toLocaleTimeString('zh-Hant');
         setSyncState('SYNCED', stamp);
       })
@@ -1320,31 +1404,7 @@
       });
   }
 
-  function clearAll() {
-    if (!confirm('確定清除全部時間？')) return;
-    times = [];
-    persistLocalCache();
-    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-    render();
-    fetch(firebaseUserUrl, { method: 'DELETE' }).catch(err => console.error('clear error', err));
-  }
-
-  initBtns();
-  render();
-  updateNow();
-  setInterval(updateNow, 1000);
-  // Use Firebase realtime listener instead of polling every 2s.
-  const firebaseRef = firebase.database().ref(`users/${userId}/times`);
-  firebaseRef.on('value', snapshot => {
-    setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
-    const remote = normalizeRemoteSnapshot(snapshot.val());
-    if (JSON.stringify(remote) !== JSON.stringify(times)) {
-      times = remote;
-      persistLocalCache();
-      render();
-    }
-    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-  });
+  
 </script>
 </body>
 </html>
