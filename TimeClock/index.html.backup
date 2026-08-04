@@ -796,7 +796,7 @@
 <div id="scroller">
   <!-- 登入畫面 -->
   <div id="authContainer" style="display:flex;align-items:center;justify-content:center;min-height:80vh;text-align:center;">
-    <div class="panel" style="max-width:400px;padding:40px;">
+    <div class="panel" style="max-width:400px;padding:40px;display:flex;flex-direction:column;align-items:center;">
       <h2 style="margin-bottom:16px;font-family:'JetBrains Mono',monospace;">Da Ka - 打卡</h2>
       <p style="color:var(--text-muted);margin-bottom:24px;">請使用 Google 帳號登入以同步資料</p>
       <button id="btnLogin" class="btn btn-primary" style="width:100%;padding:14px;font-size:14px;">Google 登入</button>
@@ -936,13 +936,14 @@
 
 <script>
   const firebaseConfig = {
-      apiKey: 'AIzaSyB7okTxletMZ9Egzf-nC3_yB5GM8gk5IL4',
-      authDomain: 'timeclock-sync-98222.firebaseapp.com',
-      databaseURL: 'https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app',
-      projectId: 'timeclock-sync-98222',
-      storageBucket: 'timeclock-sync-98222.appspot.com',
-      messagingSenderId: '123456789012',
-      appId: '1:123456789012:web:abcdef123456'
+      apiKey: "AIzaSyDXnzQdc0Ww42hKNaKhjQVajoZDXu8epuo",
+      authDomain: "chiwen1989-1.firebaseapp.com",
+      databaseURL: "https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "chiwen1989-1",
+      storageBucket: "chiwen1989-1.firebasestorage.app",
+      messagingSenderId: "418637060347",
+      appId: "1:418637060347:web:c4369195ba68a11f65385e",
+      measurementId: "G-EYTFGZLLH3"
     };
     firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
@@ -1023,8 +1024,8 @@
       updatedAtLabel = document.getElementById('updatedAtLabel');
       listHint = document.getElementById('listHint');
 
-      firebaseDBUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
-      firebaseUserUrl = `https://timeclock-sync-98222-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
+      firebaseDBUrl = `https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
+      firebaseUserUrl = `https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
 
       times = loadLocalCache();
       syncState = 'OFFLINE';
