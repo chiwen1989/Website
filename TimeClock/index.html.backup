@@ -243,24 +243,35 @@
     border-color: var(--accent-blue);
   }
 
+  /* 三顆打卡按鈕：暗色漸變，一眼可辨 */
+  .btn-commute {
+    background: linear-gradient(135deg, #0a1020 0%, #101e30 100%);
+    border-color: #182840;
+    color: #58a6ff;
+  }
+  .btn-commute:hover {
+    background: linear-gradient(135deg, #101e30 0%, #182840 100%);
+    border-color: #2f81f7;
+  }
+
   .btn-work {
-    background: rgba(63, 185, 80, 0.15);
-    border-color: rgba(63, 185, 80, 0.4);
-    color: var(--accent-green);
+    background: linear-gradient(135deg, #0a1020 0%, #101e30 100%);
+    border-color: #182840;
+    color: #3fb950;
   }
   .btn-work:hover {
-    background: rgba(63, 185, 80, 0.25);
-    border-color: var(--accent-green);
+    background: linear-gradient(135deg, #101e30 0%, #182840 100%);
+    border-color: #3fb950;
   }
 
   .btn-shopping {
-    background: rgba(188, 140, 255, 0.15);
-    border-color: rgba(188, 140, 255, 0.4);
-    color: var(--accent-purple);
+    background: linear-gradient(135deg, #0a1020 0%, #101e30 100%);
+    border-color: #182840;
+    color: #bc8cff;
   }
   .btn-shopping:hover {
-    background: rgba(188, 140, 255, 0.25);
-    border-color: var(--accent-purple);
+    background: linear-gradient(135deg, #101e30 0%, #182840 100%);
+    border-color: #bc8cff;
   }
 
   .btn-danger {
@@ -787,22 +798,13 @@
   }
 </style>
 <!-- Firebase SDK (required for authentication and database) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" onerror="window.__fbFail=1"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" onerror="window.__fbFail=1"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" onerror="window.__fbFail=1"></script>
 </head>
 <body>
 <div id="ptr-indicator"></div>
 <div id="scroller">
-  <!-- 登入畫面 -->
-  <div id="authContainer" style="display:flex;align-items:center;justify-content:center;min-height:80vh;text-align:center;">
-    <div class="panel" style="max-width:400px;padding:40px;display:flex;flex-direction:column;align-items:center;">
-      <h2 style="margin-bottom:16px;font-family:'JetBrains Mono',monospace;">Da Ka - 打卡</h2>
-      <p style="color:var(--text-muted);margin-bottom:24px;">請使用 Google 帳號登入以同步資料</p>
-      <button id="btnLogin" class="btn btn-primary" style="width:100%;padding:14px;font-size:14px;">Google 登入</button>
-    </div>
-  </div>
-
   <!-- 主應用程式 -->
   <div id="appContainer" style="display:none;">
     <div class="app">
@@ -819,19 +821,21 @@
         </div>
 
         <div class="actions">
-          <button class="btn btn-primary" id="refreshBtn">🔄 重新整理</button>
-          <button class="btn btn-primary" id="commuteBtn">🚆 通勤</button>
-          <button class="btn btn-work" id="workBtn">🛠 工作</button>
-          <button class="btn btn-shopping" id="shoppingBtn">🛒 購物</button>
+          <button class="btn btn-primary" id="refreshBtn">重新整理</button>
+          <button class="btn btn-commute" id="commuteBtn">通勤</button>
+          <button class="btn btn-work" id="workBtn">工作</button>
+          <button class="btn btn-shopping" id="shoppingBtn">購物</button>
           <div class="dropdown">
-            <button class="btn btn-ghost" id="exportBtn">匯出 ▼</button>
-            <div id="exportMenu" aria-label="匯出選單">
-              <button type="button" data-export="csv">CSV</button>
-              <button type="button" data-export="txt">TXT</button>
-              <button type="button" data-export="md">MD</button>
+            <button class="btn btn-ghost" id="exportBtn">⋯ 更多 ▼</button>
+            <div id="exportMenu" aria-label="更多選單">
+              <button type="button" data-export="csv">匯出 CSV</button>
+              <button type="button" data-export="txt">匯出 TXT</button>
+              <button type="button" data-export="md">匯出 MD</button>
+              <button type="button" id="clearBtn" style="color:#f77;">清除全部</button>
+              <button type="button" id="btnLogin" style="color:#ffd700;">登入同步</button>
+              <button type="button" id="btnLogout" style="color:#ffd700;">登出</button>
             </div>
           </div>
-          <button class="btn btn-danger" id="clearBtn">清除全部</button>
         </div>
       </header>
 
@@ -848,7 +852,7 @@
             <div id="log"></div>
           </div>
           <div class="toolbar-note">
-            同步版使用 Firebase Realtime Database，並保留本機快取以便離線瀏覽。
+            本機優先：資料先存 localStorage，登入且有網路時才同步 Firebase。
           </div>
         </section>
 
@@ -890,7 +894,7 @@
             </div>
 
             <ul class="info-list">
-              <li><span class="label">儲存方式</span><span class="value">localStorage + Firebase</span></li>
+              <li><span class="label">儲存方式</span><span class="value">localStorage（登入後 + Firebase）</span></li>
               <li><span class="label">目前時間</span><span class="value" id="sideNowLabel">—</span></li>
               <li><span class="label">同步狀態</span><span class="value" id="syncStateLabel">OFFLINE</span></li>
               <li><span class="label">最近更新</span><span class="value" id="updatedAtLabel">—</span></li>
@@ -934,6 +938,19 @@
   </div>
 </div>
 
+  <!-- 登入 modal（email + 密碼，無 popup 無 redirect） -->
+  <div id="loginModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;">
+    <div class="panel" style="width:320px;padding:20px;">
+      <h3 style="margin-top:0;">🔑 登入同步</h3>
+      <input id="loginEmail" type="email" placeholder="Email" style="width:100%;box-sizing:border-box;margin-bottom:10px;padding:8px;background:#0b1526;color:#e8f5e9;border:1px solid #2e7d32;border-radius:4px;">
+      <input id="loginPass" type="password" placeholder="密碼" style="width:100%;box-sizing:border-box;margin-bottom:14px;padding:8px;background:#0b1526;color:#e8f5e9;border:1px solid #2e7d32;border-radius:4px;">
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" id="loginSubmit" style="flex:1;">登入</button>
+        <button class="btn btn-ghost" id="loginCancel">取消</button>
+      </div>
+    </div>
+  </div>
+
 <script>
   const firebaseConfig = {
       apiKey: "AIzaSyDXnzQdc0Ww42hKNaKhjQVajoZDXu8epuo",
@@ -945,9 +962,9 @@
       appId: "1:418637060347:web:c4369195ba68a11f65385e",
       measurementId: "G-EYTFGZLLH3"
     };
-    firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const provider = new firebase.auth.GoogleAuthProvider();
+  const fbReady = typeof firebase !== 'undefined';
+  if (fbReady) firebase.initializeApp(firebaseConfig);
+  const auth = fbReady ? firebase.auth() : null;
   const MY_EMAIL = 'chiwen1989@gmail.com';
 
   let userId = null;
@@ -974,34 +991,77 @@
   let syncState = 'OFFLINE';
   let lastSyncAt = '';
   let saveTimer = null;
-  let firebaseDBUrl = null;
-  let firebaseUserUrl = null;
   let localCacheKey = 'daKaLocalTimes';
   let TYPE_META = { commute: { label: '通勤', className: 'tag-commute' }, work: { label: '工作', className: 'tag-work' }, shopping: { label: '購物', className: 'tag-shopping' } };
 
-  auth.onAuthStateChanged(user => {
-    const authBox = document.getElementById('authContainer');
-    const appBox = document.getElementById('appContainer');
-    if (user) {
-      if (user.email !== MY_EMAIL) {
-        alert('未授權的帳號，拒絕存取！');
-        auth.signOut();
-        return;
+  // 本機優先：登入與否都直接進主畫面；登入後才啟動 Firebase 同步。
+  if (fbReady) {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        if (user.email !== MY_EMAIL) {
+          alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
+          auth.signOut();
+          return;
+        }
+        userId = user.uid;
+        document.getElementById('userIdLabel').textContent = userId;
+        document.getElementById('btnLogin').style.display = 'none';
+        document.getElementById('btnLogout').style.display = '';
+        setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
+        setupFirebaseListener();
+      } else {
+        userId = null;
+        document.getElementById('btnLogin').style.display = '';
+        document.getElementById('btnLogout').style.display = 'none';
+        setSyncState('OFFLINE', lastSyncAt || '');
       }
-      userId = user.uid;
-      document.getElementById('userIdLabel').textContent = userId;
-      authBox.style.display = 'none';
-      appBox.style.display = 'block';
-      initAfterAuth();
-    } else {
-      authBox.style.display = 'block';
-      appBox.style.display = 'none';
-    }
-  });
+    });
+  } else {
+    setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
+  }
+
+  // 登入：email + 密碼（無 popup、無 redirect，file:// 也能用）
+  function doLogin() {
+    if (!fbReady) { alert('Firebase SDK 無法載入，無法登入（可能沒有網路）'); return; }
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    if (!email || !pass) { alert('請輸入 Email 與密碼'); return; }
+    auth.signInWithEmailAndPassword(email, pass)
+      .then(() => {
+        document.getElementById('loginModal').style.display = 'none';
+        document.getElementById('loginPass').value = '';
+      })
+      .catch(err => {
+        console.error('登入失敗', err);
+        let msg = err.message || '登入失敗';
+        if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg = 'Email 或密碼錯誤';
+        if (err.code === 'auth/invalid-email') msg = 'Email 格式不正確';
+        if (err.code === 'auth/operation-not-allowed') msg = 'Firebase 未啟用 Email/密碼登入，請到 Console 啟用';
+        alert(msg);
+      });
+  }
 
   document.getElementById('btnLogin').addEventListener('click', () => {
-    auth.signInWithPopup(provider).catch(err => console.error('登入失敗', err));
+    if (!fbReady) { alert('Firebase SDK 無法載入，無法登入（可能沒有網路）'); return; }
+    document.getElementById('loginModal').style.display = 'flex';
+    document.getElementById('loginEmail').focus();
   });
+
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    if (fbReady) auth.signOut();
+  });
+
+  document.getElementById('loginSubmit').addEventListener('click', doLogin);
+  document.getElementById('loginCancel').addEventListener('click', () => {
+    document.getElementById('loginModal').style.display = 'none';
+  });
+  document.getElementById('loginPass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // 直接顯示主畫面（不再以登入為門檻）
+  document.getElementById('appContainer').style.display = 'block';
+  initAfterAuth();
 
   function initAfterAuth() {
       log = document.getElementById('log');
@@ -1024,9 +1084,6 @@
       updatedAtLabel = document.getElementById('updatedAtLabel');
       listHint = document.getElementById('listHint');
 
-      firebaseDBUrl = `https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}/times.json`;
-      firebaseUserUrl = `https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app/users/${userId}.json`;
-
       times = loadLocalCache();
       syncState = 'OFFLINE';
       lastSyncAt = '';
@@ -1036,18 +1093,22 @@
       render();
       updateNow();
       setInterval(updateNow, 1000);
-      // Use Firebase realtime listener instead of polling every 2s.
-      const firebaseRef = firebase.database().ref(`users/${userId}/times`);
-      firebaseRef.on('value', snapshot => {
-        setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
-        const remote = normalizeRemoteSnapshot(snapshot.val());
-        if (JSON.stringify(remote) !== JSON.stringify(times)) {
-          times = remote;
-          persistLocalCache();
-          render();
-        }
-        setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-      });
+  }
+
+  // 登入後才啟動 Firebase 即時監聽（有網路才同步）
+  function setupFirebaseListener() {
+    if (!fbReady || !userId) return;
+    const firebaseRef = firebase.database().ref(`users/${userId}/times`);
+    firebaseRef.on('value', snapshot => {
+      setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
+      const remote = normalizeRemoteSnapshot(snapshot.val());
+      if (JSON.stringify(remote) !== JSON.stringify(times)) {
+        times = remote;
+        persistLocalCache();
+        render();
+      }
+      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+    });
   }
 
   function normalizeTimes(list) {
@@ -1114,6 +1175,7 @@
   function setSyncState(state, touchedAt) {
     syncState = state;
     if (touchedAt) lastSyncAt = touchedAt;
+    if (!syncBadge) return; // initAfterAuth 前呼叫時安全略過
     syncBadge.textContent = state;
     syncStateLabel.textContent = state;
     updatedAtLabel.textContent = lastSyncAt || '—';
@@ -1377,6 +1439,9 @@
     exportMenu.querySelectorAll('button[data-export]').forEach(btn => {
       btn.addEventListener('click', () => exportAs(btn.dataset.export));
     });
+    exportMenu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => { exportMenu.style.display = 'none'; });
+    });
   }
 
   function updateNow() {
@@ -1393,6 +1458,10 @@
 
   function saveToFirebase() {
     persistLocalCache();
+    if (!fbReady || !userId) {
+      setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+      return;
+    }
     setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
     return firebase.database().ref(`users/${userId}/times`).set(times)
       .then(() => {
