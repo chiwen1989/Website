@@ -1,0 +1,24 @@
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 依賴
+node_modules/
+
+# 編譯產物
+dist/
+
+# 環境檔
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# 暫存檔
+*.tmp
+*.log
+*.swp
+
+# 圖片
+images/bg.png

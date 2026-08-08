@@ -5,167 +5,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="images/sacred_cat_whiskers.png">
     <title>EP20 不死者 - 任務攻略</title>
-    <style>
-        <style>
-            @font-face{font-family:Zpix;src:url(https://cdn.jsdelivr.net/npm/zpix@3.1.0/dist/Zpix.woff2) format("woff2");font-display:swap;}
-
-            *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-
-            body{
-                background-color:#0a1020;
-                color:#c8c0b0;
-                font-family:Zpix,"Press Start 2P",monospace;
-                line-height:1.8;
-                padding:24px 12px;
-                font-size:10px;
-                min-height:100vh;
-                background-image:url('images/bg.png');
-                background-size:cover;
-                background-position:center;
-                background-repeat:no-repeat;
-                background-attachment:fixed;
-                position:relative;
-            }
-            body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0,rgba(0,0,0,.15) 2px,transparent 2px,transparent 4px);pointer-events:none;z-index:9999;}
-
-            .container{max-width:900px;margin:0 auto;position:relative;z-index:1;}
-            header{text-align:center;margin-bottom:24px;}
-
-            h1{font-size:14px;color:#f0d878;letter-spacing:2px;margin-bottom:6px;text-shadow:2px 2px 0 #5a3a10,-1px -1px 0 #2a1a00;background:rgba(10,10,20,.85);display:inline-block;padding:8px 16px;border:3px solid rgba(240,216,120,.2);box-shadow:3px 3px 0 rgba(0,0,0,.3);font-weight:400;line-height:1.5;}
-            .subtitle{color:#b0c8e0;font-size:10px;text-shadow:1px 1px 0 #0a0a15;background:rgba(10,10,20,.7);display:inline-block;padding:4px 12px;border:2px solid rgba(180,200,224,.12);}
-
-            .card{background:linear-gradient(180deg,#1a1a30,#121225);border:2px solid rgba(255,255,255,.06);box-shadow:3px 3px 0 rgba(0,0,0,.2);overflow:hidden;margin-bottom:14px;position:relative;}
-            .card::before{content:"";position:absolute;inset:3px;border:1px solid rgba(255,255,255,.04);pointer-events:none;}
-
-            .card-header{padding:6px 10px;background:rgba(255,255,255,.04);border-bottom:2px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;}
-            .card-header h2{font-size:11px;font-weight:400;display:flex;align-items:center;gap:5px;color:#f0d878;text-shadow:1px 1px 0 #5a3a10;}
-
-            .btn-toggle{background:rgba(255,255,255,.08);color:#c8c0b0;border:1px solid rgba(255,255,255,.12);padding:3px 8px;font-family:Zpix,"Press Start 2P",monospace;font-size:10px;cursor:pointer;transition:all .15s;}
-            .btn-toggle:hover{background:rgba(255,255,255,.15);color:#fff;}
-
-            .btn-reset{background:rgba(120,30,30,.6);color:#f0a0a0;border:1px solid rgba(255,100,100,.2);padding:5px 12px;font-family:Zpix,"Press Start 2P",monospace;font-size:9px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
-            .btn-reset:hover{background:rgba(140,40,40,.8);color:#ffc0c0;}
-            .btn-reset svg{width:12px;height:12px;}
-
-            .btn-top{position:fixed;bottom:24px;right:24px;background:rgba(20,20,40,.8);color:#c8c0b0;border:2px solid rgba(255,255,255,.1);width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;opacity:0;visibility:hidden;z-index:900;box-shadow:2px 2px 0 rgba(0,0,0,.3);}
-            .btn-top.show{opacity:1;visibility:visible;}
-            .btn-top:hover{background:rgba(59,130,246,.6);border-color:rgba(59,130,246,.4);}
-
-            .footer-actions{margin-top:28px;padding-top:20px;border-top:2px solid rgba(255,255,255,.06);text-align:center;padding-bottom:36px;}
-            .table-wrapper{overflow-x:auto;}
-            table{width:100%;border-collapse:collapse;font-size:10px;}
-            th{background:rgba(255,255,255,.06);text-align:left;padding:6px 10px;font-weight:400;color:#90a8c0;border:1px solid rgba(255,255,255,.05);}
-            td{padding:5px 10px;border:1px solid rgba(255,255,255,.05);}
-
-            .section-title{font-size:11px;font-weight:400;margin:24px 0 10px;color:#f0d878;display:flex;align-items:center;gap:6px;background:rgba(10,10,20,.85);padding:5px 10px;border-left:3px solid #f0d878;text-shadow:1px 1px 0 #5a3a10;width:fit-content;box-shadow:2px 2px 0 rgba(0,0,0,.2);}
-
-            .step-item{background:linear-gradient(180deg,#1a1a30,#121225);border:2px solid rgba(255,255,255,.06);box-shadow:2px 2px 0 rgba(0,0,0,.15);padding:8px 10px;margin-bottom:8px;display:flex;gap:8px;transition:all .2s;position:relative;}
-            .step-item::before{content:"";position:absolute;inset:2px;border:1px solid rgba(255,255,255,.03);pointer-events:none;}
-            .step-item:hover{border-color:rgba(59,130,246,.3);}
-            .step-item.completed{background:linear-gradient(180deg,#15152a,#0e0e20);opacity:.5;}
-            .step-item.completed .step-content>*{text-decoration:line-through;color:#706860;}
-
-            .checkbox-wrapper{flex-shrink:0;padding-top:1px;}
-            .custom-cb{width:14px;height:14px;border:2px solid rgba(255,255,255,.2);cursor:pointer;appearance:none;background:rgba(255,255,255,.06);position:relative;transition:all .15s;}
-            .custom-cb:checked{background:rgba(16,185,129,.6);border-color:rgba(16,185,129,.4);}
-            .custom-cb:checked::after{content:'✓';color:#4ade80;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:10px;}
-
-            .step-content{flex-grow:1;}
-            .step-main-text{font-size:10px;font-weight:400;margin-bottom:3px;display:block;color:#e0d8c8;}
-
-            .step-sub-text{font-size:9px;color:#909888;margin-bottom:5px;background:rgba(255,255,255,.04);padding:3px 6px;border-left:2px solid rgba(255,255,255,.08);}
-            .keyword{color:#f0a0a0;}
-
-            .reward-pill{display:flex;width:fit-content;align-items:center;gap:3px;background:rgba(5,46,22,.7);color:#4ade80;padding:3px 8px;border:1px solid rgba(16,185,129,.3);font-size:9px;margin-top:6px;box-shadow:1px 1px 0 rgba(0,0,0,.2);}
-
-            .btn-navi{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.06);color:#b0c8e0;border:1px solid rgba(255,255,255,.1);padding:4px 8px;font-family:Zpix,"Press Start 2P",monospace;font-size:9px;cursor:pointer;transition:all .15s;margin:2px 0;text-align:left;width:fit-content;}
-            .btn-navi:hover{border-color:rgba(59,130,246,.4);color:#90b8f0;background:rgba(59,130,246,.1);}
-            .btn-navi svg{width:12px;height:12px;color:#7088a0;flex-shrink:0;}
-
-            .item-icon{width:18px;height:18px;image-rendering:pixelated;vertical-align:middle;}
-
-            #toast{position:fixed;bottom:20px;left:20px;background:rgba(10,10,20,.9);color:#4ade80;padding:6px 12px;font-size:8px;border:1px solid rgba(16,185,129,.3);box-shadow:2px 2px 0 rgba(0,0,0,.3);transform:translateY(60px);opacity:0;transition:all .3s;z-index:1000;}
-            #toast.show{transform:translateY(0);opacity:1;}
-
-            .summary-box{margin-top:10px;padding:6px 10px;background:rgba(15,23,42,.7);border:1px solid rgba(16,185,129,.3);}
-            .summary-box h4{color:#4ade80;font-size:9px;margin-bottom:2px;font-weight:400;}
-
-            .final-congratulations{text-align:center;padding:20px 14px;margin-top:24px;background:linear-gradient(180deg,rgba(6,78,59,.4),rgba(17,24,39,.6));border:2px solid rgba(16,185,129,.3);box-shadow:3px 3px 0 rgba(0,0,0,.2);}
-            .final-congratulations h2{color:#4ade80;font-size:12px;margin-bottom:6px;text-shadow:1px 1px 0 #0a3a20;}
-            .final-congratulations p{color:#c8c0b0;font-weight:400;font-size:10px;}
-
-            @media(max-width:640px){
-                body{padding:14px 6px;}
-                h1{font-size:12px;padding:6px 12px;}
-                .subtitle{font-size:9px;}
-                .step-item{padding:6px;flex-direction:column;gap:6px;}
-                .checkbox-wrapper{padding-top:0;}
-                .card-header h2{font-size:10px;}
-                .step-main-text{font-size:9px;}
-                .btn-navi{font-size:8px;}
-            }
-        </style>
+    <link rel="stylesheet" href="dist/output.css">
 </head>
-<body>
+<body class="relative min-h-screen bg-[url('../images/bg.png')] bg-cover bg-center bg-fixed px-3 py-8 font-sans text-sm leading-relaxed text-[#1f2937] max-sm:px-2 max-sm:py-4">
 
-    <div class="container">
-        <header>
-            <h1>RO EP20 不死者</h1>
-            <p class="subtitle">RO EP20 - 主線任務全流程攻略</p>
+    <div class="relative z-[1] mx-auto max-w-[900px]">
+        <header class="mb-6 text-center">
+            <h1 class="mb-2 text-3xl font-bold tracking-tight text-[#111827] max-sm:text-2xl">RO EP20 不死者</h1>
+            <p class="text-sm text-[#6b7280] max-sm:text-xs">RO EP20 - 主線任務全流程攻略</p>
         </header>
 
         <!-- 任務材料 Dashboard -->
-        <section class="card">
-            <div class="card-header">
-                <h2>任務材料需求</h2>
-                <button id="toggle-materials" class="btn-toggle">折疊</button>
+        <section class="relative mb-5 overflow-hidden rounded-3xl border border-[#e5e7eb] bg-white/90 shadow-[0_8px_24px_rgba(17,24,39,.06)] backdrop-blur">
+            <div class="flex items-center justify-between border-b border-[#e5e7eb] px-4 py-3">
+                <h2 class="flex items-center gap-1.5 text-base font-semibold text-[#5b21b6] max-sm:text-sm">任務材料需求</h2>
+                <button id="toggle-materials" class="cursor-pointer rounded-full bg-[#ede9fe] px-3 py-1 text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#ddd6fe]">折疊</button>
             </div>
-            <div id="materials-content" class="table-wrapper">
-                <table>
+            <div id="materials-content" class="overflow-x-auto">
+                <table class="w-full border-collapse text-[10px]">
                     <thead>
                         <tr>
-                            <th style="width: 80px">圖示</th>
-                            <th>材料名稱</th>
-                            <th style="width: 100px">數量</th>
-                            <th>取得/用途</th>
+                            <th class="w-20 bg-[#ede9fe] px-3 py-2 text-left text-xs font-semibold text-[#5b21b6]">圖示</th>
+                            <th class="bg-[#ede9fe] px-3 py-2 text-left text-xs font-semibold text-[#5b21b6]">材料名稱</th>
+                            <th class="w-[100px] border border-white/[0.05] bg-white/[0.06] px-2.5 py-1.5 text-left font-normal text-[#90a8c0]">數量</th>
+                            <th class="bg-[#ede9fe] px-3 py-2 text-left text-xs font-semibold text-[#5b21b6]">取得/用途</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td><img src="images/butterfly_wing.png" class="item-icon" alt="蝴蝶翅膀"></td>
-                            <td>蝴蝶翅膀</td>
-                            <td>10 個以上</td>
-                            <td>用於任務間快速回城</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle" alt="蝴蝶翅膀"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">蝴蝶翅膀</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">10 個以上</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">用於任務間快速回城</td>
                         </tr>
                         <tr>
-                            <td><img src="images/transformation_scroll.png" class="item-icon" alt="蠕蟲變身卷軸"></td>
-                            <td>蠕蟲變身卷軸</td>
-                            <td>3 個以上</td>
-                            <td>進入蛇城區域對話必備</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/transformation_scroll.png" class="h-5 w-5 rounded-md align-middle" alt="蠕蟲變身卷軸"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">蠕蟲變身卷軸</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">3 個以上</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">進入蛇城區域對話必備</td>
                         </tr>
                         <tr>
-                            <td><img src="images/large_gray_feather.png" class="item-icon" alt="巨大的暗灰羽毛"></td>
-                            <td>巨大的暗灰羽毛</td>
-                            <td>20 個</td>
-                            <td>鋼德家族任務 (Pamosugand) 交付</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/large_gray_feather.png" class="h-5 w-5 rounded-md align-middle" alt="巨大的暗灰羽毛"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">巨大的暗灰羽毛</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">20 個</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">鋼德家族任務 (Pamosugand) 交付</td>
                         </tr>
                         <tr>
-                            <td><img src="images/copos_head_feather.png" class="item-icon" alt="可波的冠毛"></td>
-                            <td>可波的冠毛</td>
-                            <td>30 個</td>
-                            <td>鋼德家族任務 (Holsivigand) 交付</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/copos_head_feather.png" class="h-5 w-5 rounded-md align-middle" alt="可波的冠毛"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">可波的冠毛</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">30 個</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">鋼德家族任務 (Holsivigand) 交付</td>
                         </tr>
                         <tr>
-                            <td><img src="images/frozen_insect_shell.png" class="item-icon" alt="冰凍蟲殼"></td>
-                            <td>冰凍蟲殼</td>
-                            <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/frozen_insect_shell.png" class="h-5 w-5 rounded-md align-middle" alt="冰凍蟲殼"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">冰凍蟲殼</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">3 個</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
                         </tr>
                         <tr>
-                            <td><img src="images/shining_seaweed_stem.png" class="item-icon" alt="閃亮海帶莖"></td>
-                            <td>閃亮海帶莖</td>
-                            <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]"><img src="images/shining_seaweed_stem.png" class="h-5 w-5 rounded-md align-middle" alt="閃亮海帶莖"></td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">閃亮海帶莖</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">3 個</td>
+                            <td class="border-b border-[#e5e7eb] px-3 py-2 text-[13px] text-[#4a4a5a]">尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
                         </tr>
                     </tbody>
                 </table>
@@ -174,353 +75,353 @@
 
         <div id="quest-flow">
             <!-- 一、 任務啟動與初步調查 -->
-            <h3 class="section-title">一、 任務啟動與初步調查</h3>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">一、 任務啟動與初步調查</h3>
             
-            <div class="step-item" data-id="step-1-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">任務起點：前往冰霜堡壘內部，向左走到底與「Horuru」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 33/185">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">任務起點：前往冰霜堡壘內部，向左走到底與「Horuru」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 33/185">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Horuru」對話：/navi icas_in 33/185
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-1-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">前置檢查：前往伊斯加爾特入口處與「Horuru」對話</span>
-                    <div class="step-sub-text">※ 若未完成前置「埋蛤蜊任務」，請先完成後可接取。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 27/126">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-2">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">前置檢查：前往伊斯加爾特入口處與「Horuru」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">※ 若未完成前置「埋蛤蜊任務」，請先完成後可接取。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 27/126">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         前置任務座標：/navi icecastle 27/126
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-1-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">進一步調查：回到冰霜堡壘內部，向右走到底與「Leon」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 262/202">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-3">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">進一步調查：回到冰霜堡壘內部，向右走到底與「Leon」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 262/202">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Leon」對話：/navi icas_in 262/202
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-1-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">地圖轉場：使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀回城，接著使用 [集結]傳送至蛇巢</span>
-                    <div class="step-sub-text">※ 點擊任意 NPC (非變身狀態) 即可傳出蛇巢。</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-4">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">地圖轉場：使用 <img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle">蝴蝶翅膀回城，接著使用 [集結]傳送至蛇巢</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">※ 點擊任意 NPC (非變身狀態) 即可傳出蛇巢。</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-1-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">峽谷調查：前往古代冰風的峽谷東部，與門口「Lehar」對話兩次</span>
-                    <div class="step-sub-text">觸發自動傳送。</div>
-                    <button class="btn-navi" data-navi="/navi jor_back5 350/75">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-5">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">峽谷調查：前往古代冰風的峽谷東部，與門口「Lehar」對話兩次</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">觸發自動傳送。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_back5 350/75">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Lehar」對話：/navi jor_back5 350/75
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-1-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">與 Mariam 會合：前往地圖右上角與「Mariam」對話</span>
-                    <div class="step-sub-text">觸發自動傳送。</div>
-                    <button class="btn-navi" data-navi="/navi jor_back5 353/357">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-1-6">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">與 Mariam 會合：前往地圖右上角與「Mariam」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">觸發自動傳送。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_back5 353/357">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Mariam」對話：/navi jor_back5 353/357
                     </button>
                 </div>
             </div>
 
             <!-- 二、 堡壘周邊與探險副本 -->
-            <h3 class="section-title">二、 堡壘周邊與探險副本</h3>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">二、 堡壘周邊與探險副本</h3>
             
-            <div class="step-item" data-id="step-2-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">回報進度：集結後進入冰霜堡壘內部，與「Leon」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 262/202">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">回報進度：集結後進入冰霜堡壘內部，與「Leon」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 262/202">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Leon」對話：/navi icas_in 262/202
                     </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">物資確認：往上走與「Horuru」對話，結束後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 259/219">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-2">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">物資確認：往上走與「Horuru」對話，結束後使用 <img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle">蝴蝶翅膀</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 259/219">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Horuru」對話：/navi icas_in 259/219
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">旅館探訪：前往旅館內，與旁邊的「Caruru」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 92/113">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-3">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">旅館探訪：前往旅館內，與旁邊的「Caruru」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 92/113">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Caruru」對話：/navi icas_in 92/113
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">藥水店調查：前往藥水店與「Toruru」對話，完成後往下走出傳點</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 113/41">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-4">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">藥水店調查：前往藥水店與「Toruru」對話，完成後往下走出傳點</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 113/41">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Toruru」對話：/navi icas_in 113/41
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">後街聯絡：前往地圖右上方與「Backstreet」對話</span>
-                    <div class="step-sub-text">完成後使用 [集結]。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 210/242">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-5">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">後街聯絡：前往地圖右上方與「Backstreet」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後使用 [集結]。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 210/242">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Backstreet」對話：/navi icecastle 210/242
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">家族對話：進入冰霜堡壘內部，分別與「Horuru」及「Velgund」對話</span>
-                    <div class="step-sub-text">完成後請使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀 及 [集結]。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icas_in 259/219">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-6">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">家族對話：進入冰霜堡壘內部，分別與「Horuru」及「Velgund」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後請使用 <img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle">蝴蝶翅膀 及 [集結]。</div>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 259/219">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             與「Horuru」對話：/navi icas_in 259/219
                         </button>
-                        <button class="btn-navi" data-navi="/navi icas_in 260/205">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 260/205">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             與「Velgund」對話：/navi icas_in 260/205
                         </button>
                     </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">峽谷探索副本：前往冰霜堡壘門口，[建立單人組隊] 與「Lehar」對話開啟副本</span>
-                    <div class="step-sub-text">※ 副本流程內皆有導航指引。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 201/171">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-7">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">峽谷探索副本：前往冰霜堡壘門口，[建立單人組隊] 與「Lehar」對話開啟副本</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">※ 副本流程內皆有導航指引。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 201/171">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         開啟副本：/navi icecastle 201/171
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本收尾：副本結束後，[回到組隊] 並使用 [集結]</span>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-8">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">副本收尾：副本結束後，[回到組隊] 並使用 [集結]</span>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-2-9">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">重要會談：進入冰霜堡壘內部，與「Miriam」及「Lazy」對話</span>
-                    <div class="step-sub-text">完成後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀、[集結]、並前往 [蛇巢]。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 259/200">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-2-9">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">重要會談：進入冰霜堡壘內部，與「Miriam」及「Lazy」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後使用 <img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle">蝴蝶翅膀、[集結]、並前往 [蛇巢]。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 259/200">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Miriam」及「Lazy」對話：/navi icas_in 259/200
                     </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
             <!-- 三、 蛇城根部與教團調查 -->
-            <h3 class="section-title">三、 蛇城根部與教團調查</h3>
-            <div class="step-sub-text keyword" style="border: 1px solid var(--danger); background: #450a0a;">⚠️ 重要提示：進入蛇城區域後，與蠕蟲類 NPC 對話前必須保持「蠕蟲變身」狀態。</div>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">三、 蛇城根部與教團調查</h3>
+            <div class="mb-2 rounded-xl border border-[#fde68a] bg-[#fef3c7] px-3 py-2 text-xs font-medium text-[#92400e]">⚠️ 重要提示：進入蛇城區域後，與蠕蟲類 NPC 對話前必須保持「蠕蟲變身」狀態。</div>
 
-            <div class="step-item" data-id="step-3-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">進入根部：在蛇巢大門前使用 <img src="images/transformation_scroll.png" class="item-icon">變身卷軸，與「Lazy」及「Horuru」對話</span>
-                    <div class="step-sub-text">傳送至「蛇城的根部一樓」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_nest 38/270">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">進入根部：在蛇巢大門前使用 <img src="images/transformation_scroll.png" class="h-5 w-5 rounded-md align-middle">變身卷軸，與「Lazy」及「Horuru」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">傳送至「蛇城的根部一樓」。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_nest 38/270">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Lazy」及「Horuru」對話：/navi jor_nest 38/270
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-3-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">清剿任務：在一樓與「蠕蟲巫師」對話</span>
-                    <div class="step-sub-text">擊殺 5 隻「高級蠕蟲巫師」後，前往二樓擊殺 5 隻「耶夢加得教團巫師」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_root1 32/34">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-2">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">清剿任務：在一樓與「蠕蟲巫師」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">擊殺 5 隻「高級蠕蟲巫師」後，前往二樓擊殺 5 隻「耶夢加得教團巫師」。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_root1 32/34">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「蠕蟲巫師」對話：/navi jor_root1 32/34
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-3-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">前往神聖根部：在二樓往右上角移動觸發自動傳送</span>
-                    <div class="step-sub-text">與「Lazy」、「Miriam」、「Horuru」對話完由左上方前往「神聖的根部」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_root2 25/288">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-3">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">前往神聖根部：在二樓往右上角移動觸發自動傳送</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">與「Lazy」、「Miriam」、「Horuru」對話完由左上方前往「神聖的根部」。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_root2 25/288">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         前往神聖的根部：/navi jor_root2 25/288
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-3-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">神聖調查：抵達神聖的根部後，與「Rgan」對話兩次</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 162/86">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-4">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">神聖調查：抵達神聖的根部後，與「Rgan」對話兩次</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 162/86">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Rgan」對話：/navi jor_sanct 162/86
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-3-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">採集任務：往下方傳點移動收集 3 個「蛇莓果」</span>
-                    <div class="step-sub-text">地圖標示 + 號，完成後向「Rgan」回報。</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-5">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">採集任務：往下方傳點移動收集 3 個「蛇莓果」</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">地圖標示 + 號，完成後向「Rgan」回報。</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-3-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">最終確認：往上方移動與「Rgan」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 185/128">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-3-6">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">最終確認：往上方移動與「Rgan」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 185/128">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Rgan」對話：/navi jor_sanct 185/128
                     </button>
                 </div>
             </div>
 
             <!-- 四、 鋼德家族與根部區域任務 -->
-            <h3 class="section-title">四、 鋼德家族與根部區域任務</h3>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">四、 鋼德家族與根部區域任務</h3>
 
-            <div class="step-item" data-id="step-4-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">新階段啟動：與「Rgan」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 42/105">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">新階段啟動：與「Rgan」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 42/105">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Rgan」對話：/navi jor_sanct 42/105
                     </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">鋼德家族五大支線 (建議依逆時針順序完成)</span>
-                    <div class="step-sub-text">
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-2">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">鋼德家族五大支線 (建議依逆時針順序完成)</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">
                         • <b>Gomiagand</b>: 對話選項順序 1 -> 1 -> 1 -> 1 -> 2 -> 2 -> 2<br>
-                        • <b>Pamosugand</b>: 交付 20 個 <img src="images/large_gray_feather.png" class="item-icon">巨大的暗灰羽毛<br>
+                        • <b>Pamosugand</b>: 交付 20 個 <img src="images/large_gray_feather.png" class="h-5 w-5 rounded-md align-middle">巨大的暗灰羽毛<br>
                         • <b>Nasioramigand</b>: 進行一般對話<br>
-                        • <b>Holsivigand</b>: 對話選項順序 2 -> 1 -> 2 -> 1 -> 1 -> 1，交付 30 個 <img src="images/copos_head_feather.png" class="item-icon">可波的冠毛<br>
+                        • <b>Holsivigand</b>: 對話選項順序 2 -> 1 -> 2 -> 1 -> 1 -> 1，交付 30 個 <img src="images/copos_head_feather.png" class="h-5 w-5 rounded-md align-middle">可波的冠毛<br>
                         • <b>Eriligand</b>: 對話兩次，第二次選項順序 2 -> 3 -> 2
                     </div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">環境互動：與地圖上標示 + 號的「Tower」及「Puddle」對話</span>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-3">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">環境互動：與地圖上標示 + 號的「Tower」及「Puddle」對話</span>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">根部二樓深度調查：往下方傳點移動，與 3 個黃色 + 號對話</span>
-                    <div class="step-sub-text">(Garbage Dumb / Storage / Mountain of Junk)</div>
-                    <button class="btn-navi" data-navi="/navi jor_root2 25/285">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-4">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">根部二樓深度調查：往下方傳點移動，與 3 個黃色 + 號對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">(Garbage Dumb / Storage / Mountain of Junk)</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_root2 25/285">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與標示點對話：/navi jor_root2 25/285
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">家族長老：回到神聖的根部，與「Sarekgand」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 156/171">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-5">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">家族長老：回到神聖的根部，與「Sarekgand」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 156/171">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Sarekgand」對話：/navi jor_sanct 156/171
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">檢查哨：與「Inspector」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 22/283">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-6">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">檢查哨：與「Inspector」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 22/283">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Inspector」對話：/navi jor_sanct 22/283
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">守衛清剿：進入上方傳點，擊殺「耶夢加得守衛」P 2 隻、Y 1 隻</span>
-                    <div class="step-sub-text">完成後向「Inspector」回報。</div>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 22/283">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-7">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">守衛清剿：進入上方傳點，擊殺「耶夢加得守衛」P 2 隻、Y 1 隻</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後向「Inspector」回報。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 22/283">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         回報「Inspector」：/navi jor_sanct 22/283
                     </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x10</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-4-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">迷宮突破：往上方傳點移動，依序點擊標示觸發對話並開啟副本</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_maze 13/48">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-4-8">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">迷宮突破：往上方傳點移動，依序點擊標示觸發對話並開啟副本</span>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 13/48">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             迷宮 Step 1：/navi jor_maze 13/48
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 17/154">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 17/154">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             迷宮 Step 2：/navi jor_maze 17/154
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 140/71">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 140/71">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             開啟副本：/navi jor_maze 140/71
                         </button>
                     </div>
@@ -528,390 +429,279 @@
             </div>
 
             <!-- 五、 多人副本與尾聲 -->
-            <h3 class="section-title">五、 多人副本與尾聲</h3>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">五、 多人副本與尾聲</h3>
 
-            <div class="step-item" data-id="step-5-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">流兵地帶副本：依循副本內導航指引完成</span>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">流兵地帶副本：依循副本內導航指引完成</span>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本撤離：與出口的「Lehar」對話，往右移動並使用 [集結]</span>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-2">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">副本撤離：與出口的「Lehar」對話，往右移動並使用 [集結]</span>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x10</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">回報 Lehar：在冰霜堡壘內部，上樓梯向右走到底與其對話</span>
-                    <div class="step-sub-text">完成後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 226/255">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-3">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">回報 Lehar：在冰霜堡壘內部，上樓梯向右走到底與其對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後使用 <img src="images/butterfly_wing.png" class="h-5 w-5 rounded-md align-middle">蝴蝶翅膀。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 226/255">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Lehar」對話：/navi icas_in 226/255
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">瀑布潛水員 (1)：在伊斯加爾特瀑布尋找「Diver lwin」</span>
-                    <div class="step-sub-text">需求：交付 <img src="images/frozen_insect_shell.png" class="item-icon">冰凍蟲殼 3 個、及擊殺「Ice Gangu」5 隻。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icecastle 141/210">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-4">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">瀑布潛水員 (1)：在伊斯加爾特瀑布尋找「Diver lwin」</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">需求：交付 <img src="images/frozen_insect_shell.png" class="h-5 w-5 rounded-md align-middle">冰凍蟲殼 3 個、及擊殺「Ice Gangu」5 隻。</div>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 141/210">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             座標：/navi icecastle 141/210
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_tail 148/273">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_tail 148/273">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             建議怪點：/navi jor_tail 148/273
                         </button>
                     </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x15</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">瀑布潛水員 (2)：與「Diver lwin」再次對話</span>
-                    <div class="step-sub-text">需求：交付 <img src="images/shining_seaweed_stem.png" class="item-icon">閃亮海帶莖 3 個、及擊殺「Shining Seaweed」5 隻。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icecastle 141/210">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-5">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">瀑布潛水員 (2)：與「Diver lwin」再次對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">需求：交付 <img src="images/shining_seaweed_stem.png" class="h-5 w-5 rounded-md align-middle">閃亮海帶莖 3 個、及擊殺「Shining Seaweed」5 隻。</div>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 141/210">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             座標：/navi icecastle 141/210
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_tail 148/273">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_tail 148/273">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             建議怪點：/navi jor_tail 148/273
                         </button>
                     </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x15</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">小小的小潮副本：依序與「Koruru」、「Leon」、「Lehar」會談後開啟副本</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_twice 238/330">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-6">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">小小的小潮副本：依序與「Koruru」、「Leon」、「Lehar」會談後開啟副本</span>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_twice 238/330">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             Leon 1：/navi jor_twice 238/330
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_twice 158/243">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_twice 158/243">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             Leon 2：/navi jor_twice 158/243
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_twice 164/244">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_twice 164/244">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             Lehar：/navi jor_twice 164/244
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本進行：跟隨「Lehar」移動，完成副本內對話</span>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-7">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">副本進行：跟隨「Lehar」移動，完成副本內對話</span>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x15</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本後清剿：出副本後擊殺「耶夢加得教團巫師」 5 隻</span>
-                    <div class="step-sub-text">完成後回報任務。</div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-8">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">副本後清剿：出副本後擊殺「耶夢加得教團巫師」 5 隻</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">完成後回報任務。</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-9">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">再次前往迷宮：從左下角移動，與「Lehar」對話</span>
-                    <div class="step-sub-text"><img src="images/transformation_scroll.png" class="item-icon"> [需保持變身狀態]。</div>
-                    <button class="btn-navi" data-navi="/navi jor_maze 142/69">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-9">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">再次前往迷宮：從左下角移動，與「Lehar」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]"><img src="images/transformation_scroll.png" class="h-5 w-5 rounded-md align-middle"> [需保持變身狀態]。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 142/69">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Lehar」對話：/navi jor_maze 142/69
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-10">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">迷宮深度調查：依序前往 5 個標示點對話</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_maze 54/237">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-10">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">迷宮深度調查：依序前往 5 個標示點對話</span>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 54/237">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             調查點 1：/navi jor_maze 54/237
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 281/189">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 281/189">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             調查點 2：/navi jor_maze 281/189
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 154/241">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 154/241">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             調查點 3：/navi jor_maze 154/241
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 148/34">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 148/34">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             調查點 4：/navi jor_maze 148/34
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 199/34">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_maze 199/34">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                             調查點 5：/navi jor_maze 199/34
                         </button>
                     </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x20</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-11">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">後續串聯：依序與「Nyar」、「Lazy」對話</span>
-                    <div class="step-sub-text">跟隨引導移動即可。</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-11">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">後續串聯：依序與「Nyar」、「Lazy」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">跟隨引導移動即可。</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-12">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">堡壘最終動員：與冰霜堡壘內部的「Leon」對話</span>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-12">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">堡壘最終動員：與冰霜堡壘內部的「Leon」對話</span>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-13">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">蛇巢再訪：由上方入口進入找到「Mark」</span>
-                    <button class="btn-navi" data-navi="/navi jor_root1 32/74">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-13">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">蛇巢再訪：由上方入口進入找到「Mark」</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_root1 32/74">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Mark」對話：/navi jor_root1 32/74
                     </button>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-14">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">樹根指引：在傳點外與 3 個黃色 + 號完成互動</span>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-14">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">樹根指引：在傳點外與 3 個黃色 + 號完成互動</span>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-15">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">聖地前夕：在神聖的根部與「Mark」進行最終談話</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_snact 133/86">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Mark：/navi jor_snact 133/86
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-15">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">聖地前夕：在神聖的根部與「Mark」進行最終談話</span>
+                    <div class="flex flex-col gap-1">
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 133/86">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                            Mark：/navi jor_sanct 133/86
                         </button>
-                        <button class="btn-navi" data-navi="/navi jor_snact 150/206">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Bishop：/navi jor_snact 150/206
+                        <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi jor_sanct 150/206">
+                            <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                            Bishop：/navi jor_sanct 150/206
                         </button>
                     </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x10</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-16">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">被分離的聖地最終副本：擊殺「Demi Rasgand」</span>
-                    <div class="step-sub-text">與「White Cat」對話，隨後與「Leon」及「Aurelie」對話開啟副本。</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-16">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">被分離的聖地最終副本：擊殺「Demi Rasgand」</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">與「White Cat」對話，隨後與「Leon」及「Aurelie」對話開啟副本。</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-17">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本回報：出副本後與「Aurelie」對話</span>
-                    <div class="step-sub-text">自動傳回伊斯加爾特。</div>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-17">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">副本回報：出副本後與「Aurelie」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">自動傳回伊斯加爾特。</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-18">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">主線完結：進入建築與「Voglinde」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in2 253/118">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-18">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">主線完結：進入建築與「Voglinde」對話</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in2 253/118">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Voglinde」對話：/navi icas_in2 253/118
                     </button>
-                    <div class="reward-pill">總結獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x30</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">總結獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x30</div>
                 </div>
             </div>
 
-            <div class="step-item" data-id="step-5-19">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">視窗清理：與「Oryrio」對話</span>
-                    <div class="step-sub-text">關閉所有相關任務視窗。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 100/62">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-5-19">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">視窗清理：與「Oryrio」對話</span>
+                    <div class="mb-1.5 rounded-xl bg-[#dbeafe] px-3 py-1.5 text-xs text-[#1e40af] max-sm:text-[11px]">關閉所有相關任務視窗。</div>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icas_in 100/62">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Oryrio」對話：/navi icas_in 100/62
                     </button>
                 </div>
             </div>
 
-            <div class="final-congratulations">
-                <h2>🏆 EP20 主線任務全數完成！</h2>
-                <p>累計可取得約 230 個 <img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」。</p>
+            <div class="mt-6 rounded-3xl border border-[#a7f3d0] bg-gradient-to-b from-[#ecfdf5] to-[#d1fae5] px-5 py-6 text-center shadow-[0_8px_30px_rgba(16,185,129,.12)]">
+                <h2 class="mb-2 text-lg font-bold text-[#047857]">🏆 EP20 主線任務全數完成！</h2>
+                <p class="text-sm text-[#065f46]">累計可取得約 230 個 <img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」。</p>
             </div>
 
             <!-- 六、 支線：墮落天使冰蛞蝓副本 -->
-            <h3 class="section-title">六、 支線：墮落天使冰蛞蝓副本</h3>
+            <h3 class="mt-8 mb-3 flex w-fit items-center gap-1.5 rounded-full bg-[#ede9fe] px-4 py-1.5 text-sm font-semibold text-[#5b21b6] max-sm:text-[13px]">六、 支線：墮落天使冰蛞蝓副本</h3>
             
-            <div class="step-item" data-id="step-6-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">支線啟動：與「Iwin Delivery」對話並跟隨引導</span>
-                    <button class="btn-navi" data-navi="/navi icecastle 109/240">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+            <div class="step-item relative mb-2.5 flex gap-3 rounded-2xl border border-[#e5e7eb] bg-white/85 px-4 py-3 shadow-[0_4px_16px_rgba(17,24,39,.06)] transition-all duration-200 hover:border-[#c4b5fd] hover:bg-white max-sm:flex-col max-sm:gap-1.5 max-sm:p-3" data-id="step-6-1">
+                <div class="shrink-0 pt-0.5 max-sm:pt-0"><input type="checkbox" class="custom-cb relative h-[18px] w-[18px] cursor-pointer appearance-none rounded-md border-2 border-[#a78bfa] bg-white transition-all duration-150 checked:border-[#8b5cf6] checked:bg-[#8b5cf6]"></div>
+                <div class="step-content flex-1">
+                    <span class="mb-1 block text-sm font-normal text-[#1f2937] max-sm:text-[13px]">支線啟動：與「Iwin Delivery」對話並跟隨引導</span>
+                    <button class="btn-navi my-1 flex w-fit cursor-pointer items-center gap-1.5 rounded-full bg-[#ddd6fe] px-3 py-1.5 text-left text-xs font-medium text-[#5b21b6] transition-all duration-150 hover:bg-[#c4b5fd] hover:text-[#4c1d95] max-sm:text-[11px]" data-navi="/navi icecastle 109/240">
+                        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
                         與「Iwin Delivery」對話：/navi icecastle 109/240
                     </button>
-                    <div class="reward-pill">完成獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
+                    <div class="mt-1.5 flex w-fit items-center gap-1 rounded-xl bg-[#d1fae5] px-3 py-1.5 text-xs font-medium text-[#047857]">完成獎勵：<img src="images/sacred_cat_whiskers.png" class="h-5 w-5 rounded-md align-middle">「神聖貓咪鬍鬚」x10</div>
                 </div>
             </div>
         </div>
 
-        <footer class="footer-actions">
-            <button id="reset-progress" class="btn-reset">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+        <footer class="mt-8 border-t border-[#e5e7eb] pb-10 pt-6 text-center">
+            <button id="reset-progress" class="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#e5e7eb] px-4 py-1.5 text-xs font-medium text-[#374151] transition-all duration-150 hover:bg-[#d1d5db] hover:text-[#111827]">
+                <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 清除所有進度並重新開始
             </button>
         </footer>
     </div>
 
-    <button id="back-to-top" class="btn-top" title="回到頂部">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+    <button id="back-to-top" class="btn-top invisible fixed bottom-6 right-6 z-[900] flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#8b5cf6] text-white opacity-0 shadow-[0_4px_16px_rgba(139,92,246,.3)] transition-all duration-200 hover:bg-[#7c3aed]" title="回到頂部">
+        <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
     </button>
 
-    <div id="toast">已複製座標到剪貼簿</div>
+    <div id="toast" class="fixed bottom-5 left-5 z-[1000] rounded-full bg-[#10b981] px-4 py-2 text-xs font-medium text-white shadow-[0_4px_16px_rgba(16,185,129,.35)]">已複製座標到剪貼簿</div>
 
-    <script>
-        // Common UI Elements
-        const toast = document.getElementById('toast');
-        const questSteps = document.querySelectorAll('.step-item');
-
-        // UI Logic: Materials Toggle
-        const toggleBtn = document.getElementById('toggle-materials');
-        const materialsContent = document.getElementById('materials-content');
-        
-        function updateMaterialsUI(isVisible) {
-            materialsContent.style.display = isVisible ? 'block' : 'none';
-            toggleBtn.textContent = isVisible ? '折疊' : '展開';
-            localStorage.setItem('ro_modern_materials_visible', isVisible);
-        }
-
-        const savedMaterialsVisible = localStorage.getItem('ro_modern_materials_visible');
-        updateMaterialsUI(savedMaterialsVisible === null || savedMaterialsVisible === 'true');
-
-        toggleBtn.addEventListener('click', () => {
-            const isVisible = materialsContent.style.display !== 'none';
-            updateMaterialsUI(!isVisible);
-        });
-
-        // Progress Logic
-        const resetBtn = document.getElementById('reset-progress');
-        
-        function saveProgress() {
-            const progress = {};
-            questSteps.forEach(step => {
-                const id = step.getAttribute('data-id');
-                const isChecked = step.querySelector('.custom-cb').checked;
-                progress[id] = isChecked;
-            });
-            localStorage.setItem('ro_modern_ep20_progress', JSON.stringify(progress));
-        }
-
-        function loadProgress() {
-            const savedProgress = localStorage.getItem('ro_modern_ep20_progress');
-            if (savedProgress) {
-                const progress = JSON.parse(savedProgress);
-                questSteps.forEach(step => {
-                    const id = step.getAttribute('data-id');
-                    if (progress[id]) {
-                        step.querySelector('.custom-cb').checked = true;
-                        step.classList.add('completed');
-                    }
-                });
-            }
-        }
-
-        loadProgress();
-
-        questSteps.forEach(step => {
-            const checkbox = step.querySelector('.custom-cb');
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    step.classList.add('completed');
-                } else {
-                    step.classList.remove('completed');
-                }
-                saveProgress();
-            });
-        });
-
-        resetBtn.addEventListener('click', () => {
-            if (confirm('確定要清除所有已完成的任務進度嗎？這將會重置所有勾選狀態。')) {
-                localStorage.removeItem('ro_modern_ep20_progress');
-                questSteps.forEach(step => {
-                    step.querySelector('.custom-cb').checked = false;
-                    step.classList.remove('completed');
-                });
-                
-                // Show temporary reset toast
-                const originalText = toast.textContent;
-                toast.textContent = '進度已全部重置';
-                toast.classList.add('show');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        toast.textContent = originalText;
-                    }, 300);
-                }, 2000);
-            }
-        });
-
-        // Back to Top Logic
-        const backToTopBtn = document.getElementById('back-to-top');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('show');
-            } else {
-                backToTopBtn.classList.remove('show');
-            }
-        });
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Navi Logic
-        document.querySelectorAll('.btn-navi').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const text = btn.getAttribute('data-navi');
-                navigator.clipboard.writeText(text).then(() => {
-                    toast.classList.add('show');
-                    setTimeout(() => toast.classList.remove('show'), 2000);
-                });
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
