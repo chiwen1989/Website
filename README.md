@@ -1,48 +1,42 @@
-## 🚀 快速開始
+## 🚀 TimeClock 專案說明
 
-**⚠️ 重要：本專案使用 Tailwind 本地編譯，部署前請先執行 `npm ci` 與 `npm run build`。**
+這個專案是以靜態網站方式部署的打卡記錄工具，前端使用 Firebase 做登入與資料同步。
 
-### 本機開發
-- `npm ci`
-- `npm run build`
-- 透過 `python -m http.server 8000` 或任何靜態伺服器開啟
-- `file://` 模式仍然不支援 Firebase SDK，請使用 `http://localhost:8000` 或正式網址
+### 目前目錄結構
 
-### 部署到 GitHub + Cloudflare Pages
-1. 先在 GitHub 建立 Repository，將此專案推上去。
-2. 進入 Cloudflare Pages，點選「Create project」→「Connect to Git」。
-3. 選擇你的 GitHub Repository。
-4. 建置設定：
-   - Build command: `npm run build`
-   - Build output directory: `.`
-   - Root directory: 留空
-5. 點選「Deploy」。
-
-Cloudflare Pages 會在每次推送到 GitHub 的指定分支時自動重新部署。
-
-## 🔧 主要檔案
-
-- `index.html`：主頁面
-- `app.js`：Firebase 登入、同步與 UI 邏輯
-- `output.css`：Tailwind 編譯後的樣式
-- `database.rules.json`：Firebase Realtime Database 規則
+- `index.html`：主畫面與 UI 結構
+- `app.js`：登入、權限檢查、資料同步與記錄邏輯
+- `styles.css`：基礎樣式
+- `output.css`：Tailwind 編譯後的正式樣式檔
+- `src/input.css`：Tailwind 原始來源檔
+- `package.json` / `package-lock.json`：建置與相依套件
+- `database.rules.json`：Firebase Realtime Database 權限規則
 - `database.rules.examples.txt`：多帳號隔離範例
 
-## 🔒 登入與資料權限
+### 本機開發
 
-- 使用 Firebase Auth 的 Email/Password 登入。
-- 資料路徑使用 `/users/<uid>/times`，避免不同帳號共用同一份資料。
-- 真正的權限限制請在 Firebase Realtime Database Rules 中設定，前端只負責 UI 與使用者體驗。
+- `npm ci`
+- `npm run build`
+- 使用 `python -m http.server 8000` 或其他靜態伺服器開啟
+- `file://` 不支援 Firebase SDK，請改用 `http://localhost:8000` 或正式網址
 
-## 📝 部署注意事項
+### 部署到 Cloudflare Pages
 
-- Cloudflare Pages 是靜態網站，這個專案不需要額外後端服務。
-- 若要讓 Firebase 正常運作，請確認 Firebase Console 中已開啟 Email/Password provider。
-- 若你使用不同的 Firebase 專案，請先更新 `app.js` 裡的 Firebase 設定。
+1. 將此 repo 推到 GitHub
+2. 在 Cloudflare Pages 建立專案並連接 GitHub repo
+3. Build command 填：`npm run build`
+4. Build output directory 填：`.`
+5. 部署完成後即可使用你的網域或 Cloudflare 提供的網址
 
-## 📄 更新說明
+### 注意事項
 
-- 2026-08-08：補上 GitHub / Cloudflare Pages 部署教學，並讓 `npm run build` 可直接使用
+- 這個專案不需要後端服務，Cloudflare Pages 只負責部署靜態檔案
+- Firebase 的真正權限限制請由 `database.rules.json` 控制
+- 若你使用不同 Firebase 專案，請更新 `app.js` 裡的 Firebase 設定
+
+### 更新說明
+
+- 2026-08-08：整理專案目錄，移除備份與多餘檔案，更新部署說明
+- 2026-08-08：修正 Firebase 使用者 email 檢查，避免空值導致錯誤
 - 2026-08-07：完成按鍵設計與登入系統整合
 - 2026-08-06：修復空白頁根因並實作 email+密碼登入
-- 2026-08-05：初始版本（v2.2.4）
