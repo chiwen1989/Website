@@ -1,0 +1,20 @@
+多帳號版本範例（可替換成 Firebase Realtime Database Rules）
+
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid && (auth.token.email === 'chiwen1989@gmail.com' || auth.token.email === 'friend@example.com')",
+        ".write": "auth != null && auth.uid === $uid && (auth.token.email === 'chiwen1989@gmail.com' || auth.token.email === 'friend@example.com')",
+        "times": {
+          ".read": "auth != null && auth.uid === $uid && (auth.token.email === 'chiwen1989@gmail.com' || auth.token.email === 'friend@example.com')",
+          ".write": "auth != null && auth.uid === $uid && (auth.token.email === 'chiwen1989@gmail.com' || auth.token.email === 'friend@example.com')"
+        }
+      }
+    }
+  }
+}
+
+如果你想要更「可維護」一點，可以把白名單放到資料庫裡，但通常先用上面這種直接寫死 email 的方式最簡單。
