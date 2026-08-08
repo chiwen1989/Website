@@ -43,3 +43,11 @@
     opacity: 1 !important;
     visibility: visible !important;
 }
+
+body {
+    background-image: url('images/bg.png') !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
+}
