@@ -16,8 +16,9 @@
   const MY_EMAIL = 'chiwen1989@gmail.com';
 
   function isAuthorizedUser(user) {
-    if (!user?.email) return false;
-    return ALLOWED_EMAILS.has(user.email.toLowerCase());
+    const email = typeof user?.email === 'string' ? user.email.trim().toLowerCase() : '';
+    if (!email) return false;
+    return ALLOWED_EMAILS.has(email);
   }
 
   let userId = null;
