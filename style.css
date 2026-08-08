@@ -1,0 +1,134 @@
+/* ============================================
+   EP20 不死者任務攻略 — 配色與佈局
+   馬卡龍色系：薰衣草紫 / 薄荷綠 / 淡藍 / 奶油黃
+   ============================================ */
+
+:root {
+    /* 主色 */
+    --lavender: #8b5cf6;      /* 薰衣草紫：按鈕、強調 */
+    --lavender-light: #ede9fe; /* 淡薰衣草：表格表頭、hover */
+    --mint: #34d399;           /* 薄荷綠：漸層、成功 */
+    --sky: #bfdbfe;            /* 淡藍：漸層 */
+    --cream: #fef3c7;          /* 奶油黃：點綴 */
+    --cream-bg: #faf9f6;       /* 奶油白：卡片底色 */
+
+    /* 文字 */
+    --text-main: #1f2937;      /* 主文字（黑灰） */
+    --text-title: #111827;     /* 標題（近黑） */
+    --text-muted: #6b7280;     /* 次要文字 */
+    --text-purple: #5b21b6;    /* 紫色標題字 */
+
+    /* 完成狀態 */
+    --done-bg: #f3f4f6;        /* 已完成背景（灰） */
+    --done-text: #9ca3af;      /* 已完成文字（淺灰） */
+
+    /* 邊框 / 陰影 */
+    --border: #e5e7eb;
+    --shadow-card: 0 8px 24px rgba(17, 24, 39, .06);
+}
+
+/* 背景：遊戲場景圖 + 半透明黑底（避免過白） */
+body {
+    background-image: url('images/bg.png');
+    background-color: rgba(0, 0, 0, 0.1);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-main);
+}
+
+/* 卡片：白色圓角 + 柔和陰影 */
+.card {
+    background-color: var(--cream-bg);
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-card);
+}
+
+/* 任務材料表：表頭紫色底 */
+.materials-thead th {
+    background-color: var(--lavender-light);
+    color: var(--text-purple);
+    font-weight: 600;
+    text-align: left;
+    padding: .5rem .75rem;
+    font-size: .75rem;
+}
+
+/* 已完成任務：灰底 + 刪除線 */
+.step-item.completed {
+    background-color: var(--done-bg) !important;
+    opacity: .75 !important;
+}
+
+.step-item.completed .step-content > * {
+    text-decoration: line-through !important;
+    color: var(--done-text) !important;
+}
+
+.step-item.completed .custom-cb {
+    border-color: var(--lavender) !important;
+    background-color: var(--lavender) !important;
+}
+
+/* 自訂 checkbox */
+.custom-cb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: .375rem;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.custom-cb:checked {
+    border-color: var(--lavender);
+    background-color: var(--lavender);
+}
+
+.custom-cb:checked::after {
+    content: '✓';
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    line-height: 1;
+}
+
+/* 折疊按鈕：薰衣草紫 */
+#toggle-materials {
+    background-color: var(--lavender-light);
+    color: var(--text-purple);
+    border-radius: 9999px;
+    padding: .25rem .75rem;
+    font-size: .75rem;
+    font-weight: 500;
+    transition: background-color .15s;
+}
+
+#toggle-materials:hover {
+    background-color: #ddd6fe;
+}
+
+/* Toast 提示 */
+#toast {
+    transform: translateY(60px);
+    opacity: 0;
+    transition: all .3s;
+}
+
+#toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* 回頂部按鈕 */
+.btn-top.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
