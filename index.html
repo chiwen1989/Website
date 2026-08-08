@@ -1,1280 +1,165 @@
-<!doctype html>
-<html lang="zh-TW">
+<!DOCTYPE html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="images/sacred_cat_whiskers.png">
-    <title>EP20 不死者 - 任務攻略</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-        :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --secondary: #94a3b8;
-            --accent: #facc15;
-            --danger: #f87171;
-            --success: #10b981;
-            --bg-body: #000000;
-            --bg-card: rgba(17, 24, 39, 0.65);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.15);
-            --radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: transparent;
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            line-height: 1.5;
-            padding: 40px 20px;
-            font-size: 0.875rem;
-            min-height: 100vh;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-body);
-            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('images/bg.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: -1;
-            /* Force GPU rendering to improve sharpness on some devices */
-            transform: translateZ(0);
-            backface-visibility: hidden;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            color: var(--text-main);
-            letter-spacing: -0.025em;
-            margin-bottom: 12px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 1);
-            background: rgba(0, 0, 0, 0.6);
-            display: inline-block;
-            padding: 10px 40px;
-            border-radius: 8px;
-            border: 1px dashed var(--border);
-        }
-
-        .subtitle {
-            color: #ffffff;
-            font-size: 0.9rem;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
-            background: rgba(0, 0, 0, 0.5);
-            display: table;
-            margin: 8px auto 0;
-            padding: 4px 20px;
-            border-radius: 20px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: var(--radius);
-            border: 1px dashed var(--border);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .card-header {
-            padding: 12px 20px;
-            background: rgba(31, 41, 55, 0.7);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border-bottom: 1px dashed var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-header h2 {
-            font-size: 1rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-toggle {
-            background: #374151;
-            color: #fff;
-            border: 1px solid #4b5563;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-toggle:hover {
-            background: #4b5563;
-        }
-
-        .btn-reset {
-            background: #450a0a;
-            color: #f87171;
-            border: 1px solid #991b1b;
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-reset:hover {
-            background: #7f1d1d;
-            color: #fee2e2;
-        }
-
-        .btn-reset svg {
-            width: 16px;
-            height: 16px;
-        }
-
-        .btn-top {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            background: rgba(31, 41, 55, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            opacity: 0;
-            visibility: hidden;
-            z-index: 900;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-        }
-
-        .btn-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .btn-top:hover {
-            background: var(--primary);
-            border-color: var(--primary);
-            transform: translateY(-4px);
-        }
-
-        .footer-actions {
-            margin-top: 48px;
-            padding-top: 32px;
-            border-top: 1px dashed var(--border);
-            text-align: center;
-            padding-bottom: 60px;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-        }
-
-        th {
-            background: rgba(31, 41, 55, 0.7);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            text-align: left;
-            padding: 10px 16px;
-            font-weight: 600;
-            color: var(--secondary);
-            border: 1px dashed var(--border);
-        }
-
-        td {
-            padding: 8px 16px;
-            border: 1px dashed var(--border);
-        }
-
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 40px 0 20px;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            padding: 10px 20px;
-            border-radius: 6px;
-            border-left: 4px solid var(--primary);
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
-            width: fit-content;
-        }
-
-        .section-title::before {
-            display: none;
-        }
-
-        .step-item {
-            background: var(--bg-card);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-radius: var(--radius);
-            border: 1px dashed var(--border);
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .step-item:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-            border-color: var(--primary);
-        }
-
-        .step-item.completed {
-            background: rgba(15, 23, 42, 0.5);
-            opacity: 0.5;
-        }
-
-        .step-item.completed .step-content {
-            text-decoration: line-through;
-            color: var(--secondary);
-        }
-
-        .checkbox-wrapper {
-            flex-shrink: 0;
-            padding-top: 2px;
-        }
-
-        .custom-cb {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #4b5563;
-            border-radius: 4px;
-            cursor: pointer;
-            appearance: none;
-            background: rgba(31, 41, 55, 0.8);
-            position: relative;
-            transition: all 0.2s;
-        }
-
-        .custom-cb:checked {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .custom-cb:checked::after {
-            content: '✓';
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .step-content {
-            flex-grow: 1;
-        }
-
-        .step-main-text {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .step-sub-text {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            background: rgba(31, 41, 55, 0.6);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            padding: 6px 12px;
-            border-radius: 6px;
-            border-left: 3px solid #4b5563;
-        }
-
-        .keyword {
-            color: #f87171;
-            font-weight: 700;
-        }
-
-        .reward-pill {
-            display: flex;
-            width: fit-content;
-            align-items: center;
-            gap: 6px;
-            background: rgba(5, 46, 22, 0.7);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            color: #4ade80;
-            padding: 4px 12px;
-            border: 1px solid #10b981;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-top: 12px;
-        }
-
-        .btn-navi {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(31, 41, 55, 0.6);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            color: var(--text-main);
-            border: 1px solid #374151;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 4px 0;
-            text-align: left;
-            width: fit-content;
-        }
-
-        .btn-navi:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(17, 24, 39, 0.8);
-        }
-
-        .btn-navi svg {
-            width: 16px;
-            height: 16px;
-            color: var(--secondary);
-            flex-shrink: 0;
-        }
-
-        .item-icon {
-            width: 24px;
-            height: 24px;
-            image-rendering: pixelated;
-            vertical-align: middle;
-            filter: drop-shadow(0 0 2px rgba(255,255,255,0.2));
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 32px;
-            left: 32px;
-            background: var(--primary);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 600;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-        }
-
-        #toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .summary-box {
-            margin-top: 16px;
-            padding: 12px 20px;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid var(--success);
-            border-radius: 0;
-        }
-
-        .summary-box h4 {
-            color: var(--success);
-            font-size: 0.9rem;
-            margin-bottom: 4px;
-        }
-
-        .final-congratulations {
-            text-align: center;
-            padding: 40px 20px;
-            margin-top: 40px;
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.8) 0%, rgba(17, 24, 39, 0.8) 100%);
-            border: 1px solid var(--success);
-            border-radius: var(--radius);
-        }
-
-        .final-congratulations h2 {
-            color: var(--success);
-            font-size: 1.5rem;
-            margin-bottom: 12px;
-        }
-
-        .final-congratulations p {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        @media (max-width: 640px) {
-            body { padding: 24px 16px; }
-            h1 { font-size: 2.5rem; padding: 10px 20px; }
-            .subtitle { font-size: 0.8rem; }
-            .step-item { padding: 16px; flex-direction: column; gap: 12px; }
-            .checkbox-wrapper { padding-top: 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Da Ka - 打卡</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="output.css">
+<!-- Firebase SDK (required for authentication and database) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js" onerror="window.__fbFail=1"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js" onerror="window.__fbFail=1"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js" onerror="window.__fbFail=1"></script>
 </head>
-<body>
-
-    <div class="container">
-        <header>
-            <h1>RO EP20 不死者</h1>
-            <p class="subtitle">RO EP20 - 主線任務全流程攻略</p>
-        </header>
-
-        <!-- 任務材料 Dashboard -->
-        <section class="card">
-            <div class="card-header">
-                <h2>任務材料需求</h2>
-                <button id="toggle-materials" class="btn-toggle">折疊</button>
-            </div>
-            <div id="materials-content" class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 80px">圖示</th>
-                            <th>材料名稱</th>
-                            <th style="width: 100px">數量</th>
-                            <th>取得/用途</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><img src="images/butterfly_wing.png" class="item-icon" alt="蝴蝶翅膀"></td>
-                            <td>蝴蝶翅膀</td>
-                            <td>10 個以上</td>
-                            <td>用於任務間快速回城</td>
-                        </tr>
-                        <tr>
-                            <td><img src="images/transformation_scroll.png" class="item-icon" alt="蠕蟲變身卷軸"></td>
-                            <td>蠕蟲變身卷軸</td>
-                            <td>3 個以上</td>
-                            <td>進入蛇城區域對話必備</td>
-                        </tr>
-                        <tr>
-                            <td><img src="images/large_gray_feather.png" class="item-icon" alt="巨大的暗灰羽毛"></td>
-                            <td>巨大的暗灰羽毛</td>
-                            <td>20 個</td>
-                            <td>鋼德家族任務 (Pamosugand) 交付</td>
-                        </tr>
-                        <tr>
-                            <td><img src="images/copos_head_feather.png" class="item-icon" alt="可波的冠毛"></td>
-                            <td>可波的冠毛</td>
-                            <td>30 個</td>
-                            <td>鋼德家族任務 (Holsivigand) 交付</td>
-                        </tr>
-                        <tr>
-                            <td><img src="images/frozen_insect_shell.png" class="item-icon" alt="冰凍蟲殼"></td>
-                            <td>冰凍蟲殼</td>
-                            <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
-                        </tr>
-                        <tr>
-                            <td><img src="images/shining_seaweed_stem.png" class="item-icon" alt="閃亮海帶莖"></td>
-                            <td>閃亮海帶莖</td>
-                            <td>3 個</td>
-                            <td>尾聲調查 (Diver lwin) 交付 備註: 可狩獵同時撿取</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <div id="quest-flow">
-            <!-- 一、 任務啟動與初步調查 -->
-            <h3 class="section-title">一、 任務啟動與初步調查</h3>
-            
-            <div class="step-item" data-id="step-1-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">任務起點：前往冰霜堡壘內部，向左走到底與「Horuru」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 33/185">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Horuru」對話：/navi icas_in 33/185
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-1-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">前置檢查：前往伊斯加爾特入口處與「Horuru」對話</span>
-                    <div class="step-sub-text">※ 若未完成前置「埋蛤蜊任務」，請先完成後可接取。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 27/126">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        前置任務座標：/navi icecastle 27/126
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-1-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">進一步調查：回到冰霜堡壘內部，向右走到底與「Leon」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 262/202">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Leon」對話：/navi icas_in 262/202
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-1-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">地圖轉場：使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀回城，接著使用 [集結]傳送至蛇巢</span>
-                    <div class="step-sub-text">※ 點擊任意 NPC (非變身狀態) 即可傳出蛇巢。</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-1-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">峽谷調查：前往古代冰風的峽谷東部，與門口「Lehar」對話兩次</span>
-                    <div class="step-sub-text">觸發自動傳送。</div>
-                    <button class="btn-navi" data-navi="/navi jor_back5 350/75">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Lehar」對話：/navi jor_back5 350/75
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-1-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">與 Mariam 會合：前往地圖右上角與「Mariam」對話</span>
-                    <div class="step-sub-text">觸發自動傳送。</div>
-                    <button class="btn-navi" data-navi="/navi jor_back5 353/357">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Mariam」對話：/navi jor_back5 353/357
-                    </button>
-                </div>
-            </div>
-
-            <!-- 二、 堡壘周邊與探險副本 -->
-            <h3 class="section-title">二、 堡壘周邊與探險副本</h3>
-            
-            <div class="step-item" data-id="step-2-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">回報進度：集結後進入冰霜堡壘內部，與「Leon」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 262/202">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Leon」對話：/navi icas_in 262/202
-                    </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">物資確認：往上走與「Horuru」對話，結束後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 259/219">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Horuru」對話：/navi icas_in 259/219
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">旅館探訪：前往旅館內，與旁邊的「Caruru」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 92/113">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Caruru」對話：/navi icas_in 92/113
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">藥水店調查：前往藥水店與「Toruru」對話，完成後往下走出傳點</span>
-                    <button class="btn-navi" data-navi="/navi icas_in 113/41">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Toruru」對話：/navi icas_in 113/41
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">後街聯絡：前往地圖右上方與「Backstreet」對話</span>
-                    <div class="step-sub-text">完成後使用 [集結]。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 210/242">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Backstreet」對話：/navi icecastle 210/242
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">家族對話：進入冰霜堡壘內部，分別與「Horuru」及「Velgund」對話</span>
-                    <div class="step-sub-text">完成後請使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀 及 [集結]。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icas_in 259/219">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            與「Horuru」對話：/navi icas_in 259/219
-                        </button>
-                        <button class="btn-navi" data-navi="/navi icas_in 260/205">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            與「Velgund」對話：/navi icas_in 260/205
-                        </button>
-                    </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">峽谷探索副本：前往冰霜堡壘門口，[建立單人組隊] 與「Lehar」對話開啟副本</span>
-                    <div class="step-sub-text">※ 副本流程內皆有導航指引。</div>
-                    <button class="btn-navi" data-navi="/navi icecastle 201/171">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        開啟副本：/navi icecastle 201/171
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本收尾：副本結束後，[回到組隊] 並使用 [集結]</span>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-2-9">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">重要會談：進入冰霜堡壘內部，與「Miriam」及「Lazy」對話</span>
-                    <div class="step-sub-text">完成後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀、[集結]、並前往 [蛇巢]。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 259/200">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Miriam」及「Lazy」對話：/navi icas_in 259/200
-                    </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <!-- 三、 蛇城根部與教團調查 -->
-            <h3 class="section-title">三、 蛇城根部與教團調查</h3>
-            <div class="step-sub-text keyword" style="border: 1px solid var(--danger); background: #450a0a;">⚠️ 重要提示：進入蛇城區域後，與蠕蟲類 NPC 對話前必須保持「蠕蟲變身」狀態。</div>
-
-            <div class="step-item" data-id="step-3-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">進入根部：在蛇巢大門前使用 <img src="images/transformation_scroll.png" class="item-icon">變身卷軸，與「Lazy」及「Horuru」對話</span>
-                    <div class="step-sub-text">傳送至「蛇城的根部一樓」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_nest 38/270">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Lazy」及「Horuru」對話：/navi jor_nest 38/270
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-3-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">清剿任務：在一樓與「蠕蟲巫師」對話</span>
-                    <div class="step-sub-text">擊殺 5 隻「高級蠕蟲巫師」後，前往二樓擊殺 5 隻「耶夢加得教團巫師」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_root1 32/34">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「蠕蟲巫師」對話：/navi jor_root1 32/34
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-3-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">前往神聖根部：在二樓往右上角移動觸發自動傳送</span>
-                    <div class="step-sub-text">與「Lazy」、「Miriam」、「Horuru」對話完由左上方前往「神聖的根部」。</div>
-                    <button class="btn-navi" data-navi="/navi jor_root2 25/288">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        前往神聖的根部：/navi jor_root2 25/288
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-3-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">神聖調查：抵達神聖的根部後，與「Rgan」對話兩次</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 162/86">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Rgan」對話：/navi jor_sanct 162/86
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-3-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">採集任務：往下方傳點移動收集 3 個「蛇莓果」</span>
-                    <div class="step-sub-text">地圖標示 + 號，完成後向「Rgan」回報。</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-3-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">最終確認：往上方移動與「Rgan」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 185/128">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Rgan」對話：/navi jor_sanct 185/128
-                    </button>
-                </div>
-            </div>
-
-            <!-- 四、 鋼德家族與根部區域任務 -->
-            <h3 class="section-title">四、 鋼德家族與根部區域任務</h3>
-
-            <div class="step-item" data-id="step-4-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">新階段啟動：與「Rgan」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 42/105">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Rgan」對話：/navi jor_sanct 42/105
-                    </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">鋼德家族五大支線 (建議依逆時針順序完成)</span>
-                    <div class="step-sub-text">
-                        • <b>Gomiagand</b>: 對話選項順序 1 -> 1 -> 1 -> 1 -> 2 -> 2 -> 2<br>
-                        • <b>Pamosugand</b>: 交付 20 個 <img src="images/large_gray_feather.png" class="item-icon">巨大的暗灰羽毛<br>
-                        • <b>Nasioramigand</b>: 進行一般對話<br>
-                        • <b>Holsivigand</b>: 對話選項順序 2 -> 1 -> 2 -> 1 -> 1 -> 1，交付 30 個 <img src="images/copos_head_feather.png" class="item-icon">可波的冠毛<br>
-                        • <b>Eriligand</b>: 對話兩次，第二次選項順序 2 -> 3 -> 2
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">環境互動：與地圖上標示 + 號的「Tower」及「Puddle」對話</span>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">根部二樓深度調查：往下方傳點移動，與 3 個黃色 + 號對話</span>
-                    <div class="step-sub-text">(Garbage Dumb / Storage / Mountain of Junk)</div>
-                    <button class="btn-navi" data-navi="/navi jor_root2 25/285">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與標示點對話：/navi jor_root2 25/285
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">家族長老：回到神聖的根部，與「Sarekgand」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 156/171">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Sarekgand」對話：/navi jor_sanct 156/171
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">檢查哨：與「Inspector」對話</span>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 22/283">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Inspector」對話：/navi jor_sanct 22/283
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">守衛清剿：進入上方傳點，擊殺「耶夢加得守衛」P 2 隻、Y 1 隻</span>
-                    <div class="step-sub-text">完成後向「Inspector」回報。</div>
-                    <button class="btn-navi" data-navi="/navi jor_sanct 22/283">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        回報「Inspector」：/navi jor_sanct 22/283
-                    </button>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-4-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">迷宮突破：往上方傳點移動，依序點擊標示觸發對話並開啟副本</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_maze 13/48">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            迷宮 Step 1：/navi jor_maze 13/48
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 17/154">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            迷宮 Step 2：/navi jor_maze 17/154
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 140/71">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            開啟副本：/navi jor_maze 140/71
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 五、 多人副本與尾聲 -->
-            <h3 class="section-title">五、 多人副本與尾聲</h3>
-
-            <div class="step-item" data-id="step-5-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">流兵地帶副本：依循副本內導航指引完成</span>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-2">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本撤離：與出口的「Lehar」對話，往右移動並使用 [集結]</span>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-3">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">回報 Lehar：在冰霜堡壘內部，上樓梯向右走到底與其對話</span>
-                    <div class="step-sub-text">完成後使用 <img src="images/butterfly_wing.png" class="item-icon">蝴蝶翅膀。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 226/255">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Lehar」對話：/navi icas_in 226/255
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-4">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">瀑布潛水員 (1)：在伊斯加爾特瀑布尋找「Diver lwin」</span>
-                    <div class="step-sub-text">需求：交付 <img src="images/frozen_insect_shell.png" class="item-icon">冰凍蟲殼 3 個、及擊殺「Ice Gangu」5 隻。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icecastle 141/210">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            座標：/navi icecastle 141/210
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_tail 148/273">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            建議怪點：/navi jor_tail 148/273
-                        </button>
-                    </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-5">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">瀑布潛水員 (2)：與「Diver lwin」再次對話</span>
-                    <div class="step-sub-text">需求：交付 <img src="images/shining_seaweed_stem.png" class="item-icon">閃亮海帶莖 3 個、及擊殺「Shining Seaweed」5 隻。</div>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi icecastle 141/210">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            座標：/navi icecastle 141/210
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_tail 148/273">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            建議怪點：/navi jor_tail 148/273
-                        </button>
-                    </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-6">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">小小的小潮副本：依序與「Koruru」、「Leon」、「Lehar」會談後開啟副本</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_twice 238/330">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Leon 1：/navi jor_twice 238/330
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_twice 158/243">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Leon 2：/navi jor_twice 158/243
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_twice 164/244">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Lehar：/navi jor_twice 164/244
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-7">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本進行：跟隨「Lehar」移動，完成副本內對話</span>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x15</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-8">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本後清剿：出副本後擊殺「耶夢加得教團巫師」 5 隻</span>
-                    <div class="step-sub-text">完成後回報任務。</div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-9">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">再次前往迷宮：從左下角移動，與「Lehar」對話</span>
-                    <div class="step-sub-text"><img src="images/transformation_scroll.png" class="item-icon"> [需保持變身狀態]。</div>
-                    <button class="btn-navi" data-navi="/navi jor_maze 142/69">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Lehar」對話：/navi jor_maze 142/69
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-10">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">迷宮深度調查：依序前往 5 個標示點對話</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_maze 54/237">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            調查點 1：/navi jor_maze 54/237
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 281/189">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            調查點 2：/navi jor_maze 281/189
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 154/241">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            調查點 3：/navi jor_maze 154/241
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 148/34">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            調查點 4：/navi jor_maze 148/34
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_maze 199/34">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            調查點 5：/navi jor_maze 199/34
-                        </button>
-                    </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x20</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-11">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">後續串聯：依序與「Nyar」、「Lazy」對話</span>
-                    <div class="step-sub-text">跟隨引導移動即可。</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-12">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">堡壘最終動員：與冰霜堡壘內部的「Leon」對話</span>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-13">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">蛇巢再訪：由上方入口進入找到「Mark」</span>
-                    <button class="btn-navi" data-navi="/navi jor_root1 32/74">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Mark」對話：/navi jor_root1 32/74
-                    </button>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-14">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">樹根指引：在傳點外與 3 個黃色 + 號完成互動</span>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-15">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">聖地前夕：在神聖的根部與「Mark」進行最終談話</span>
-                    <div style="display: flex; flex-direction: column; gap: 4px;">
-                        <button class="btn-navi" data-navi="/navi jor_snact 133/86">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Mark：/navi jor_snact 133/86
-                        </button>
-                        <button class="btn-navi" data-navi="/navi jor_snact 150/206">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                            Bishop：/navi jor_snact 150/206
-                        </button>
-                    </div>
-                    <div class="reward-pill">獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-16">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">被分離的聖地最終副本：擊殺「Demi Rasgand」</span>
-                    <div class="step-sub-text">與「White Cat」對話，隨後與「Leon」及「Aurelie」對話開啟副本。</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-17">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">副本回報：出副本後與「Aurelie」對話</span>
-                    <div class="step-sub-text">自動傳回伊斯加爾特。</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-18">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">主線完結：進入建築與「Voglinde」對話</span>
-                    <button class="btn-navi" data-navi="/navi icas_in2 253/118">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Voglinde」對話：/navi icas_in2 253/118
-                    </button>
-                    <div class="reward-pill">總結獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x30</div>
-                </div>
-            </div>
-
-            <div class="step-item" data-id="step-5-19">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">視窗清理：與「Oryrio」對話</span>
-                    <div class="step-sub-text">關閉所有相關任務視窗。</div>
-                    <button class="btn-navi" data-navi="/navi icas_in 100/62">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Oryrio」對話：/navi icas_in 100/62
-                    </button>
-                </div>
-            </div>
-
-            <div class="final-congratulations">
-                <h2>🏆 EP20 主線任務全數完成！</h2>
-                <p>累計可取得約 230 個 <img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」。</p>
-            </div>
-
-            <!-- 六、 支線：墮落天使冰蛞蝓副本 -->
-            <h3 class="section-title">六、 支線：墮落天使冰蛞蝓副本</h3>
-            
-            <div class="step-item" data-id="step-6-1">
-                <div class="checkbox-wrapper"><input type="checkbox" class="custom-cb"></div>
-                <div class="step-content">
-                    <span class="step-main-text">支線啟動：與「Iwin Delivery」對話並跟隨引導</span>
-                    <button class="btn-navi" data-navi="/navi icecastle 109/240">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
-                        與「Iwin Delivery」對話：/navi icecastle 109/240
-                    </button>
-                    <div class="reward-pill">完成獎勵：<img src="images/sacred_cat_whiskers.png" class="item-icon">「神聖貓咪鬍鬚」x10</div>
-                </div>
-            </div>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+<div id="ptr-indicator"></div>
+<div id="scroller" class="min-h-screen">
+  <!-- 主應用程式 -->
+  <div id="appContainer" style="display:none;">
+    <div class="app mx-auto max-w-7xl px-3 py-3 sm:px-4 lg:px-6">
+      <header class="topbar rounded-xl border border-slate-800/80 bg-slate-900/95 shadow-2xl shadow-black/30">
+        <div class="brand">
+          <h1>Da Ka - 打卡</h1>
+          <p>單頁通勤、工作、購物、備註、匯出、同步</p>
         </div>
 
-        <footer class="footer-actions">
-            <button id="reset-progress" class="btn-reset">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                清除所有進度並重新開始
-            </button>
-        </footer>
+        <div class="status-row flex flex-wrap items-center justify-center gap-2">
+          <div class="pill pill--ok rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-300"><strong id="syncBadge" class="text-emerald-300">OFFLINE</strong></div>
+          <div class="pill rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-300"><strong id="recordCountLabel" class="text-sky-400">0</strong> 筆記錄</div>
+          <div class="pill rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1.5 text-[11px] font-semibold text-sky-300"><strong id="selectedCountLabel" class="text-sky-300">0</strong> 筆已勾選</div>
+        </div>
+ 
+        <div class="actions flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+          <button class="btn btn-primary rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-[11px] font-semibold text-sky-300 transition hover:bg-sky-500/20" id="refreshBtn">重新整理</button>
+          <button class="btn btn-commute rounded-lg border border-sky-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-sky-400 transition hover:border-sky-400 hover:bg-slate-900" id="commuteBtn">通勤</button>
+          <button class="btn btn-work rounded-lg border border-emerald-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-emerald-400 transition hover:border-emerald-400 hover:bg-slate-900" id="workBtn">工作</button>
+          <button class="btn btn-shopping rounded-lg border border-violet-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-violet-400 transition hover:border-violet-400 hover:bg-slate-900" id="shoppingBtn">購物</button>
+          <div class="dropdown relative">
+            <button class="btn btn-ghost rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-[11px] font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-700" id="exportBtn">⋯ 更多 ▼</button>
+            <div id="exportMenu" aria-label="更多選單" class="absolute right-0 top-full z-[2000] mt-2 hidden min-w-[140px] overflow-hidden rounded-lg border border-slate-700 bg-slate-900/95 shadow-2xl shadow-black/40">
+              <button type="button" data-export="csv" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-sky-300">匯出 CSV</button>
+              <button type="button" data-export="txt" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-sky-300">匯出 TXT</button>
+              <button type="button" data-export="md" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-sky-300">匯出 MD</button>
+              <button type="button" id="clearBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-rose-400 transition hover:bg-slate-800">清除全部</button>
+              <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登入同步</button>
+              <button type="button" id="btnLogout" class="block w-full px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登出</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout mt-4">
+        <section class="panel panel--primary rounded-xl border border-slate-800/80 bg-slate-900/90 shadow-lg shadow-black/20">
+          <div class="panel-header border-b border-slate-800/80 bg-slate-950/50 px-4 py-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-100">記錄區</h3>
+              <small class="text-[11px] text-slate-400">依日期分組顯示，可直接編輯備註</small>
+            </div>
+            <small id="listHint" class="text-[11px] text-amber-300">請勾選兩筆以上時間以計算總時數</small>
+          </div>
+          <div class="panel-body p-4">
+            <div id="log"></div>
+          </div>
+          <div class="toolbar-note border-t border-slate-800/80 bg-slate-950/40 px-4 py-3 text-[11px] text-slate-400">
+            本機優先：資料先存 localStorage，登入且有網路時才同步 Firebase。
+          </div>
+        </section>
+ 
+        <aside class="panel rounded-xl border border-slate-800/80 bg-slate-900/90 shadow-lg shadow-black/20">
+          <div class="panel-header border-b border-slate-800/80 bg-slate-950/50 px-4 py-3">
+            <div>
+              <h4 class="text-sm font-semibold text-slate-100">摘要面板</h4>
+              <small class="text-[11px] text-slate-400">快速查看當前狀態</small>
+            </div>
+            <small id="nowMiniLabel" class="text-[11px] text-slate-400"></small>
+          </div>
+          <div class="panel-body p-4">
+            <div class="stats-grid grid gap-2 sm:grid-cols-2">
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">總筆數</span>
+                <strong id="recordStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">全部記錄</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">已勾選</span>
+                <strong id="checkedStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">計算區間用</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">通勤數</span>
+                <strong id="commuteCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">通勤類型</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">工作數</span>
+                <strong id="workCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">工作類型</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3 sm:col-span-2">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">購物數</span>
+                <strong id="shoppingCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">購物類型</small>
+              </div>
+            </div>
+ 
+            <ul class="info-list mt-4 space-y-2">
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">儲存方式</span><span class="font-semibold text-slate-100">localStorage（登入後 + Firebase）</span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">目前時間</span><span class="font-semibold text-slate-100" id="sideNowLabel">—</span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">同步狀態</span><span class="font-semibold text-slate-100" id="syncStateLabel">OFFLINE</span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">最近更新</span><span class="font-semibold text-slate-100" id="updatedAtLabel">—</span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">使用者 ID</span><span class="font-semibold text-slate-100" id="userIdLabel">—</span></li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+
+      <section class="hero rounded-xl border border-slate-800/80 bg-slate-900/90 p-4 shadow-lg shadow-black/20 sm:p-5">
+        <div class="hero-copy">
+          <h2 class="mb-2 text-sm font-semibold text-slate-100">打卡摘要</h2>
+          <p class="text-[11px] leading-6 text-slate-400">
+            下方是目前選取時間的總工時、通勤、工作、購物與同步狀態。你可以先看上方記錄，再往下核對統計。
+          </p>
+        </div>
+        <div class="hero-metrics mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="metric rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+            <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">總工時</span>
+            <strong id="totalLabel" class="block text-lg font-semibold text-emerald-400">—</strong>
+            <em class="mt-1 block text-[10px] text-sky-400">勾選兩筆以上自動計算</em>
+          </div>
+          <div class="metric rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+            <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">通勤</span>
+            <strong id="commuteTotalLabel" class="block text-lg font-semibold text-sky-400">—</strong>
+            <em class="mt-1 block text-[10px] text-sky-400">通勤類型區間</em>
+          </div>
+          <div class="metric rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+            <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">工作</span>
+            <strong id="workTotalLabel" class="block text-lg font-semibold text-emerald-400">—</strong>
+            <em class="mt-1 block text-[10px] text-sky-400">工作類型區間</em>
+          </div>
+          <div class="metric rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+            <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">購物</span>
+            <strong id="shoppingTotalLabel" class="block text-lg font-semibold text-violet-400">—</strong>
+            <em class="mt-1 block text-[10px] text-sky-400">購物類型區間</em>
+          </div>
+        </div>
+      </section>
     </div>
+  </div>
+</div>
 
-    <button id="back-to-top" class="btn-top" title="回到頂部">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
-    </button>
+  <!-- 登入 modal（email + 密碼，無 popup 無 redirect） -->
+  <div id="loginModal" class="hidden fixed inset-0 z-[200] items-center justify-center bg-black/55" style="display:none;">
+    <div class="panel w-80 rounded-xl border border-slate-700 bg-slate-900/95 p-5 shadow-2xl shadow-black/40">
+      <h3 class="mb-4 text-sm font-semibold text-slate-100">🔑 登入同步</h3>
+      <input id="loginEmail" type="email" placeholder="Email" class="mb-3 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
+      <input id="loginPass" type="password" placeholder="密碼" class="mb-4 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
+      <div class="flex gap-2.5">
+        <button class="btn btn-primary flex-1" id="loginSubmit">登入</button>
+        <button class="btn btn-ghost" id="loginCancel">取消</button>
+      </div>
+    </div>
+  </div>
 
-    <div id="toast">已複製座標到剪貼簿</div>
-
-    <script>
-        // Common UI Elements
-        const toast = document.getElementById('toast');
-        const questSteps = document.querySelectorAll('.step-item');
-
-        // UI Logic: Materials Toggle
-        const toggleBtn = document.getElementById('toggle-materials');
-        const materialsContent = document.getElementById('materials-content');
-        
-        function updateMaterialsUI(isVisible) {
-            materialsContent.style.display = isVisible ? 'block' : 'none';
-            toggleBtn.textContent = isVisible ? '折疊' : '展開';
-            localStorage.setItem('ro_modern_materials_visible', isVisible);
-        }
-
-        const savedMaterialsVisible = localStorage.getItem('ro_modern_materials_visible');
-        updateMaterialsUI(savedMaterialsVisible === null || savedMaterialsVisible === 'true');
-
-        toggleBtn.addEventListener('click', () => {
-            const isVisible = materialsContent.style.display !== 'none';
-            updateMaterialsUI(!isVisible);
-        });
-
-        // Progress Logic
-        const resetBtn = document.getElementById('reset-progress');
-        
-        function saveProgress() {
-            const progress = {};
-            questSteps.forEach(step => {
-                const id = step.getAttribute('data-id');
-                const isChecked = step.querySelector('.custom-cb').checked;
-                progress[id] = isChecked;
-            });
-            localStorage.setItem('ro_modern_ep20_progress', JSON.stringify(progress));
-        }
-
-        function loadProgress() {
-            const savedProgress = localStorage.getItem('ro_modern_ep20_progress');
-            if (savedProgress) {
-                const progress = JSON.parse(savedProgress);
-                questSteps.forEach(step => {
-                    const id = step.getAttribute('data-id');
-                    if (progress[id]) {
-                        step.querySelector('.custom-cb').checked = true;
-                        step.classList.add('completed');
-                    }
-                });
-            }
-        }
-
-        loadProgress();
-
-        questSteps.forEach(step => {
-            const checkbox = step.querySelector('.custom-cb');
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    step.classList.add('completed');
-                } else {
-                    step.classList.remove('completed');
-                }
-                saveProgress();
-            });
-        });
-
-        resetBtn.addEventListener('click', () => {
-            if (confirm('確定要清除所有已完成的任務進度嗎？這將會重置所有勾選狀態。')) {
-                localStorage.removeItem('ro_modern_ep20_progress');
-                questSteps.forEach(step => {
-                    step.querySelector('.custom-cb').checked = false;
-                    step.classList.remove('completed');
-                });
-                
-                // Show temporary reset toast
-                const originalText = toast.textContent;
-                toast.textContent = '進度已全部重置';
-                toast.classList.add('show');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                    setTimeout(() => {
-                        toast.textContent = originalText;
-                    }, 300);
-                }, 2000);
-            }
-        });
-
-        // Back to Top Logic
-        const backToTopBtn = document.getElementById('back-to-top');
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopBtn.classList.add('show');
-            } else {
-                backToTopBtn.classList.remove('show');
-            }
-        });
-
-        backToTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Navi Logic
-        document.querySelectorAll('.btn-navi').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const text = btn.getAttribute('data-navi');
-                navigator.clipboard.writeText(text).then(() => {
-                    toast.classList.add('show');
-                    setTimeout(() => toast.classList.remove('show'), 2000);
-                });
-            });
-        });
-    </script>
+<script src="app.js"></script>
 </body>
 </html>
