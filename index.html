@@ -11,7 +11,7 @@
 body {
   font-family: "Segoe UI", system-ui, -apple-system, "Microsoft JhengHei", sans-serif;
   font-size: 14px;
-  background: #ffffff url(images/wallpaper.png) center/100% 100% fixed no-repeat;
+  background: #ffffff;
   color: #111111;
   line-height: 1.7;
   padding: 24px 12px 60px;
@@ -20,8 +20,8 @@ body {
 body::after {
   content: "";
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.50);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(rgba(0,0,0,0.50), rgba(0,0,0,0.50)), url(images/bg.webp) center/100% 100% no-repeat;
   pointer-events: none;
   z-index: -1;
 }
@@ -86,19 +86,19 @@ td img { width: 26px; height: 26px; object-fit: contain; vertical-align: middle;
 .stage-hd h3 { font-size: 15px; font-weight: 700; }
 .stage-hd .warn { font-size: 12px; color: #b00000; margin-top: 3px; }
 .step {
-  display: flex; gap: 10px; align-items: flex-start;
+  display: flex; align-items: flex-start;
   padding: 8px 14px;
   border-bottom: 1px dashed #bbb;
 }
 .step:last-child { border-bottom: none; }
-.step input[type=checkbox] { margin-top: 4px; width: 15px; height: 15px; }
+.step input[type=checkbox] { margin: 4px 10px 0 0; width: 15px; height: 15px; }
 .step .id { color: #999; font-size: 11px; margin-right: 3px; font-family: Consolas, monospace; }
 .step .op { color: #111; }
 .step .note { font-size: 12px; color: #666; margin-top: 2px; }
 .step .note::before { content: "// "; color: #999; }
 .step .material { font-size: 12px; color: #0055aa; margin-top: 2px; }
 .step .reward { font-size: 12px; color: #aa7700; margin-top: 2px; }
-.mat-icon { width: 18px; height: 18px; object-fit: contain; vertical-align: middle; margin: 0 2px; image-rendering: pixelated; }
+.mat-icon { width: 18px; height: 18px; object-fit: contain; vertical-align: middle; margin: 0 2px; image-rendering: -webkit-optimize-contrast; image-rendering: pixelated; }
 .step.done { background: #fafafa; }
 .step.done .op { text-decoration: line-through; color: #999; }
 .navi-btn {
@@ -110,7 +110,8 @@ td img { width: 26px; height: 26px; object-fit: contain; vertical-align: middle;
   padding: 1px 7px; margin-left: 5px; cursor: pointer;
 }
 .navi-btn:hover { background: #111; color: #fff; }
-.navi-row { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px; }
+.navi-row { margin-top: 5px; display: flex; flex-wrap: wrap; }
+.navi-row .navi-btn { margin: 0 4px 4px 0; }
 
 /* 底部 */
 footer { text-align: center; margin-top: 24px; }
@@ -281,7 +282,9 @@ const LS_KEY = 'ro_ep20_progress_v2';
 let progress = {};
 try { progress = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch (e) { progress = {}; }
 
-function save() { localStorage.setItem(LS_KEY, JSON.stringify(progress)); }
+function save() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(progress)); } catch (e) {}
+}
 
 function copyNavi(navi) {
   const text = '/navi ' + navi;
