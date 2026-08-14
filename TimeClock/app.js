@@ -1,5 +1,5 @@
 const firebaseConfig = {
-  apiKey: "[REDACTED]",
+  apiKey: "AIzaSyDXnzQdc0Ww42hKNaKhjQVajoZDXu8epuo",
   authDomain: "chiwen1989-1.firebaseapp.com",
   databaseURL: "https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "chiwen1989-1",
