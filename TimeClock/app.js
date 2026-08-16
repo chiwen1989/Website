@@ -205,9 +205,10 @@ function setupFirebaseListener() {
     }
 
     // 如果數據有變化，更新並重新渲染
+    // 優先使用遠端數據（確保刪除同步），並保留本地的 startTime
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
     console.log('[Firebase] 數據有變化:', changed, '合併後:', merged.map(t => t.id).join(', '));
-    if (changed) {
+    if (changed || toDelete.length > 0) {
       times = merged;
       persistLocalCache();
       // 先恢復計時器，再渲染（確保按鈕狀態正確）
