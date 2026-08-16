@@ -94,8 +94,22 @@ document.getElementById('loginCancel').addEventListener('click', () => { documen
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 document.getElementById('appContainer').style.display = 'block';
-// 無論 Firebase 狀態如何，立即初始化按鈕
-initAfterAuth();
+
+// 等待 Firebase 或立即初始化
+function waitForFirebase() {
+  if (window.firebaseReady) {
+    initAfterAuth();
+    return;
+  }
+  // 等 2 秒，如果 Firebase 還沒載入就初始化（離線模式）
+  setTimeout(() => {
+    if (!window.firebaseReady) {
+      console.log('[App] Firebase 未載入，使用離線模式');
+      initAfterAuth();
+    }
+  }, 2000);
+}
+waitForFirebase();
 
 function initAfterAuth() {
   log = document.getElementById('log');
