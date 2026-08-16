@@ -141,9 +141,10 @@ function setupFirebaseListener() {
   cleanupFirebaseListener();
   if (!fbReady || !userId) return;
   firebaseTimesRef = firebase.database().ref(`users/${userId}/times`);
+  console.log('[Firebase] 設置監聽器，userId:', userId, '路徑:', firebaseTimesRef.toString());
   firebaseTimesListener = snapshot => {
-    setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     const remote = normalizeRemoteSnapshot(snapshot.val());
+    console.log('[Firebase] 收到同步更新，遠端數據:', remote.map(r => r.id).join(', ') || '空');
 
     // 建立 ID 集合
     const localIds = new Set(times.map(t => t.id));
@@ -151,10 +152,12 @@ function setupFirebaseListener() {
 
     // 找出需要刪除的項目（本地有但遠端沒有了）
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
+    console.log('[Firebase] 本地 ID:', Array.from(localIds).join(', '), '遠端 ID:', Array.from(remoteIds).join(', '), '檢測到刪除:', toDelete.length > 0 ? toDelete.join(', ') : '無');
 
     // 先刪除本地不存在的項目
     if (toDelete.length > 0) {
       times = times.filter(t => !toDelete.includes(t.id));
+      console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '));
     }
 
     // 合併數據：保留本地的 startTime（進行中的計時器）
@@ -172,6 +175,7 @@ function setupFirebaseListener() {
 
     // 如果數據有變化，更新並重新渲染
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
+    console.log('[Firebase] 數據有變化:', changed, '合併後:', merged.map(t => t.id).join(', '));
     if (changed) {
       times = merged;
       persistLocalCache();
@@ -182,6 +186,7 @@ function setupFirebaseListener() {
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   };
   firebaseTimesRef.on('value', firebaseTimesListener);
+  console.log('[Firebase] 監聽器設置完成');
 }
 
 function normalizeTimes(list) {
@@ -291,7 +296,7 @@ function render() {
   groups.forEach(([date, entries]) => {
     const det = document.createElement('details'); det.className = 'group overflow-hidden rounded-lg border border-slate-800 bg-slate-900/70'; det.open = date === todayKey; const sum = document.createElement('summary'); sum.className = 'flex cursor-pointer items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/60 px-3 py-2.5 text-[12px] text-slate-200'; sum.innerHTML = `<span class="group-title flex items-center gap-2"><strong class="text-sky-300">${date}</strong><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">${entries.length} 筆</span></span><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">點擊可收合</span>`; det.appendChild(sum);
     const wrap = document.createElement('div'); wrap.className = 'entries space-y-2 p-2';
-    entries.forEach(({ item, i }) => { const row = document.createElement('article'); row.className = 'entry rounded-lg border border-slate-800 bg-slate-950/70 p-3'; const main = document.createElement('div'); main.className = 'entry-main flex flex-col gap-2'; const top = document.createElement('div'); top.className = 'entry-top flex flex-wrap items-center gap-2'; const tTxt = document.createElement('span'); tTxt.className = 'entry-time text-[12px] font-semibold text-slate-100'; tTxt.textContent = fmtEntry(new Date(item.t)); const typeTag = document.createElement('span'); const meta = TYPE_META[item.type] || TYPE_META.work; typeTag.className = `tag rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className === 'tag-commute' ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : meta.className === 'tag-work' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : meta.className === 'tag-shopping' ? 'border-violet-500/30 bg-violet-500/10 text-violet-300' : meta.className === 'tag-event' ? 'border-orange-500/30 bg-orange-500/10 text-orange-300' : 'border-slate-600 bg-slate-900/70 text-slate-400'}`; typeTag.textContent = meta.label; top.append(tTxt, typeTag); const note = document.createElement('input'); note.className = 'entry-note w-full rounded-md border border-slate-700 bg-slate-900/80 px-2.5 py-2 text-[11px] text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none'; note.type = 'text'; note.placeholder = '備註'; note.value = item.note || ''; note.dataset.idx = i; note.addEventListener('input', onNoteInput); const timerCont = document.createElement('div'); timerCont.className = 'timer-controls flex items-center gap-2 mt-2'; const timerBtn = document.createElement('button'); timerBtn.type = 'button'; timerBtn.className = `timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition ${timers[item.id] ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20' : 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'}`; timerBtn.textContent = timers[item.id] ? '停止計時' : '計時'; timerBtn.onclick = e => { e.stopPropagation(); startTimer(i); }; const timerDisp = document.createElement('span'); timerDisp.className = 'timerDisplay text-[10px] text-amber-300'; timerDisp.dataset.idx = i; timerDisp.dataset.entryId = item.id; timerDisp.textContent = timers[item.id] ? formatMsToHMS(Date.now() - timers[item.id].startTime) : '00:00:00'; timerCont.append(timerBtn, timerDisp); main.append(top, note, timerCont); const act = document.createElement('div'); act.className = 'entry-actions mt-2 flex justify-end'; const del = document.createElement('button'); del.type = 'button'; del.className = 'delBtn rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-rose-300 transition hover:bg-rose-500/20'; del.textContent = '刪除'; del.onclick = e => { e.stopPropagation(); removeEntry(i); }; act.appendChild(del); row.append(main, act); wrap.appendChild(row); }); det.appendChild(wrap); log.appendChild(det);
+    entries.forEach(({ item, i }) => { const row = document.createElement('article'); row.className = 'entry rounded-lg border border-slate-800 bg-slate-950/70 p-3'; const main = document.createElement('div'); main.className = 'entry-main flex flex-col gap-2'; const top = document.createElement('div'); top.className = 'entry-top flex flex-wrap items-center gap-2'; const tTxt = document.createElement('span'); tTxt.className = 'entry-time text-[12px] font-semibold text-slate-100'; tTxt.textContent = fmtEntry(new Date(item.t)); const typeTag = document.createElement('span'); const meta = TYPE_META[item.type] || TYPE_META.work; typeTag.className = `tag rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className === 'tag-commute' ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : meta.className === 'tag-work' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : meta.className === 'tag-shopping' ? 'border-violet-500/30 bg-violet-500/10 text-violet-300' : meta.className === 'tag-event' ? 'border-orange-500/30 bg-orange-500/10 text-orange-300' : 'border-slate-600 bg-slate-900/70 text-slate-400'}`; typeTag.textContent = meta.label; top.append(tTxt, typeTag); const note = document.createElement('input'); note.className = 'entry-note w-full rounded-md border border-slate-700 bg-slate-900/80 px-2.5 py-2 text-[11px] text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none'; note.type = 'text'; note.placeholder = '備註'; note.name = `note-${i}`; note.id = `note-${item.id}`; note.value = item.note || ''; note.dataset.idx = i; note.addEventListener('input', onNoteInput); const timerCont = document.createElement('div'); timerCont.className = 'timer-controls flex items-center gap-2 mt-2'; const timerBtn = document.createElement('button'); timerBtn.type = 'button'; timerBtn.className = `timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition ${timers[item.id] ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20' : 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'}`; timerBtn.textContent = timers[item.id] ? '停止計時' : '計時'; timerBtn.onclick = e => { e.stopPropagation(); startTimer(i); }; const timerDisp = document.createElement('span'); timerDisp.className = 'timerDisplay text-[10px] text-amber-300'; timerDisp.dataset.idx = i; timerDisp.dataset.entryId = item.id; timerDisp.textContent = timers[item.id] ? formatMsToHMS(Date.now() - timers[item.id].startTime) : '00:00:00'; timerCont.append(timerBtn, timerDisp); main.append(top, note, timerCont); const act = document.createElement('div'); act.className = 'entry-actions mt-2 flex justify-end'; const del = document.createElement('button'); del.type = 'button'; del.className = 'delBtn rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-rose-300 transition hover:bg-rose-500/20'; del.textContent = '刪除'; del.onclick = e => { e.stopPropagation(); removeEntry(i); }; act.appendChild(del); row.append(main, act); wrap.appendChild(row); }); det.appendChild(wrap); log.appendChild(det);
   }); calcSelectedSummary();
 }
 
@@ -382,13 +387,16 @@ function promptForNoteAndAddEntry(type) {
 
 function removeEntry(idx) {
   const id = times[idx]?.id;
+  console.log('[刪除] 嘗試刪除記錄:', id, 'idx:', idx);
   if (id && timers[id]) {
     clearInterval(timers[id].intervalId);
     delete timers[id];
   }
   times.splice(idx, 1);
+  console.log('[刪除] 本地刪除後:', times.map(t => t.id).join(', '));
   persistLocalCache(); // 立即保存
   queueSave(); // Firebase 同步
+  console.log('[刪除] 已調用 queueSave');
   render();
 }
 
@@ -523,4 +531,24 @@ function addToGoogleCalendarToday() {
 
 function normalizeRemoteSnapshot(d){if(!d)return[]; if(Array.isArray(d))return normalizeTimes(d); return normalizeTimes(Object.values(d));}
 
-function saveToFirebase() { persistLocalCache(); const cur = fbReady ? auth.currentUser : null; if (!fbReady || !cur || !isAuthorizedUser(cur)) { setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant')); return; } userId = cur.uid; const storage = `users/${userId}/times`; setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant')); return firebase.database().ref(storage).set(times).then(() => { setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant')); }).catch(err => { console.error('save error', err); setSyncState('OFFLINE', lastSyncAt || '離線'); }); }
+function saveToFirebase() {
+  console.log('[Firebase] saveToFirebase 被調用，userId:', userId, 'times:', times.map(t => t.id).join(', '));
+  persistLocalCache();
+  const cur = fbReady ? auth.currentUser : null;
+  if (!fbReady || !cur || !isAuthorizedUser(cur)) {
+    console.log('[Firebase] 無法保存：未認證或用戶未授權');
+    setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+    return;
+  }
+  userId = cur.uid;
+  const storage = `users/${userId}/times`;
+  console.log('[Firebase] 保存到:', storage);
+  setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+  return firebase.database().ref(storage).set(times).then(() => {
+    console.log('[Firebase] 保存成功');
+    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+  }).catch(err => {
+    console.error('[Firebase] 保存失敗:', err);
+    setSyncState('OFFLINE', lastSyncAt || '離線');
+  });
+}
