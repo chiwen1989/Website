@@ -14,6 +14,21 @@
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100">
 <div id="ptr-indicator"></div>
+<div id="loginBanner" class="fixed top-0 left-0 right-0 z-50 hidden transition-all duration-300">
+  <div class="mx-2 mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3">
+      <span class="text-amber-400">🔒</span>
+      <div>
+        <p class="text-[12px] font-semibold text-amber-200" id="bannerTitle">需要登入以同步數據</p>
+        <p class="text-[11px] text-amber-300/70" id="bannerDesc">登入後可在多個裝置間同步記錄</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <button id="bannerClose" class="rounded px-2 py-1 text-[11px] text-amber-300 hover:bg-amber-500/20 transition">✕</button>
+      <button id="bannerLoginBtn" class="rounded-lg bg-amber-500/20 border border-amber-500/40 px-3 py-1.5 text-[11px] font-semibold text-amber-200 hover:bg-amber-500/30 transition">立即登入</button>
+    </div>
+  </div>
+</div>
 <div id="scroller" class="min-h-screen">
   <!-- 主應用程式 -->
   <div id="appContainer" style="display:none;">

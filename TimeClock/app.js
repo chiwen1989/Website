@@ -52,33 +52,46 @@ const TYPE_META = {
   unknown: { label: '未知', className: 'tag-unknown' }
 };
 
-if (fbReady) {
-  auth.onAuthStateChanged(user => {
-    if (user && isAuthorizedUser(user)) {
-      userId = user.uid;
-      document.getElementById('userIdLabel').textContent = userId;
-      document.getElementById('btnLogin').style.display = 'none';
-      document.getElementById('btnLogout').style.display = '';
-      setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
-      setupFirebaseListener();
-      initAfterAuth(); // 確保 Firebase 已就緒後才初始化
-    } else {
-      cleanupFirebaseListener();
-      userId = null;
-      document.getElementById('btnLogin').style.display = '';
-      document.getElementById('btnLogout').style.display = 'none';
-      if (user) {
-        alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
-        auth.signOut();
+function showLoginBanner() {
+  const banner = document.getElementById('loginBanner');
+  if (banner) banner.classList.remove('hidden');
+}
+function hideLoginBanner() {
+  const banner = document.getElementById('loginBanner');
+  if (banner) banner.classList.add('hidden');
+}
+
+function setupFirebaseListeners() {
+  if (auth) {
+    auth.onAuthStateChanged(user => {
+      if (user && isAuthorizedUser(user)) {
+        userId = user.uid;
+        document.getElementById('userIdLabel').textContent = userId;
+        document.getElementById('btnLogin').style.display = 'none';
+        document.getElementById('btnLogout').style.display = '';
+        setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
+        setupFirebaseListener();
+        hideLoginBanner(); // 已登入，隱藏提示
+        initAfterAuth();
+      } else {
+        cleanupFirebaseListener();
+        userId = null;
+        document.getElementById('btnLogin').style.display = '';
+        document.getElementById('btnLogout').style.display = 'none';
+        if (user) {
+          alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
+          auth.signOut();
+        }
+        setSyncState('OFFLINE', lastSyncAt || '');
+        showLoginBanner(); // 未登入，顯示提示
+        initAfterAuth();
       }
-      setSyncState('OFFLINE', lastSyncAt || '');
-      // 登出後重新初始化，確保按鈕可用
-      initAfterAuth();
-    }
-  });
-} else {
-  setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
-  initAfterAuth(); // 無 Firebase 時也初始化
+    });
+  } else {
+    setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
+    showLoginBanner(); // 無 Firebase，顯示提示
+    initAfterAuth();
+  }
 }
 
 function doLogin() {
@@ -103,9 +116,13 @@ document.getElementById('loginForm').addEventListener('submit', e => { e.prevent
 document.getElementById('btnLogout').addEventListener('click', () => { if (fbReady) auth.signOut(); });
 document.getElementById('loginCancel').addEventListener('click', () => { document.getElementById('loginModal').style.display = 'none'; });
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+// 登入提示橫幅
+document.getElementById('bannerClose').addEventListener('click', () => { document.getElementById('loginBanner').classList.add('hidden'); });
+document.getElementById('bannerLoginBtn').addEventListener('click', () => { document.getElementById('loginBanner').classList.add('hidden'); document.getElementById('loginModal').style.display = 'flex'; setTimeout(() => document.getElementById('loginEmail').focus(), 100); });
 
 document.getElementById('appContainer').style.display = 'block';
 // initAfterAuth 在 onAuthStateChanged 回調中調用，確保 Firebase 已就緒
+setupFirebaseListeners(); // 啟動 Firebase 監聽器
 
 function initAfterAuth() {
   log = document.getElementById('log');
@@ -122,7 +139,8 @@ function initAfterAuth() {
   sideNowLabel = document.getElementById('sideNowLabel');
 
   times = loadLocalCache();
-  syncState = 'OFFLINE';
+  // 只在未登入時設為 OFFLINE，保留登入後的狀態
+  if (!userId) syncState = 'OFFLINE';
   lastSyncAt = '';
   saveTimer = null;
 
