@@ -186,17 +186,21 @@ function setupFirebaseListener() {
 
     // 如果數據有變化，更新
     if (changed || toDelete.length > 0) {
+      console.log('[Firebase] 執行更新，刪除前本地:', times.map(t => t.id).join(', '));
       // 先刪除本地不存在的項目
       if (toDelete.length > 0) {
         times = times.filter(t => !toDelete.includes(t.id));
-        console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '));
+        console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '), '刪除後:', times.map(t => t.id).join(', '));
       }
       // 再合併數據
       times = merged;
       persistLocalCache();
       rehydrateTimers();
       render();
+      console.log('[Firebase] 更新完成，最終:', times.map(t => t.id).join(', '));
       setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+    } else {
+      console.log('[Firebase] 數據無變化，跳過更新');
     }
   };
   firebaseTimesRef.on('value', firebaseTimesListener);
@@ -401,7 +405,7 @@ function promptForNoteAndAddEntry(type) {
 
 function removeEntry(idx) {
   const id = times[idx]?.id;
-  console.log('[刪除] 嘗試刪除記錄:', id, 'idx:', idx);
+  console.log('[刪除] 嘗試刪除記錄:', id, 'idx:', idx, '當前 times:', times.map(t => t.id).join(', '));
   if (id && timers[id]) {
     clearInterval(timers[id].intervalId);
     delete timers[id];
@@ -410,7 +414,7 @@ function removeEntry(idx) {
   console.log('[刪除] 本地刪除後:', times.map(t => t.id).join(', '));
   persistLocalCache(); // 立即保存
   queueSave(); // Firebase 同步
-  console.log('[刪除] 已調用 queueSave');
+  console.log('[刪除] 已調用 queueSave，等待 Firebase 回調');
   render();
 }
 
