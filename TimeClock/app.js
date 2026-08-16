@@ -290,7 +290,8 @@ function startTimer(idx) {
       }, 1000)
     };
     item.startTime = timers[entryId].startTime; // 記錄開始時間到 item 中
-    queueSave(); // 保存 startTime
+    persistLocalCache(); // 立即保存 startTime
+    queueSave(); // 保留 Firebase 同步延遲
     render(); // 重新渲染以更新按鈕狀態
   }
 }
