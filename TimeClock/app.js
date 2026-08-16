@@ -144,43 +144,39 @@ function setupFirebaseListener() {
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     const remote = normalizeRemoteSnapshot(snapshot.val());
 
-    // 建立本地 ID 集合（用於檢查刪除）
+    // 建立 ID 集合
     const localIds = new Set(times.map(t => t.id));
     const remoteIds = new Set(remote.map(r => r.id));
 
-    // 找出需要刪除的本地項目（本地有但遠端沒有了）
+    // 找出需要刪除的項目（本地有但遠端沒有了）
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
+
+    // 先刪除本地不存在的項目
     if (toDelete.length > 0) {
       times = times.filter(t => !toDelete.includes(t.id));
     }
 
     // 合併數據：保留本地的 startTime（進行中的計時器）
-    const merged = times.map(localItem => {
-      const remoteItem = remote.find(r => r.id === localItem.id);
-      if (remoteItem) {
-        // 如果本地有 startTime 但遠端沒有，保留本地的
+    const merged = remote.map(remoteItem => {
+      const localItem = times.find(l => l.id === remoteItem.id);
+      if (localItem) {
+        // 保留本地的 startTime
         return {
           ...remoteItem,
           startTime: localItem.startTime || remoteItem.startTime
         };
       }
-      return localItem;
-    });
-
-    // 添加遠端有但本地沒有的項目
-    remote.forEach(r => {
-      if (!merged.find(t => t.id === r.id)) {
-        merged.push(r);
-      }
+      return remoteItem;
     });
 
     // 如果數據有變化，更新並重新渲染
-    if (JSON.stringify(merged) !== JSON.stringify(times)) {
+    const changed = JSON.stringify(merged) !== JSON.stringify(times);
+    if (changed) {
       times = merged;
       persistLocalCache();
+      // 先恢復計時器，再渲染（確保按鈕狀態正確）
+      rehydrateTimers();
       render();
-      // 恢復進行中的計時器
-      setTimeout(() => rehydrateTimers(), 50);
     }
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   };
@@ -337,7 +333,8 @@ function rehydrateTimers() {
   // 確保 DOM 已就緒
   setTimeout(() => {
     times.forEach((item, idx) => {
-      if (item.startTime && !item.note?.includes('計時')) {
+      // 只恢復沒有計時器的項目，避免覆蓋已有的
+      if (item.startTime && !item.note?.includes('計時') && !timers[item.id]) {
         // 這個計時器在頁面關閉前還在運行
         timers[item.id] = {
           startTime: item.startTime,
@@ -353,9 +350,15 @@ function rehydrateTimers() {
         if (displayElement) {
           displayElement.textContent = formatMsToHMS(Date.now() - item.startTime);
         }
+        // 更新按鈕狀態
+        const timerBtn = document.querySelector(`.timerBtn[data-entry-id="${item.id}"]`);
+        if (timerBtn) {
+          timerBtn.textContent = '停止計時';
+          timerBtn.className = 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20';
+        }
       }
     });
-  }, 100);
+  }, 0);
 }
 
 function addEntry(type) {
