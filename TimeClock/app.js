@@ -183,10 +183,11 @@ function setupFirebaseListener() {
     console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length);
 
     // 如果數據有變化，更新
-    if (changed || toDelete.length > 0 || toAdd.length > 0) {
+    // 首次同步時不刪除任何本地數據（保護離線操作）
+    if (changed || (toDelete.length > 0 && !isFirstSync) || toAdd.length > 0) {
       console.log('[Firebase] 執行更新，刪除前本地:', times.map(t => t.id).join(', '));
-      // 先刪除本地不存在的項目
-      if (toDelete.length > 0) {
+      // 首次同步時不刪除，只添加遠端新增的項目
+      if (toDelete.length > 0 && !isFirstSync) {
         times = times.filter(t => !toDelete.includes(t.id));
         console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '), '刪除後:', times.map(t => t.id).join(', '));
       }
