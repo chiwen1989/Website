@@ -100,10 +100,7 @@ function doLogin() {
 
 document.getElementById('btnLogin').addEventListener('click', () => { if (!fbReady) { alert('Firebase SDK 無法載入，無法登入（可能沒有網路）'); return; } document.getElementById('loginModal').style.display = 'flex'; setTimeout(() => document.getElementById('loginEmail').focus(), 100); });
 document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); doLogin(); });
-
 document.getElementById('btnLogout').addEventListener('click', () => { if (fbReady) auth.signOut(); });
-
-document.getElementById('loginSubmit').addEventListener('click', doLogin);
 document.getElementById('loginCancel').addEventListener('click', () => { document.getElementById('loginModal').style.display = 'none'; });
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
