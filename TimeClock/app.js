@@ -43,6 +43,7 @@ let localCacheKey = 'daKaLocalTimes';
 let firebaseTimesRef = null;
 let firebaseTimesListener = null;
 let isFirstSync = true; // 標記是否為首次同步
+let lastSyncData = null; // 上次同步的數據（用於檢測刪除）
 const TYPE_META = {
   commute: { label: '通勤', className: 'tag-commute' },
   work: { label: '工作', className: 'tag-work' },
@@ -144,11 +145,14 @@ function cleanupFirebaseListener() {
 function setupFirebaseListener() {
   cleanupFirebaseListener();
   if (!fbReady || !userId) return;
+  // 重新連線時重置首次同步標記
+  isFirstSync = false;
+  console.log('[Firebase] 重置 isFirstSync = false，重新監聽數據');
   firebaseTimesRef = firebase.database().ref(`users/${userId}/times`);
   console.log('[Firebase] 設置監聽器，userId:', userId, '路徑:', firebaseTimesRef.toString());
   firebaseTimesListener = snapshot => {
     const remote = normalizeRemoteSnapshot(snapshot.val());
-    console.log('[Firebase] 收到同步更新，遠端數據:', remote.map(r => r.id).join(', ') || '空', '本地數據:', times.map(t => t.id).join(', '), '首次同步:', isFirstSync);
+    console.log('[Firebase] 收到同步更新，遠端數據:', remote.map(r => r.id).join(', ') || '空', '本地數據:', times.map(t => t.id).join(', '), '首次同步:', isFirstSync, '上次同步:', lastSyncData ? lastSyncData.map(d => d.id).join(', ') : '無');
 
     // 建立 ID 集合
     const localIds = new Set(times.map(t => t.id));
@@ -156,7 +160,9 @@ function setupFirebaseListener() {
 
     // 找出需要刪除的項目（本地有但遠端沒有了）
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
-    console.log('[Firebase] 本地 ID:', Array.from(localIds).join(', '), '遠端 ID:', Array.from(remoteIds).join(', '), '檢測到刪除:', toDelete.length > 0 ? toDelete.join(', ') : '無');
+    // 找出需要新增的項目（遠端有但本地沒有了）
+    const toAdd = Array.from(remoteIds).filter(id => !localIds.has(id));
+    console.log('[Firebase] 本地 ID:', Array.from(localIds).join(', '), '遠端 ID:', Array.from(remoteIds).join(', '), '檢測到刪除:', toDelete.length > 0 ? toDelete.join(', ') : '無', '新增:', toAdd.length > 0 ? toAdd.join(', ') : '無');
 
     // 先計算 merged（不使用已修改的 times）
     let merged;
@@ -182,10 +188,10 @@ function setupFirebaseListener() {
 
     // 檢查是否有變化（在修改 times 之前）
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
-    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '合併後:', merged.map(t => t.id).join(', '));
+    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length, '合併後:', merged.map(t => t.id).join(', '));
 
     // 如果數據有變化，更新
-    if (changed || toDelete.length > 0) {
+    if (changed || toDelete.length > 0 || toAdd.length > 0) {
       console.log('[Firebase] 執行更新，刪除前本地:', times.map(t => t.id).join(', '));
       // 先刪除本地不存在的項目
       if (toDelete.length > 0) {
@@ -198,13 +204,19 @@ function setupFirebaseListener() {
       rehydrateTimers();
       render();
       console.log('[Firebase] 更新完成，最終:', times.map(t => t.id).join(', '));
+      // 更新最後同步數據
+      lastSyncData = [...times];
       setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
     } else {
       console.log('[Firebase] 數據無變化，跳過更新');
+      // 即使無變化，也更新 lastSyncData
+      if (!lastSyncData || lastSyncData.length !== remote.length) {
+        lastSyncData = [...remote];
+      }
     }
   };
   firebaseTimesRef.on('value', firebaseTimesListener);
-  console.log('[Firebase] 監聽器設置完成');
+  console.log('[Firebase] 監聽器設置完成，isFirstSync:', isFirstSync);
 }
 
 function normalizeTimes(list) {
@@ -416,6 +428,8 @@ function removeEntry(idx) {
   queueSave(); // Firebase 同步
   console.log('[刪除] 已調用 queueSave，等待 Firebase 回調');
   render();
+  // 更新最後同步數據
+  lastSyncData = [...times];
 }
 
 function onNoteInput(e) { const i = Number(e.target.dataset.idx); if (!times[i]) return; times[i].note = e.target.value; queueSave(); }
