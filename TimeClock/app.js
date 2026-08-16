@@ -253,8 +253,10 @@ function setSyncState(state, touchedAt) {
 }
 
 function queueSave() {
+  // 移除 220ms 延遲，立即保存和同步
   if (saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => { persistLocalCache(); saveToFirebase(); }, 220);
+  persistLocalCache();
+  saveToFirebase();
 }
 
 function getGroupedTimes() {
