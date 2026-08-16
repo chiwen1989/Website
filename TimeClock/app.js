@@ -98,7 +98,8 @@ function doLogin() {
     });
 }
 
-document.getElementById('btnLogin').addEventListener('click', () => { if (!fbReady) { alert('Firebase SDK 無法載入，無法登入（可能沒有網路）'); return; } document.getElementById('loginModal').style.display = 'flex'; document.getElementById('loginEmail').focus(); });
+document.getElementById('btnLogin').addEventListener('click', () => { if (!fbReady) { alert('Firebase SDK 無法載入，無法登入（可能沒有網路）'); return; } document.getElementById('loginModal').style.display = 'flex'; setTimeout(() => document.getElementById('loginEmail').focus(), 100); });
+document.getElementById('loginForm').addEventListener('submit', e => { e.preventDefault(); doLogin(); });
 
 document.getElementById('btnLogout').addEventListener('click', () => { if (fbReady) auth.signOut(); });
 
@@ -564,23 +565,23 @@ function addToGoogleCalendarToday() {
 function normalizeRemoteSnapshot(d){if(!d)return[]; if(Array.isArray(d))return normalizeTimes(d); return normalizeTimes(Object.values(d));}
 
 function saveToFirebase() {
-  console.log('[Firebase] saveToFirebase 被調用，userId:', userId, 'times:', times.map(t => t.id).join(', '));
+  console.log('[Firebase] saveToFirebase 被調用，userId:', userId, 'times:', times.map(t => t.id).join(', '), 'fbReady:', fbReady);
   persistLocalCache();
   const cur = fbReady ? auth.currentUser : null;
   if (!fbReady || !cur || !isAuthorizedUser(cur)) {
-    console.log('[Firebase] 無法保存：未認證或用戶未授權');
+    console.log('[Firebase] 無法保存：未認證或用戶未授權，fbReady:', fbReady, 'currentUser:', cur?.uid);
     setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
     return;
   }
   userId = cur.uid;
   const storage = `users/${userId}/times`;
-  console.log('[Firebase] 保存到:', storage);
+  console.log('[Firebase] 保存到:', storage, '數據:', JSON.stringify(times.map(t => ({id: t.id, note: t.note?.substring(0, 10)}))));
   setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
   return firebase.database().ref(storage).set(times).then(() => {
     console.log('[Firebase] 保存成功');
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   }).catch(err => {
-    console.error('[Firebase] 保存失敗:', err);
+    console.error('[Firebase] 保存失敗:', err.code, err.message);
     setSyncState('OFFLINE', lastSyncAt || '離線');
   });
 }

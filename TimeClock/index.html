@@ -121,12 +121,14 @@
   <div id="loginModal" class="hidden fixed inset-0 z-[200] items-center justify-center bg-black/55" style="display:none;">
     <div class="panel w-80 rounded-xl border border-slate-700 bg-slate-900/95 p-5 shadow-2xl shadow-black/40">
       <h3 class="mb-4 text-sm font-semibold text-slate-100">🔑 登入同步</h3>
-      <input id="loginEmail" type="email" placeholder="Email" class="mb-3 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
-      <input id="loginPass" type="password" placeholder="密碼" class="mb-4 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
-      <div class="flex gap-2.5">
-        <button class="btn btn-primary flex-1" id="loginSubmit">登入</button>
-        <button class="btn btn-ghost" id="loginCancel">取消</button>
-      </div>
+      <form id="loginForm" autocomplete="on">
+        <input id="loginEmail" type="email" name="email" placeholder="Email" class="mb-3 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none" required>
+        <input id="loginPass" type="password" name="password" placeholder="密碼" class="mb-4 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none" required autocomplete="current-password">
+        <div class="flex gap-2.5">
+          <button type="submit" class="btn btn-primary flex-1">登入</button>
+          <button type="button" class="btn btn-ghost" id="loginCancel">取消</button>
+        </div>
+      </form>
     </div>
   </div>
 
