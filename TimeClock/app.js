@@ -1,19 +1,7 @@
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAPiY66axJHSA_Z2sBpnbRJPtra7Fvr3aY",
-  authDomain: "chiwen1989-1.firebaseapp.com",
-  databaseURL: "https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "chiwen1989-1",
-  storageBucket: "chiwen1989-1.firebasestorage.app",
-  messagingSenderId: "418637060347",
-  appId: "1:418637060347:web:c4369195ba68a11f65385e",
-  measurementId: "G-EYTFGZLLH3"
-};
-const fbReady = typeof firebase !== 'undefined';
-if (fbReady) firebase.initializeApp(firebaseConfig);
-const auth = fbReady ? firebase.auth() : null;
 const ALLOWED_EMAILS = new Set(['chiwen1989@gmail.com']);
 const MY_EMAIL = 'chiwen1989@gmail.com';
+const fbReady = window.firebaseReady === true;
+const auth = window.auth;
 
 function isAuthorizedUser(user) {
   const email = typeof user?.email === 'string' ? user.email.trim().toLowerCase() : '';
@@ -106,7 +94,8 @@ document.getElementById('loginCancel').addEventListener('click', () => { documen
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 document.getElementById('appContainer').style.display = 'block';
-// initAfterAuth 在 onAuthStateChanged 回調中調用，確保 Firebase 已就緒
+// 無論 Firebase 狀態如何，立即初始化按鈕
+initAfterAuth();
 
 function initAfterAuth() {
   log = document.getElementById('log');
@@ -144,7 +133,7 @@ function cleanupFirebaseListener() {
 function setupFirebaseListener() {
   cleanupFirebaseListener();
   if (!fbReady || !userId) return;
-  firebaseTimesRef = firebase.database().ref(`users/${userId}/times`);
+  firebaseTimesRef = window.db.ref(`users/${userId}/times`);
   console.log('[Firebase] 設置監聽器，userId:', userId, '路徑:', firebaseTimesRef.toString());
   firebaseTimesListener = snapshot => {
     const remote = normalizeRemoteSnapshot(snapshot.val());
@@ -575,7 +564,7 @@ function saveToFirebase() {
   const storage = `users/${userId}/times`;
   console.log('[Firebase] 保存到:', storage);
   setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
-  return firebase.database().ref(storage).set(times).then(() => {
+  return window.db.ref(storage).set(times).then(() => {
     console.log('[Firebase] 保存成功');
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   }).catch(err => {

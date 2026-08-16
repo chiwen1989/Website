@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;">
 <title>Da Ka - 打卡</title>
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="output.css">
-<!-- Firebase SDK (CDN) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-database.js";
+
+  window.firebaseApp = initializeApp({
+    apiKey: "AIzaSyBWpY0HKWmHhZLpgbfX4aja9jMu7kQ24Oo",
+    authDomain: "chiwen1989-1.firebaseapp.com",
+    databaseURL: "https://chiwen1989-1-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "chiwen1989-1",
+    storageBucket: "chiwen1989-1.firebasestorage.app",
+    messagingSenderId: "418637060347",
+    appId: "1:418637060347:web:c4369195ba68a11f65385e",
+    measurementId: "G-EYTFGZLLH3"
+  });
+  window.auth = getAuth(window.firebaseApp);
+  window.db = getDatabase(window.firebaseApp);
+  window.firebaseReady = true;
+</script>
 
 </head>
 <body class="min-h-screen bg-slate-950 text-slate-100">
