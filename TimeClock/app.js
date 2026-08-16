@@ -404,12 +404,50 @@ function addEntry(type) {
 }
 
 function promptForNoteAndAddEntry(type) {
+  // 通勤：直接給出出門/返家兩個選項，不需額外輸入備註
+  if (type === 'commute') {
+    const tripType = confirm('通勤類型？\n按「確定」= 出門\n按「取消」= 返家');
+    const note = tripType ? '出門' : '返家';
+    const newItem = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note, startTime: null };
+    times.push(newItem);
+    persistLocalCache();
+    queueSave();
+    render();
+    return;
+  }
+
+  // 工作/購物/事件：寫備註後詢問是否自動計時
   const note = prompt('請輸入備註（可留空）');
   if (note === null) return;
   const newItem = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: note || '', startTime: null };
   times.push(newItem);
-  persistLocalCache(); // 立即保存
-  queueSave(); // Firebase 同步
+  persistLocalCache();
+  queueSave();
+  render();
+
+  // 詢問是否自動計時
+  const startTimer = confirm('是否立即開始計時？\n\n按「確定」：自動開始計時，記錄工作/購物/事件時長\n按「取消」：僅保存備註，稍後手動開始計時');
+  if (startTimer) {
+    const idx = times.findIndex(t => t.id === newItem.id);
+    if (idx !== -1) startTimerAtIdx(idx);
+  }
+}
+
+// 輔助函數：直接開始計時（供自動計時使用）
+function startTimerAtIdx(idx) {
+  const item = times[idx];
+  if (!item) return;
+  const entryId = item.id;
+  if (timers[entryId]) {
+    clearInterval(timers[entryId].intervalId);
+    delete timers[entryId];
+    item.startTime = null;
+    queueSave();
+  } else {
+    timers[entryId] = { startTime: Date.now(), intervalId: setInterval(() => { const el = document.querySelector(`.timerDisplay[data-entry-id="${entryId}"]`); if (el) el.textContent = formatMsToHMS(Date.now() - timers[entryId].startTime); }, 1000) };
+    item.startTime = timers[entryId].startTime;
+    queueSave();
+  }
   render();
 }
 
