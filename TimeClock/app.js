@@ -158,64 +158,46 @@ function setupFirebaseListener() {
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
     console.log('[Firebase] 本地 ID:', Array.from(localIds).join(', '), '遠端 ID:', Array.from(remoteIds).join(', '), '檢測到刪除:', toDelete.length > 0 ? toDelete.join(', ') : '無');
 
-    // 先刪除本地不存在的項目
-    if (toDelete.length > 0) {
-      times = times.filter(t => !toDelete.includes(t.id));
-      console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '));
-    }
-
-    // 合併數據：首次登入時優先使用本地數據
+    // 先計算 merged（不使用已修改的 times）
     let merged;
     if (isFirstSync && remote.length === 0 && localIds.size > 0) {
-      // 首次同步且 Firebase 為空，保留本地數據
-      console.log('[Firebase] 首次同步且 Firebase 為空，保留本地數據');
       merged = [...times];
     } else if (isFirstSync && remote.length > 0 && localIds.size > 0) {
-      // 首次同步且 Firebase 有數據，合併
-      console.log('[Firebase] 首次同步且 Firebase 有數據，合併數據');
       merged = remote.map(remoteItem => {
         const localItem = times.find(l => l.id === remoteItem.id);
         if (localItem) {
-          // 保留本地的 startTime
-          return {
-            ...remoteItem,
-            startTime: localItem.startTime || remoteItem.startTime
-          };
+          return { ...remoteItem, startTime: localItem.startTime || remoteItem.startTime };
         }
         return remoteItem;
       });
     } else {
-      // 非首次同步，正常合併
       merged = remote.map(remoteItem => {
         const localItem = times.find(l => l.id === remoteItem.id);
         if (localItem) {
-          return {
-            ...remoteItem,
-            startTime: localItem.startTime || remoteItem.startTime
-          };
+          return { ...remoteItem, startTime: localItem.startTime || remoteItem.startTime };
         }
         return remoteItem;
       });
     }
 
-    // 標記已同步（不再首次）
-    if (isFirstSync) {
-      isFirstSync = false;
-      console.log('[Firebase] 首次同步完成，標記為已同步');
-    }
-
-    // 如果數據有變化，更新並重新渲染
-    // 優先使用遠端數據（確保刪除同步），並保留本地的 startTime
+    // 檢查是否有變化（在修改 times 之前）
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
-    console.log('[Firebase] 數據有變化:', changed, '合併後:', merged.map(t => t.id).join(', '));
+    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '合併後:', merged.map(t => t.id).join(', '));
+
+    // 如果數據有變化，更新
     if (changed || toDelete.length > 0) {
+      // 先刪除本地不存在的項目
+      if (toDelete.length > 0) {
+        times = times.filter(t => !toDelete.includes(t.id));
+        console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '));
+      }
+      // 再合併數據
       times = merged;
       persistLocalCache();
-      // 先恢復計時器，再渲染（確保按鈕狀態正確）
       rehydrateTimers();
       render();
+      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
     }
-    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   };
   firebaseTimesRef.on('value', firebaseTimesListener);
   console.log('[Firebase] 監聽器設置完成');
