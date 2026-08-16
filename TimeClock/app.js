@@ -143,39 +143,40 @@ function setupFirebaseListener() {
   firebaseTimesListener = snapshot => {
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     const remote = normalizeRemoteSnapshot(snapshot.val());
-    if (JSON.stringify(remote) !== JSON.stringify(times)) {
-      // 合併數據：保留本地的 startTime（進行中的計時器）
-      // 並處理遠端刪除的項目
-      const remoteIds = new Set(remote.map(r => r.id));
 
-      times = times
-        .filter(localItem => {
-          // 如果本地有但遠端沒有了，檢查是否是刪除
-          if (!remoteIds.has(localItem.id)) {
-            // 遠端沒有這個項目，可能是被刪除了，移除本地
-            return false;
-          }
-          return true;
-        })
-        .map(localItem => {
-          const remoteItem = remote.find(r => r.id === localItem.id);
-          if (remoteItem) {
-            // 如果本地有 startTime 但遠端沒有，保留本地的
-            return {
-              ...remoteItem,
-              startTime: localItem.startTime || remoteItem.startTime
-            };
-          }
-          return localItem;
-        });
+    // 建立本地 ID 集合（用於檢查刪除）
+    const localIds = new Set(times.map(t => t.id));
+    const remoteIds = new Set(remote.map(r => r.id));
 
-      // 添加遠端有但本地沒有的項目
-      remote.forEach(r => {
-        if (!times.find(t => t.id === r.id)) {
-          times.push(r);
-        }
-      });
+    // 找出需要刪除的本地項目（本地有但遠端沒有了）
+    const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
+    if (toDelete.length > 0) {
+      times = times.filter(t => !toDelete.includes(t.id));
+    }
 
+    // 合併數據：保留本地的 startTime（進行中的計時器）
+    const merged = times.map(localItem => {
+      const remoteItem = remote.find(r => r.id === localItem.id);
+      if (remoteItem) {
+        // 如果本地有 startTime 但遠端沒有，保留本地的
+        return {
+          ...remoteItem,
+          startTime: localItem.startTime || remoteItem.startTime
+        };
+      }
+      return localItem;
+    });
+
+    // 添加遠端有但本地沒有的項目
+    remote.forEach(r => {
+      if (!merged.find(t => t.id === r.id)) {
+        merged.push(r);
+      }
+    });
+
+    // 如果數據有變化，更新並重新渲染
+    if (JSON.stringify(merged) !== JSON.stringify(times)) {
+      times = merged;
       persistLocalCache();
       render();
     }
@@ -353,11 +354,35 @@ function rehydrateTimers() {
   }, 100);
 }
 
-function addEntry(type) { times.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: '', startTime: null }); queueSave(); render(); }
+function addEntry(type) {
+  const newItem = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: '', startTime: null };
+  times.push(newItem);
+  persistLocalCache(); // 立即保存
+  queueSave(); // Firebase 同步
+  render();
+}
 
-function promptForNoteAndAddEntry(type) { const note = prompt('請輸入備註（可留空）'); if (note === null) return; times.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: note || '', startTime: null }); queueSave(); render(); }
+function promptForNoteAndAddEntry(type) {
+  const note = prompt('請輸入備註（可留空）');
+  if (note === null) return;
+  const newItem = { id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: note || '', startTime: null };
+  times.push(newItem);
+  persistLocalCache(); // 立即保存
+  queueSave(); // Firebase 同步
+  render();
+}
 
-function removeEntry(idx) { const id = times[idx]?.id; if (id && timers[id]) { clearInterval(timers[id].intervalId); delete timers[id]; } times.splice(idx, 1); queueSave(); render(); }
+function removeEntry(idx) {
+  const id = times[idx]?.id;
+  if (id && timers[id]) {
+    clearInterval(timers[id].intervalId);
+    delete timers[id];
+  }
+  times.splice(idx, 1);
+  persistLocalCache(); // 立即保存
+  queueSave(); // Firebase 同步
+  render();
+}
 
 function onNoteInput(e) { const i = Number(e.target.dataset.idx); if (!times[i]) return; times[i].note = e.target.value; queueSave(); }
 
