@@ -28,10 +28,12 @@ let recordStat = null;
 let commuteCountStat = null;
 let workCountStat = null;
 let shoppingCountStat = null;
+let eventCountStat = null;
 let exportMenu = null;
 let syncBadge = null;
 let syncStateLabel = null;
 let updatedAtLabel = null;
+let sideNowLabel = null;
 let times = [];
 let timers = {}; // key: entry id -> {startTime, intervalId}
 let syncState = 'OFFLINE';
@@ -44,6 +46,7 @@ const TYPE_META = {
   commute: { label: '通勤', className: 'tag-commute' },
   work: { label: '工作', className: 'tag-work' },
   shopping: { label: '購物', className: 'tag-shopping' },
+  event: { label: '事件', className: 'tag-event' },
   unknown: { label: '未知', className: 'tag-unknown' }
 };
 
@@ -107,10 +110,12 @@ function initAfterAuth() {
   commuteCountStat = document.getElementById('commuteCountStat');
   workCountStat = document.getElementById('workCountStat');
   shoppingCountStat = document.getElementById('shoppingCountStat');
+  eventCountStat = document.getElementById('eventCountStat');
   exportMenu = document.getElementById('exportMenu');
   syncBadge = document.getElementById('syncBadge');
   syncStateLabel = document.getElementById('syncStateLabel');
   updatedAtLabel = document.getElementById('updatedAtLabel');
+  sideNowLabel = document.getElementById('sideNowLabel');
 
   times = loadLocalCache();
   syncState = 'OFFLINE';
@@ -150,7 +155,7 @@ function normalizeTimes(list) {
   if (!Array.isArray(list)) return [];
   return list.map((item, index) => {
     const rawType = typeof item?.type === 'string' ? item.type : '';
-    const type = rawType === 'commute' || rawType === 'work' || rawType === 'shopping'
+    const type = rawType === 'commute' || rawType === 'work' || rawType === 'shopping' || rawType === 'event'
       ? rawType
       : rawType === 'rest'
         ? 'shopping'
@@ -240,17 +245,18 @@ function calcSelectedSummary() {
   commuteCountStat.textContent = times.filter(t => t.type === 'commute').length;
   workCountStat.textContent = times.filter(t => t.type === 'work').length;
   shoppingCountStat.textContent = times.filter(t => t.type === 'shopping').length;
+  eventCountStat.textContent = times.filter(t => t.type === 'event').length;
 }
 
 function render() {
   log.innerHTML = ''; recordCountLabel.textContent = times.length; recordStat.textContent = times.length;
   const groups = getGroupedTimes();
-  if (!groups.length) { const empty = document.createElement('div'); empty.className = 'stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-4'; empty.innerHTML = '<span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">目前沒有記錄</span><strong class="mt-1 block text-sm font-semibold text-slate-100">按「通勤 / 工作 / 購物」開始</strong><small class="mt-1 block text-[10px] text-slate-500">資料會同步到 Firebase 與本機快取</small>'; log.appendChild(empty); calcSelectedSummary(); return; }
+  if (!groups.length) { const empty = document.createElement('div'); empty.className = 'stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-4'; empty.innerHTML = '<span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">目前沒有記錄</span><strong class="mt-1 block text-sm font-semibold text-slate-100">按「通勤 / 工作 / 購物 / 事件」開始</strong><small class="mt-1 block text-[10px] text-slate-500">資料會同步到 Firebase 與本機快取</small>'; log.appendChild(empty); calcSelectedSummary(); return; }
   const today = new Date(); const todayKey = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
   groups.forEach(([date, entries]) => {
     const det = document.createElement('details'); det.className = 'group overflow-hidden rounded-lg border border-slate-800 bg-slate-900/70'; det.open = date === todayKey; const sum = document.createElement('summary'); sum.className = 'flex cursor-pointer items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/60 px-3 py-2.5 text-[12px] text-slate-200'; sum.innerHTML = `<span class="group-title flex items-center gap-2"><strong class="text-sky-300">${date}</strong><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">${entries.length} 筆</span></span><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">點擊可收合</span>`; det.appendChild(sum);
     const wrap = document.createElement('div'); wrap.className = 'entries space-y-2 p-2';
-    entries.forEach(({ item, i }) => { const row = document.createElement('article'); row.className = 'entry rounded-lg border border-slate-800 bg-slate-950/70 p-3'; const main = document.createElement('div'); main.className = 'entry-main flex flex-col gap-2'; const top = document.createElement('div'); top.className = 'entry-top flex flex-wrap items-center gap-2'; const tTxt = document.createElement('span'); tTxt.className = 'entry-time text-[12px] font-semibold text-slate-100'; tTxt.textContent = fmtEntry(new Date(item.t)); const typeTag = document.createElement('span'); const meta = TYPE_META[item.type] || TYPE_META.work; typeTag.className = `tag rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className === 'tag-commute' ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : meta.className === 'tag-work' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : meta.className === 'tag-shopping' ? 'border-violet-500/30 bg-violet-500/10 text-violet-300' : 'border-slate-600 bg-slate-900/70 text-slate-400'}`; typeTag.textContent = meta.label; top.append(tTxt, typeTag); const note = document.createElement('input'); note.className = 'entry-note w-full rounded-md border border-slate-700 bg-slate-900/80 px-2.5 py-2 text-[11px] text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none'; note.type = 'text'; note.placeholder = '備註'; note.value = item.note || ''; note.dataset.idx = i; note.addEventListener('input', onNoteInput); const timerCont = document.createElement('div'); timerCont.className = 'timer-controls flex items-center gap-2 mt-2'; const timerBtn = document.createElement('button'); timerBtn.type = 'button'; timerBtn.className = `timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition ${timers[item.id] ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20' : 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'}`; timerBtn.textContent = timers[item.id] ? '停止計時' : '計時'; timerBtn.onclick = e => { e.stopPropagation(); startTimer(i); }; const timerDisp = document.createElement('span'); timerDisp.className = 'timerDisplay text-[10px] text-amber-300'; timerDisp.dataset.idx = i; timerDisp.dataset.entryId = item.id; timerDisp.textContent = timers[item.id] ? formatMsToHMS(Date.now() - timers[item.id].startTime) : '00:00:00'; timerCont.append(timerBtn, timerDisp); main.append(top, note, timerCont); const act = document.createElement('div'); act.className = 'entry-actions mt-2 flex justify-end'; const del = document.createElement('button'); del.type = 'button'; del.className = 'delBtn rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-rose-300 transition hover:bg-rose-500/20'; del.textContent = '刪除'; del.onclick = e => { e.stopPropagation(); removeEntry(i); }; act.appendChild(del); row.append(main, act); wrap.appendChild(row); }); det.appendChild(wrap); log.appendChild(det);
+    entries.forEach(({ item, i }) => { const row = document.createElement('article'); row.className = 'entry rounded-lg border border-slate-800 bg-slate-950/70 p-3'; const main = document.createElement('div'); main.className = 'entry-main flex flex-col gap-2'; const top = document.createElement('div'); top.className = 'entry-top flex flex-wrap items-center gap-2'; const tTxt = document.createElement('span'); tTxt.className = 'entry-time text-[12px] font-semibold text-slate-100'; tTxt.textContent = fmtEntry(new Date(item.t)); const typeTag = document.createElement('span'); const meta = TYPE_META[item.type] || TYPE_META.work; typeTag.className = `tag rounded-full border px-2 py-0.5 text-[10px] font-semibold ${meta.className === 'tag-commute' ? 'border-sky-500/30 bg-sky-500/10 text-sky-300' : meta.className === 'tag-work' ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' : meta.className === 'tag-shopping' ? 'border-violet-500/30 bg-violet-500/10 text-violet-300' : meta.className === 'tag-event' ? 'border-orange-500/30 bg-orange-500/10 text-orange-300' : 'border-slate-600 bg-slate-900/70 text-slate-400'}`; typeTag.textContent = meta.label; top.append(tTxt, typeTag); const note = document.createElement('input'); note.className = 'entry-note w-full rounded-md border border-slate-700 bg-slate-900/80 px-2.5 py-2 text-[11px] text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none'; note.type = 'text'; note.placeholder = '備註'; note.value = item.note || ''; note.dataset.idx = i; note.addEventListener('input', onNoteInput); const timerCont = document.createElement('div'); timerCont.className = 'timer-controls flex items-center gap-2 mt-2'; const timerBtn = document.createElement('button'); timerBtn.type = 'button'; timerBtn.className = `timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition ${timers[item.id] ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20' : 'border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20'}`; timerBtn.textContent = timers[item.id] ? '停止計時' : '計時'; timerBtn.onclick = e => { e.stopPropagation(); startTimer(i); }; const timerDisp = document.createElement('span'); timerDisp.className = 'timerDisplay text-[10px] text-amber-300'; timerDisp.dataset.idx = i; timerDisp.dataset.entryId = item.id; timerDisp.textContent = timers[item.id] ? formatMsToHMS(Date.now() - timers[item.id].startTime) : '00:00:00'; timerCont.append(timerBtn, timerDisp); main.append(top, note, timerCont); const act = document.createElement('div'); act.className = 'entry-actions mt-2 flex justify-end'; const del = document.createElement('button'); del.type = 'button'; del.className = 'delBtn rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-rose-300 transition hover:bg-rose-500/20'; del.textContent = '刪除'; del.onclick = e => { e.stopPropagation(); removeEntry(i); }; act.appendChild(del); row.append(main, act); wrap.appendChild(row); }); det.appendChild(wrap); log.appendChild(det);
   }); calcSelectedSummary();
 }
 
@@ -295,14 +301,133 @@ function removeEntry(idx) { const id = times[idx]?.id; if (id && timers[id]) { c
 
 function onNoteInput(e) { const i = Number(e.target.dataset.idx); if (!times[i]) return; times[i].note = e.target.value; queueSave(); }
 
-function exportAs(type) { exportMenu.style.display = 'none'; if (!times.length) { alert('尚無時間資料'); return; } const date = new Date().toISOString().slice(0, 10); const totalC = calcRange(times.filter(t => t.type === 'commute')); const totalW = calcRange(times.filter(t => t.type === 'work')); const totalS = calcRange(times.filter(t => t.type === 'shopping')); const lines = times.map((t, i) => `${i + 1}. ${fmtEntry(new Date(t.t))} (${t.type}) ${t.note ? '- ' + t.note : ''}`); const content = lines.join('\n') + `\n\nCOMMUTE ${totalC} | WORK ${totalW} | SHOPPING ${totalS}`; const blob = new Blob([content], { type: 'text/plain;charset=utf-8' }); const f = `timeclock_${date}.txt`; const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = f; a.click(); URL.revokeObjectURL(a.href); }
+function exportAs() {
+  exportMenu.style.display = 'none';
+  if (!times.length) { alert('尚無時間資料'); return; }
+
+  const TYPE_LABEL = { commute:'通勤', work:'工作', shopping:'購物', event:'事件', unknown:'未知' };
+  const date = new Date().toISOString().slice(0, 10);
+  const lines = [];
+
+  lines.push('═══════════════════════════════════════');
+  lines.push(`  打卡紀錄匯出  ${date}`);
+  lines.push('═══════════════════════════════════════');
+  lines.push('');
+
+  const groups = {};
+  times.slice().sort((a, b) => b.t - a.t).forEach(item => {
+    const k = `${new Date(item.t).getFullYear()}-${String(new Date(item.t).getMonth()+1).padStart(2,'0')}-${String(new Date(item.t).getDate()).padStart(2,'0')}`;
+    if (!groups[k]) groups[k] = [];
+    groups[k].push(item);
+  });
+
+  const totalByType = { commute:0, work:0, shopping:0, event:0 };
+  const totalMsByType = { commute:0, work:0, shopping:0, event:0 };
+
+  Object.entries(groups).forEach(([d, items]) => {
+    lines.push(`📅 ${d}`);
+    lines.push('───────────────────────────────────────');
+    items.forEach(item => {
+      const h = String(new Date(item.t).getHours()).padStart(2, '0');
+      const m = String(new Date(item.t).getMinutes()).padStart(2, '0');
+      const s = String(new Date(item.t).getSeconds()).padStart(2, '0');
+      const label = TYPE_LABEL[item.type] || item.type;
+      const note = item.note ? `  📝 ${item.note}` : '';
+      const timer = item.note && item.note.includes('計時') ? `  ⏱ ${item.note.match(/計時 [0-9:]+/)?.[0] || ''}` : '';
+      lines.push(`  ▸ ${h}:${m}:${s}  [${label}]${note}${timer}`);
+      totalByType[item.type] = (totalByType[item.type] || 0) + 1;
+      if (item.startTime) {
+        totalMsByType[item.type] = (totalMsByType[item.type] || 0) + ((item.endTime || Date.now()) - item.startTime);
+      }
+    });
+    lines.push('');
+  });
+
+  lines.push('═══════════════════════════════════════');
+  lines.push('  統計摘要');
+  lines.push('═══════════════════════════════════════');
+  const fmtMs = ms => {
+    if (!ms || ms <= 0) return '—';
+    const h = Math.floor(ms / 3600000);
+    const m = Math.floor((ms % 3600000) / 60000);
+    return h > 0 ? `${h}h${m}m` : `${m}m`;
+  };
+  ['commute', 'work', 'shopping', 'event'].forEach(t => {
+    if (totalByType[t]) lines.push(`  ${TYPE_LABEL[t]}：${totalByType[t]} 筆  |  計時總長：${fmtMs(totalMsByType[t])}`);
+  });
+  lines.push('  ─────────────────');
+  lines.push(`  總記錄數：${times.length} 筆`);
+  lines.push('═══════════════════════════════════════');
+
+  const content = lines.join('\n') + '\n';
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `timeclock_${date}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
 
 function clearAll() { if (!confirm('確定清除全部時間？')) return; times = []; for (const k in timers) { clearInterval(timers[k].intervalId); } timers = {}; persistLocalCache(); setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant')); render(); saveToFirebase(); }
 
-function initBtns() { document.getElementById('commuteBtn').onclick = () => promptForNoteAndAddEntry('commute'); document.getElementById('workBtn').onclick = () => promptForNoteAndAddEntry('work'); document.getElementById('shoppingBtn').onclick = () => promptForNoteAndAddEntry('shopping'); document.getElementById('clearBtn').onclick = clearAll; document.getElementById('refreshBtn').onclick = () => location.reload(); document.getElementById('exportBtn').onclick = () => { exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block'; }; document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) exportMenu.style.display = 'none'; }); exportMenu.querySelectorAll('button[data-export]').forEach(btn => { btn.addEventListener('click', () => exportAs(btn.dataset.export)); }); exportMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => { exportMenu.style.display = 'none'; }); }); }
+function initBtns() { document.getElementById('commuteBtn').onclick = () => promptForNoteAndAddEntry('commute'); document.getElementById('workBtn').onclick = () => promptForNoteAndAddEntry('work'); document.getElementById('shoppingBtn').onclick = () => promptForNoteAndAddEntry('shopping'); document.getElementById('eventBtn').onclick = () => promptForNoteAndAddEntry('event'); document.getElementById('clearBtn').onclick = clearAll; document.getElementById('refreshBtn').onclick = () => location.reload(); document.getElementById('exportBtn').onclick = () => { exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block'; }; document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) exportMenu.style.display = 'none'; }); exportMenu.querySelectorAll('button[data-export]').forEach(btn => { btn.addEventListener('click', () => exportAs(btn.dataset.export)); }); exportMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => { exportMenu.style.display = 'none'; }); }); document.getElementById('gcalBtn').onclick = addToGoogleCalendarToday; }
 
-function updateNow() { const now = fmtDate(new Date()); syncStateLabel.textContent = now; sideNowLabel.textContent = now; }
+function updateNow() {
+  const now = fmtDate(new Date());
+  sideNowLabel.textContent = now;
+}
 
-function normalizeRemoteSnapshot(d) { if (!d) return []; if (Array.isArray(d)) return normalizeTimes(d); return normalizeTimes(Object.values(d)); }
+function addToGoogleCalendarToday() {
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${(today.getMonth()+1).toString().padStart(2,'0')}-${today.getDate().toString().padStart(2,'0')}`;
+  const todays = times.filter(item => {
+    const d = new Date(item.t);
+    return `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}` === todayKey;
+  });
+  if (!todays.length) { alert('今日無資料'); return; }
+  let ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//TimeClock//Google Calendar Import//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+  ];
+  // Merge all today's records into a single all-day event
+  const start = new Date(today.setHours(0,0,0,0));
+  const yyyy = start.getFullYear();
+  const mm = String(start.getMonth()+1).padStart(2,'0');
+  const dd = String(start.getDate()).padStart(2,'0');
+  const icalStart = yyyy + mm + dd;
+  const nextDay = new Date(start.getTime() + 24*60*60*1000);
+  const icalEndStr = nextDay.getFullYear() + String(nextDay.getMonth()+1).padStart(2,'0') + String(nextDay.getDate()).padStart(2,'0');
+
+  const descParts = todays.map(item => {
+    const t = new Date(item.t);
+    const timeStr = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}`;
+    const typeLabel = TYPE_META[item.type]?.label || item.type;
+    const note = item.note || '';
+    return `${typeLabel} ${timeStr}${note ? ' - ' + note : ''}`;
+  });
+  const description = descParts.join('\\n');
+
+  ics.push('BEGIN:VEVENT');
+  ics.push('UID:today@timeclock');
+  ics.push(`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+/,'')}Z`);
+  ics.push(`DTSTART:${icalStart}`);
+  ics.push(`DTEND:${icalEndStr}`);
+  ics.push('SUMMARY:請填寫行程標題');
+  ics.push(`DESCRIPTION:${description}`);
+  ics.push('END:VEVENT');
+  ics.push('END:VCALENDAR');
+  const blob = new Blob([ics.join('\r\n')], {type: 'text/calendar'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `timeclock_${todayKey}.ics`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function normalizeRemoteSnapshot(d){if(!d)return[]; if(Array.isArray(d))return normalizeTimes(d); return normalizeTimes(Object.values(d));}
 
 function saveToFirebase() { persistLocalCache(); const cur = fbReady ? auth.currentUser : null; if (!fbReady || !cur || !isAuthorizedUser(cur)) { setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant')); return; } userId = cur.uid; const storage = `users/${userId}/times`; setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant')); return firebase.database().ref(storage).set(times).then(() => { setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant')); }).catch(err => { console.error('save error', err); setSyncState('OFFLINE', lastSyncAt || '離線'); }); }

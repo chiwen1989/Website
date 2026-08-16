@@ -34,12 +34,14 @@
           <button class="btn btn-commute rounded-lg border border-sky-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-sky-400 transition hover:border-sky-400 hover:bg-slate-900" id="commuteBtn">通勤</button>
           <button class="btn btn-work rounded-lg border border-emerald-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-emerald-400 transition hover:border-emerald-400 hover:bg-slate-900" id="workBtn">工作</button>
           <button class="btn btn-shopping rounded-lg border border-violet-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-violet-400 transition hover:border-violet-400 hover:bg-slate-900" id="shoppingBtn">購物</button>
+          <button class="btn btn-event rounded-lg border border-orange-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-orange-400 transition hover:border-orange-400 hover:bg-slate-900" id="eventBtn">事件</button>
           <div class="dropdown relative">
             <button class="btn btn-ghost rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-[11px] font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-700" id="exportBtn">⋯ 更多 ▼</button>
             <div id="exportMenu" aria-label="更多選單" class="absolute right-0 top-full z-[2000] mt-2 hidden min-w-[140px] overflow-hidden rounded-lg border border-slate-700 bg-slate-900/95 shadow-2xl shadow-black/40">
               <button type="button" data-export="txt" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-sky-300">匯出 TXT</button>
               <button type="button" id="clearBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-rose-400 transition hover:bg-slate-800">清除全部</button>
-              <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登入同步</button>
+                            <button type="button" id="gcalBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-blue-400 transition hover:bg-slate-800">加入 Google 日曆</button>
+                            <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登入同步</button>
               <button type="button" id="btnLogout" class="block w-full px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登出</button>
             </div>
           </div>
@@ -69,7 +71,7 @@
               <h4 class="text-sm font-semibold text-slate-100">摘要面板</h4>
               <small class="text-[11px] text-slate-400">快速查看當前狀態</small>
             </div>
-            <!-- nowMiniLabel 已移除 -->
+          <!-- 摘要面板 -->
           </div>
           <div class="panel-body p-4">
             <div class="stats-grid grid gap-2 sm:grid-cols-2">
@@ -86,13 +88,18 @@
               </div>
               <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
                 <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">工作數</span>
-                <strong id="workCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <strong id="workCountStat" class="block text-xl font-semibold text-emerald-400">0</strong>
                 <small class="mt-1 block text-[10px] text-slate-500">工作類型</small>
               </div>
               <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
                 <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">購物數</span>
-                <strong id="shoppingCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <strong id="shoppingCountStat" class="block text-xl font-semibold text-violet-400">0</strong>
                 <small class="mt-1 block text-[10px] text-slate-500">購物類型</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">事件數</span>
+                <strong id="eventCountStat" class="block text-xl font-semibold text-orange-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">事件類型</small>
               </div>
             </div>
  
