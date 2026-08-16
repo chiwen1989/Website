@@ -42,6 +42,7 @@ let saveTimer = null;
 let localCacheKey = 'daKaLocalTimes';
 let firebaseTimesRef = null;
 let firebaseTimesListener = null;
+let isFirstSync = true; // 標記是否為首次同步
 const TYPE_META = {
   commute: { label: '通勤', className: 'tag-commute' },
   work: { label: '工作', className: 'tag-work' },
@@ -147,7 +148,7 @@ function setupFirebaseListener() {
   console.log('[Firebase] 設置監聽器，userId:', userId, '路徑:', firebaseTimesRef.toString());
   firebaseTimesListener = snapshot => {
     const remote = normalizeRemoteSnapshot(snapshot.val());
-    console.log('[Firebase] 收到同步更新，遠端數據:', remote.map(r => r.id).join(', ') || '空');
+    console.log('[Firebase] 收到同步更新，遠端數據:', remote.map(r => r.id).join(', ') || '空', '本地數據:', times.map(t => t.id).join(', '), '首次同步:', isFirstSync);
 
     // 建立 ID 集合
     const localIds = new Set(times.map(t => t.id));
@@ -163,18 +164,45 @@ function setupFirebaseListener() {
       console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '));
     }
 
-    // 合併數據：保留本地的 startTime（進行中的計時器）
-    const merged = remote.map(remoteItem => {
-      const localItem = times.find(l => l.id === remoteItem.id);
-      if (localItem) {
-        // 保留本地的 startTime
-        return {
-          ...remoteItem,
-          startTime: localItem.startTime || remoteItem.startTime
-        };
-      }
-      return remoteItem;
-    });
+    // 合併數據：首次登入時優先使用本地數據
+    let merged;
+    if (isFirstSync && remote.length === 0 && localIds.size > 0) {
+      // 首次同步且 Firebase 為空，保留本地數據
+      console.log('[Firebase] 首次同步且 Firebase 為空，保留本地數據');
+      merged = [...times];
+    } else if (isFirstSync && remote.length > 0 && localIds.size > 0) {
+      // 首次同步且 Firebase 有數據，合併
+      console.log('[Firebase] 首次同步且 Firebase 有數據，合併數據');
+      merged = remote.map(remoteItem => {
+        const localItem = times.find(l => l.id === remoteItem.id);
+        if (localItem) {
+          // 保留本地的 startTime
+          return {
+            ...remoteItem,
+            startTime: localItem.startTime || remoteItem.startTime
+          };
+        }
+        return remoteItem;
+      });
+    } else {
+      // 非首次同步，正常合併
+      merged = remote.map(remoteItem => {
+        const localItem = times.find(l => l.id === remoteItem.id);
+        if (localItem) {
+          return {
+            ...remoteItem,
+            startTime: localItem.startTime || remoteItem.startTime
+          };
+        }
+        return remoteItem;
+      });
+    }
+
+    // 標記已同步（不再首次）
+    if (isFirstSync) {
+      isFirstSync = false;
+      console.log('[Firebase] 首次同步完成，標記為已同步');
+    }
 
     // 如果數據有變化，更新並重新渲染
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
