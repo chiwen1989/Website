@@ -179,6 +179,8 @@ function setupFirebaseListener() {
       times = merged;
       persistLocalCache();
       render();
+      // 恢復進行中的計時器
+      setTimeout(() => rehydrateTimers(), 50);
     }
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   };
