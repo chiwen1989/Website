@@ -161,46 +161,26 @@ function setupFirebaseListener() {
     const localIds = new Set(times.map(t => t.id));
     const remoteIds = new Set(remote.map(r => r.id));
 
-    // 初次同步：如果遠端為空且有本地緩存，推送本地數據
-    if (isFirstSync && remote.length === 0 && localIds.size > 0) {
-      console.log('[Firebase] 初次同步，推送本地緩存數據到 Firebase');
-      firebaseTimesRef.set(times.map(t => ({ id: t.id, t: t.t, type: t.type, note: t.note, startTime: t.startTime })));
-      isFirstSync = false; // 推送後標記為非首次
-      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-      return;
-    }
-
     // 找出需要刪除的項目（本地有但遠端沒有了）
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
     // 找出需要新增的項目（遠端有但本地沒有了）
     const toAdd = Array.from(remoteIds).filter(id => !localIds.has(id));
     console.log('[Firebase] 本地 ID:', Array.from(localIds).join(', '), '遠端 ID:', Array.from(remoteIds).join(', '), '檢測到刪除:', toDelete.length > 0 ? toDelete.join(', ') : '無', '新增:', toAdd.length > 0 ? toAdd.join(', ') : '無');
 
-    // 先計算 merged（不使用已修改的 times）
-    let merged;
-    if (isFirstSync && remote.length > 0 && localIds.size > 0) {
-      // 首次同步且遠端有數據：優先使用遠端，但保留本地的 startTime
-      merged = remote.map(remoteItem => {
-        const localItem = times.find(l => l.id === remoteItem.id);
-        if (localItem) {
-          return { ...remoteItem, startTime: localItem.startTime || remoteItem.startTime };
-        }
-        return remoteItem;
-      });
-    } else {
-      // 正常同步：合併數據
-      merged = remote.map(remoteItem => {
-        const localItem = times.find(l => l.id === remoteItem.id);
-        if (localItem) {
-          return { ...remoteItem, startTime: localItem.startTime || remoteItem.startTime };
-        }
-        return remoteItem;
-      });
+    // 合併邏輯：優先使用本地數據（處理離線操作）
+    // 1. 保留所有本地數據
+    // 2. 添加遠端有但本地沒有的新項目
+    const merged = [...times];
+    for (const remoteItem of remote) {
+      if (!localIds.has(remoteItem.id)) {
+        merged.push(remoteItem);
+      }
     }
+    console.log('[Firebase] 合併後數據:', merged.map(t => t.id).join(', '));
 
-    // 檢查是否有變化（在修改 times 之前）
+    // 檢查是否有變化
     const changed = JSON.stringify(merged) !== JSON.stringify(times);
-    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length, '合併後:', merged.map(t => t.id).join(', '));
+    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length);
 
     // 如果數據有變化，更新
     if (changed || toDelete.length > 0 || toAdd.length > 0) {
@@ -626,11 +606,16 @@ function saveToFirebase() {
   const storage = `users/${userId}/times`;
   console.log('[Firebase] 保存到:', storage, '數據:', JSON.stringify(times.map(t => ({id: t.id, note: t.note?.substring(0, 10)}))));
   setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
-  return firebase.database().ref(storage).set(times).then(() => {
-    console.log('[Firebase] 保存成功');
+  // 使用 update 而非 set，避免覆蓋遠端數據
+  const updates = {};
+  for (const item of times) {
+    updates[item.id] = { t: item.t, type: item.type, note: item.note, startTime: item.startTime };
+  }
+  return firebase.database().ref(storage).update(updates).then(() => {
+    console.log('[Firebase] 保存成功（使用 update 合併）');
     setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
   }).catch(err => {
-    console.error('[Firebase] 保存失敗:', err.code, err.message);
-    setSyncState('OFFLINE', lastSyncAt || '離線');
+    console.error('[Firebase] 保存失敗:', err);
+    setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
   });
 }
