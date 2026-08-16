@@ -70,10 +70,13 @@ if (fbReady) {
         auth.signOut();
       }
       setSyncState('OFFLINE', lastSyncAt || '');
+      // 登出後重新初始化，確保按鈕可用
+      initAfterAuth();
     }
   });
 } else {
   setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
+  initAfterAuth(); // 無 Firebase 時也初始化
 }
 
 function doLogin() {
