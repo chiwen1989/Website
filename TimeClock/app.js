@@ -145,23 +145,37 @@ function setupFirebaseListener() {
     const remote = normalizeRemoteSnapshot(snapshot.val());
     if (JSON.stringify(remote) !== JSON.stringify(times)) {
       // 合併數據：保留本地的 startTime（進行中的計時器）
-      times = times.map(localItem => {
-        const remoteItem = remote.find(r => r.id === localItem.id);
-        if (remoteItem) {
-          // 如果本地有 startTime 但遠端沒有，保留本地的
-          return {
-            ...remoteItem,
-            startTime: localItem.startTime || remoteItem.startTime
-          };
-        }
-        return localItem;
-      });
+      // 並處理遠端刪除的項目
+      const remoteIds = new Set(remote.map(r => r.id));
+
+      times = times
+        .filter(localItem => {
+          // 如果本地有但遠端沒有了，檢查是否是刪除
+          if (!remoteIds.has(localItem.id)) {
+            // 遠端沒有這個項目，可能是被刪除了，移除本地
+            return false;
+          }
+          return true;
+        })
+        .map(localItem => {
+          const remoteItem = remote.find(r => r.id === localItem.id);
+          if (remoteItem) {
+            // 如果本地有 startTime 但遠端沒有，保留本地的
+            return {
+              ...remoteItem,
+              startTime: localItem.startTime || remoteItem.startTime
+            };
+          }
+          return localItem;
+        });
+
       // 添加遠端有但本地沒有的項目
       remote.forEach(r => {
         if (!times.find(t => t.id === r.id)) {
           times.push(r);
         }
       });
+
       persistLocalCache();
       render();
     }
