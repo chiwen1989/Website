@@ -143,9 +143,14 @@ function cleanupFirebaseListener() {
 function setupFirebaseListener() {
   cleanupFirebaseListener();
   if (!fbReady || !userId) return;
-  // 重新連線時重置首次同步標記
-  isFirstSync = false;
-  console.log('[Firebase] 重置 isFirstSync = false，重新監聽數據');
+  // 初次登入時保留 isFirstSync = true，避免本地數據被空遠端覆蓋
+  // 重新連線時才重置為 false
+  if (!firebaseTimesRef) {
+    console.log('[Firebase] 初次登入，保留 isFirstSync = true 以保護本地數據');
+  } else {
+    isFirstSync = false;
+    console.log('[Firebase] 重新連線，重置 isFirstSync = false');
+  }
   firebaseTimesRef = firebase.database().ref(`users/${userId}/times`);
   console.log('[Firebase] 設置監聽器，userId:', userId, '路徑:', firebaseTimesRef.toString());
   firebaseTimesListener = snapshot => {
@@ -156,6 +161,15 @@ function setupFirebaseListener() {
     const localIds = new Set(times.map(t => t.id));
     const remoteIds = new Set(remote.map(r => r.id));
 
+    // 初次同步：如果遠端為空且有本地緩存，推送本地數據
+    if (isFirstSync && remote.length === 0 && localIds.size > 0) {
+      console.log('[Firebase] 初次同步，推送本地緩存數據到 Firebase');
+      firebaseTimesRef.set(times.map(t => ({ id: t.id, t: t.t, type: t.type, note: t.note, startTime: t.startTime })));
+      isFirstSync = false; // 推送後標記為非首次
+      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+      return;
+    }
+
     // 找出需要刪除的項目（本地有但遠端沒有了）
     const toDelete = Array.from(localIds).filter(id => !remoteIds.has(id));
     // 找出需要新增的項目（遠端有但本地沒有了）
@@ -164,9 +178,8 @@ function setupFirebaseListener() {
 
     // 先計算 merged（不使用已修改的 times）
     let merged;
-    if (isFirstSync && remote.length === 0 && localIds.size > 0) {
-      merged = [...times];
-    } else if (isFirstSync && remote.length > 0 && localIds.size > 0) {
+    if (isFirstSync && remote.length > 0 && localIds.size > 0) {
+      // 首次同步且遠端有數據：優先使用遠端，但保留本地的 startTime
       merged = remote.map(remoteItem => {
         const localItem = times.find(l => l.id === remoteItem.id);
         if (localItem) {
@@ -175,6 +188,7 @@ function setupFirebaseListener() {
         return remoteItem;
       });
     } else {
+      // 正常同步：合併數據
       merged = remote.map(remoteItem => {
         const localItem = times.find(l => l.id === remoteItem.id);
         if (localItem) {
