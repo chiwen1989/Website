@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;">
+<title>Da Ka - ?</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="output.css">
+<!-- Firebase SDK (CDN) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+<div id="ptr-indicator"></div>
+<div id="scroller" class="min-h-screen">
+  <!-- 銝餅??函?撘?-->
+  <div id="appContainer" style="display:none;">
+    <div class="app mx-auto max-w-7xl px-3 py-3 sm:px-4 lg:px-6">
+      <header class="topbar rounded-xl border border-slate-800/80 bg-slate-900/95 shadow-2xl shadow-black/30">
+        <div class="brand">
+          <h1>Da Ka - ?</h1>
+          <p>?桅???極雿頃?押?閮颯?箝?甇?/p>
+        </div>
+
+        <div class="status-row flex flex-wrap items-center justify-center gap-2">
+          <div class="pill pill--ok rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-semibold text-emerald-300"><strong id="syncBadge" class="text-emerald-300">OFFLINE</strong></div>
+          <div class="pill rounded-full border border-slate-700 bg-slate-800/80 px-3 py-1.5 text-[11px] font-semibold text-slate-300"><strong id="recordCountLabel" class="text-sky-400">0</strong> 蝑???/div>
+          <!-- ?暸鞈?撌脩宏??-->
+        </div>
+ 
+        <div class="actions flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+          <button class="btn btn-primary rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-2 text-[11px] font-semibold text-sky-300 transition hover:bg-sky-500/20" id="refreshBtn">??渡?</button>
+          <button class="btn btn-commute rounded-lg border border-sky-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-sky-400 transition hover:border-sky-400 hover:bg-slate-900" id="commuteBtn">?</button>
+          <button class="btn btn-work rounded-lg border border-emerald-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-emerald-400 transition hover:border-emerald-400 hover:bg-slate-900" id="workBtn">撌乩?</button>
+          <button class="btn btn-shopping rounded-lg border border-violet-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-violet-400 transition hover:border-violet-400 hover:bg-slate-900" id="shoppingBtn">鞈潛</button>
+          <button class="btn btn-event rounded-lg border border-orange-500/40 bg-slate-950/70 px-3 py-2 text-[11px] font-semibold text-orange-400 transition hover:border-orange-400 hover:bg-slate-900" id="eventBtn">鈭辣</button>
+          <div class="dropdown relative">
+            <button class="btn btn-ghost rounded-lg border border-slate-700 bg-slate-800/80 px-3 py-2 text-[11px] font-semibold text-slate-300 transition hover:border-slate-500 hover:bg-slate-700" id="exportBtn">???游? ??/button>
+            <div id="exportMenu" aria-label="?游??詨" class="absolute right-0 top-full z-[2000] mt-2 hidden min-w-[140px] overflow-hidden rounded-lg border border-slate-700 bg-slate-900/95 shadow-2xl shadow-black/40">
+              <button type="button" data-export="txt" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-slate-300 transition hover:bg-slate-800 hover:text-sky-300">?臬 TXT</button>
+              <button type="button" id="clearBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-rose-400 transition hover:bg-slate-800">皜?券</button>
+                            <button type="button" id="gcalBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-blue-400 transition hover:bg-slate-800">? Google ?交?</button>
+                            <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">?餃?郊</button>
+              <button type="button" id="btnLogout" class="block w-full px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">?餃</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout mt-4">
+        <section class="panel panel--primary rounded-xl border border-slate-800/80 bg-slate-900/90 shadow-lg shadow-black/20">
+          <div class="panel-header border-b border-slate-800/80 bg-slate-950/50 px-4 py-3">
+            <div>
+              <h3 class="text-sm font-semibold text-slate-100">閮??</h3>
+              <small class="text-[11px] text-slate-400">靘??蝯＊蝷綽??舐?亦楊頛臬?閮?/small>
+            </div>
+            <!-- ?暸?內撌脩宏??-->
+          </div>
+          <div class="panel-body p-4">
+            <div id="log"></div>
+          </div>
+          <div class="toolbar-note border-t border-slate-800/80 bg-slate-950/40 px-4 py-3 text-[11px] text-slate-400">
+            ?祆??芸?嚗???摮?localStorage嚗?乩??雯頝舀???甇?Firebase??
+          </div>
+        </section>
+ 
+        <aside class="panel rounded-xl border border-slate-800/80 bg-slate-900/90 shadow-lg shadow-black/20">
+          <div class="panel-header border-b border-slate-800/80 bg-slate-950/50 px-4 py-3">
+            <div>
+              <h4 class="text-sm font-semibold text-slate-100">???Ｘ</h4>
+              <small class="text-[11px] text-slate-400">敹恍?????/small>
+            </div>
+          <!-- ???Ｘ -->
+          </div>
+          <div class="panel-body p-4">
+            <div class="stats-grid grid gap-2 sm:grid-cols-2">
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">蝮賜???/span>
+                <strong id="recordStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">?券閮?</small>
+              </div>
+
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">???/span>
+                <strong id="commuteCountStat" class="block text-xl font-semibold text-sky-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">?憿?</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">撌乩???/span>
+                <strong id="workCountStat" class="block text-xl font-semibold text-emerald-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">撌乩?憿?</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">鞈潛??/span>
+                <strong id="shoppingCountStat" class="block text-xl font-semibold text-violet-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">鞈潛憿?</small>
+              </div>
+              <div class="stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-3">
+                <span class="mb-1 block text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">鈭辣??/span>
+                <strong id="eventCountStat" class="block text-xl font-semibold text-orange-400">0</strong>
+                <small class="mt-1 block text-[10px] text-slate-500">鈭辣憿?</small>
+              </div>
+            </div>
+ 
+            <ul class="info-list mt-4 space-y-2">
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">?脣??孵?</span><span class="font-semibold text-slate-100">localStorage嚗?亙? + Firebase嚗?/span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">?桀???</span><span class="font-semibold text-slate-100" id="sideNowLabel">??/span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">?郊???/span><span class="font-semibold text-slate-100" id="syncStateLabel">OFFLINE</span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">?餈??/span><span class="font-semibold text-slate-100" id="updatedAtLabel">??/span></li>
+              <li class="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-[11px] text-slate-300"><span class="text-slate-400">雿輻??ID</span><span class="font-semibold text-slate-100" id="userIdLabel">??/span></li>
+            </ul>
+          </div>
+        </aside>
+      </main>
+    </div>
+  </div>
+</div>
+
+  <!-- ?餃 modal嚗mail + 撖Ⅳ嚗 popup ??redirect嚗?-->
+  <div id="loginModal" class="hidden fixed inset-0 z-[200] items-center justify-center bg-black/55" style="display:none;">
+    <div class="panel w-80 rounded-xl border border-slate-700 bg-slate-900/95 p-5 shadow-2xl shadow-black/40">
+      <h3 class="mb-4 text-sm font-semibold text-slate-100">?? ?餃?郊</h3>
+      <input id="loginEmail" type="email" placeholder="Email" class="mb-3 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
+      <input id="loginPass" type="password" placeholder="撖Ⅳ" class="mb-4 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none">
+      <div class="flex gap-2.5">
+        <button class="btn btn-primary flex-1" id="loginSubmit">?餃</button>
+        <button class="btn btn-ghost" id="loginCancel">??</button>
+      </div>
+    </div>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

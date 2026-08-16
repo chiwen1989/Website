@@ -1,14 +1,7 @@
 node_modules/
-*.log
+dist/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.vscode/
-.idea/
 .DS_Store
-Thumbs.db
-.env
-.env.*
-coverage/
-.cache/
-.parcel-cache/
+*.log
