@@ -1,3 +1,0 @@
-﻿/*
-  Content-Security-Policy: default-src 'self' https://www.gstatic.com https://firebase.googleapis.com https://firebaseinstallations.googleapis.com https://firestore.googleapis.com https://securetoken.googleapis.com https://accounts.google.com https://identitytoolkit.googleapis.com; script-src 'self' https://www.gstatic.com https://cdn.firebase.com https://*.firebaseio.com 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://*.firebaseio.com https://*.firebase.googleapis.com https://*.googleapis.com https://*.firebasedatabase.app wss://*.firebase.io; font-src 'self' data:;
-*/
