@@ -124,6 +124,7 @@ function initAfterAuth() {
 
   initBtns();
   render();
+  rehydrateTimers(); // 恢復頁面關閉前的計時器
   updateNow();
   setInterval(updateNow, 1000);
 }
@@ -291,6 +292,29 @@ function startTimer(idx) {
     queueSave(); // 保存 startTime
     render(); // 重新渲染以更新按鈕狀態
   }
+}
+
+// 重新載入時恢復正在進行的計時器
+function rehydrateTimers() {
+  times.forEach((item, idx) => {
+    if (item.startTime && !item.note?.includes('計時')) {
+      // 這個計時器在頁面關閉前還在運行
+      timers[item.id] = {
+        startTime: item.startTime,
+        intervalId: setInterval(() => {
+          const displayElement = document.querySelector(`.timerDisplay[data-entry-id="${item.id}"]`);
+          if (displayElement) {
+            displayElement.textContent = formatMsToHMS(Date.now() - timers[item.id].startTime);
+          }
+        }, 1000)
+      };
+      // 立即更新一次顯示
+      const displayElement = document.querySelector(`.timerDisplay[data-entry-id="${item.id}"]`);
+      if (displayElement) {
+        displayElement.textContent = formatMsToHMS(Date.now() - item.startTime);
+      }
+    }
+  });
 }
 
 function addEntry(type) { times.push({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now(), type, note: '', startTime: null }); queueSave(); render(); }
