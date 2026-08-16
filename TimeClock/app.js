@@ -144,7 +144,24 @@ function setupFirebaseListener() {
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     const remote = normalizeRemoteSnapshot(snapshot.val());
     if (JSON.stringify(remote) !== JSON.stringify(times)) {
-      times = remote;
+      // 合併數據：保留本地的 startTime（進行中的計時器）
+      times = times.map(localItem => {
+        const remoteItem = remote.find(r => r.id === localItem.id);
+        if (remoteItem) {
+          // 如果本地有 startTime 但遠端沒有，保留本地的
+          return {
+            ...remoteItem,
+            startTime: localItem.startTime || remoteItem.startTime
+          };
+        }
+        return localItem;
+      });
+      // 添加遠端有但本地沒有的項目
+      remote.forEach(r => {
+        if (!times.find(t => t.id === r.id)) {
+          times.push(r);
+        }
+      });
       persistLocalCache();
       render();
     }
