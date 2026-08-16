@@ -473,11 +473,23 @@ function removeEntry(idx) {
   }
   times.splice(idx, 1);
   console.log('[刪除] 本地刪除後:', times.map(t => t.id).join(', '));
-  persistLocalCache(); // 立即保存
-  queueSave(); // Firebase 同步
-  console.log('[刪除] 已調用 queueSave，等待 Firebase 回調');
+  persistLocalCache(); // 立即保存本地
+
+  // 直接從 Firebase 刪除該筆，避免全量寫入
+  if (fbReady && userId && firebaseTimesRef) {
+    console.log('[Firebase] 刪除單筆記錄:', id);
+    firebaseTimesRef.child(id).remove()
+      .then(() => {
+        console.log('[Firebase] 刪除成功');
+        setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+      })
+      .catch(err => {
+        console.error('[Firebase] 刪除失敗:', err);
+        setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+      });
+  }
+
   render();
-  // 更新最後同步數據
   lastSyncData = [...times];
 }
 
@@ -623,18 +635,62 @@ function saveToFirebase() {
   }
   userId = cur.uid;
   const storage = `users/${userId}/times`;
-  console.log('[Firebase] 保存到:', storage, '數據:', JSON.stringify(times.map(t => ({id: t.id, note: t.note?.substring(0, 10)}))));
+  console.log('[Firebase] 保存到:', storage, '數據條數:', times.length);
   setSyncState('SYNCING', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
-  // 使用 update 而非 set，避免覆蓋遠端數據
-  const updates = {};
-  for (const item of times) {
-    updates[item.id] = { t: item.t, type: item.type, note: item.note, startTime: item.startTime };
+
+  // 分批保存，避免单次写入过大导致超時
+  const BATCH_SIZE = 100;
+  const total = times.length;
+  let saved = 0;
+  let failed = false;
+
+  function saveBatch() {
+    if (failed || saved >= total) {
+      if (failed) {
+        console.error('[Firebase] 分批保存失败，回退到全部保存');
+        setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+      } else {
+        console.log('[Firebase] 分批保存完成');
+        setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+      }
+      return;
+    }
+
+    const batch = times.slice(saved, saved + BATCH_SIZE);
+    const updates = {};
+    for (const item of batch) {
+      updates[item.id] = { t: item.t, type: item.type, note: item.note, startTime: item.startTime };
+    }
+
+    firebase.database().ref(storage).update(updates)
+      .then(() => {
+        saved += BATCH_SIZE;
+        console.log('[Firebase] 已保存', saved, '/', total);
+        saveBatch(); // 继续下一批
+      })
+      .catch(err => {
+        console.error('[Firebase] 分批保存失败:', err);
+        failed = true;
+        setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+      });
   }
-  return firebase.database().ref(storage).update(updates).then(() => {
-    console.log('[Firebase] 保存成功（使用 update 合併）');
-    setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-  }).catch(err => {
-    console.error('[Firebase] 保存失敗:', err);
-    setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
-  });
+
+  // 如果数据量小，直接保存
+  if (total <= BATCH_SIZE) {
+    const updates = {};
+    for (const item of times) {
+      updates[item.id] = { t: item.t, type: item.type, note: item.note, startTime: item.startTime };
+    }
+    return firebase.database().ref(storage).update(updates).then(() => {
+      console.log('[Firebase] 保存成功（使用 update 合併）');
+      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+    }).catch(err => {
+      console.error('[Firebase] 保存失败:', err);
+      setSyncState('OFFLINE', lastSyncAt || new Date().toLocaleTimeString('zh-Hant'));
+    });
+  }
+
+  // 大数据分批保存
+  console.log('[Firebase] 数据量较大，使用分批保存');
+  saveBatch();
 }
