@@ -59,6 +59,7 @@ if (fbReady) {
       document.getElementById('btnLogout').style.display = '';
       setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
       setupFirebaseListener();
+      initAfterAuth(); // 確保 Firebase 已就緒後才初始化
     } else {
       cleanupFirebaseListener();
       userId = null;
@@ -101,7 +102,7 @@ document.getElementById('loginCancel').addEventListener('click', () => { documen
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 
 document.getElementById('appContainer').style.display = 'block';
-initAfterAuth();
+// initAfterAuth 在 onAuthStateChanged 回調中調用，確保 Firebase 已就緒
 
 function initAfterAuth() {
   log = document.getElementById('log');
