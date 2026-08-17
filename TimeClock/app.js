@@ -474,13 +474,20 @@ function setupFirebaseListener() {
   firebaseTimesListener = firebaseTimesRef.on('value', snapshot => {
     const remoteData = snapshot.val();
     const remoteItems = normalizeRemoteSnapshot(remoteData);
-    
+
     // 修正：使用純文字結構比對，阻斷因為非同步傳輸產生的無窮重繪與 UI 卡死
     const localStr = JSON.stringify(times.map(t => ({id:t.id, note:t.note, startTime:t.startTime})).sort((a,b)=>a.id.localeCompare(b.id)));
     const remoteStr = JSON.stringify(remoteItems.map(r => ({id:r.id, note:r.note, startTime:r.startTime})).sort((a,b)=>a.id.localeCompare(b.id)));
-    
+
     if (localStr !== remoteStr) {
-      times = remoteItems;
+      if (isFirstSync) {
+        // ponytail: merge by ID, prefer local for conflicts (offline changes survive)
+        const merged = new Map(remoteItems.map(r => [r.id, r]));
+        times.forEach(t => { merged.set(t.id, t); });
+        times = Array.from(merged.values());
+      } else {
+        times = remoteItems;
+      }
       persistLocalCache();
       rehydrateTimers();
       render();
@@ -622,6 +629,10 @@ function initAfterAuth() {
   if (initAfterAuthCalled) return;
   initAfterAuthCalled = true;
   
+  // 恢復持久化的 userId（防页面刷新後丟失）
+  const savedUserId = localStorage.getItem('daKaUserId');
+  if (savedUserId) userId = savedUserId;
+
   log = document.getElementById('log');
   recordCountLabel = document.getElementById('recordCountLabel');
   recordStat = document.getElementById('recordStat');
@@ -656,6 +667,7 @@ function initAfterAuth() {
 function handleAuthStateChange(user) {
   if (user && isAuthorizedUser(user)) {
     userId = user.uid;
+    localStorage.setItem('daKaUserId', userId);
     if (userIdLabel) userIdLabel.textContent = userId;
     const btnL = document.getElementById('btnLogin');
     const btnOut = document.getElementById('btnLogout');
@@ -668,6 +680,7 @@ function handleAuthStateChange(user) {
   } else {
     cleanupFirebaseListener();
     userId = null;
+    localStorage.removeItem('daKaUserId');
     if (userIdLabel) userIdLabel.textContent = '—';
     const btnL = document.getElementById('btnLogin');
     const btnOut = document.getElementById('btnLogout');
