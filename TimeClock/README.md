@@ -1,4 +1,4 @@
-# TimeClock 打卡記錄工具 v1.2.30
+# TimeClock 打卡記錄工具 v1.0.0
 
 ## 概述
 
@@ -96,24 +96,11 @@ let lastSyncData = null;  // 上次同步數據（檢測刪除）
 
 ## 版本歷史
 
-### v1.2.30
-- 修復離線模式刷新後數據不顯示問題（先渲染後顯示登入橫幅）
-
-### v1.2.29
-- 修復離線模式刷新後數據不顯示（等待登入橫幅動畫完成）
-
-### v1.2.24
-- 修復首次同步時不刪除本地數據
-- 修復重複記錄問題（Firebase 同步條件優化）
-
-### v1.2.18
-- 修復 Firebase 返回空數據時不刪除本地數據
-
-### v1.2.12
+### v1.0.0
+- 新增 userId 持久化（localStorage），頁面刷新後登入狀態不丟失
+- 修復離線模式下首次同步時 Firebase 覆蓋本地數據問題（id-based merge，優先本地）
 - 修復按鈕事件重複綁定（initBtns 只執行一次）
-- 等待按鈕元素存在後再綁定事件
-
-### v1.2.0
+- 修復 Firebase 返回空數據時不刪除本地數據
 - 新增計時器持久化（跨頁面關閉恢復）
 - 新增 Google 日曆匯出（ICS 格式）
 - 新增事件類型記錄
@@ -132,7 +119,7 @@ copy "C:\Users\chiwe\Downloads\TimeClock\styles.css" "C:\Users\chiwe\Documents\G
 
 # 提交變更
 cd C:\Users\chiwe\Documents\GitHub\Website\TimeClock
-git add -A && git commit -m "v1.2.30: 修復離線模式刷新問題" && git push
+git add -A && git commit -m "v1.0.0: userId 持久化 + 離線合併修復" && git push
 ```
 
 ### 編譯 CSS
