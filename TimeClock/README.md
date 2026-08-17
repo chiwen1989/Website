@@ -1,144 +1,146 @@
-# TimeClock 使用說明書
+# TimeClock 打卡記錄工具 v1.2.30
 
 ## 概述
-TimeClock 是一個簡單的時間記錄應用程式，用於記錄通勤、工作、購物和事件時間，並提供計時功能和 Google 日曆匯出。
 
-## 功能
+TimeClock 是一個輕量級時間記錄工具，用於記錄通勤、工作、購物、事件等活動。資料先存於本機，登入後自動同步至雲端。
 
-### 1. 時間記錄
-- 通勤、工作、購物、事件時間記錄
-- 自動生成唯一ID
-- 記錄開始時間和類型
-- 支援備註欄位
+## 設計理念
 
-### 2. 計時功能
-- 計時按鈕：開始/停止計時
-- 計時顯示：即時更新計時時間
-- 自動記錄計時結果到備註
-- **跨頁面關閉持久化**：重新整理或關閉頁面後重新開啟，進行中的計時器會自動恢復，並計算實際經過時間
+- **本地優先**：所有資料先寫入 localStorage，離線仍可正常使用
+- **單一檔案**：整個應用僅兩個檔案（HTML + JS），部署零配置
+- **最小依賴**：僅使用 Firebase compat SDK，無框架無構建流程
+- **計時持久化**：頁面關閉後重新打開，進行中的計時器自動恢復
+- **小檔案哲學**：app.js 794 行，index.html 153 行，避免過度工程
 
-### 3. 資料管理
-- 本地快取：使用localStorage儲存記錄
-- Firebase同步：登入後同步到Firebase
-- 匯出功能：匯出為TXT格式
-- Google 日曆匯出：匯出為ICS格式（全天事件）
+## 功能清單
 
-### 4. 記錄類型配色
-- 通勤：藍色（sky）
-- 工作：綠色（emerald）
-- 購物：紫色（violet）
-- 事件：橘色（orange）
+| 功能 | 說明 |
+|------|------|
+| 四種記錄類型 | 通勤（藍）、工作（綠）、購物（紫）、事件（橘） |
+| 計時功能 | 開始/停止計時，即時顯示時長，結果自動記錄至備註 |
+| 離線支援 | 無需登入即可使用，資料自動保存於本機 |
+| Firebase 同步 | 登入後多裝置同步，使用 update 而非 set 避免覆蓋 |
+| 大批量保存 | >100 筆自動分批（每批 100 筆），避免超時 |
+| 刪除優化 | 僅刪除單筆記錄，不觸發全量寫入 |
+| Google 日曆匯出 | 匯出為 ICS 格式，今日記錄合併為單一全天事件 |
+| TXT 匯出 | 所有記錄匯出為純文字檔 |
 
 ## 使用方式
 
-### 1. 新增記錄
-1. 點擊「通勤」「工作」「購物」或「事件」按鈕
-2. 輸入備註（可選）
-3. 記錄會自動儲存
+### 新增記錄
 
-### 2. 使用計時功能
+1. 點擊對應按鈕：通勤 / 工作 / 購物 / 事件
+2. **通勤**：直接選擇「出門」或「返家」，無需輸入備註
+3. **工作/購物/事件**：輸入備註後，詢問是否立即開始計時
+
+### 計時功能
+
 1. 在記錄項目中點擊「計時」按鈕
-2. 計時開始後，時間會即時顯示
+2. 計時開始，時間每秒更新
 3. 點擊「停止計時」按鈕
-4. 計時結果會自動記錄到備註中
+4. 結果自動追加至備註（格式：`備註 | 計時 01:23:45`）
 
-### 3. 匯出功能
-- **匯出 TXT**：将所有記錄匯出為文字檔
-- **加入 Google 日曆**：匯出今日記錄為 ICS 檔案，匯入後可加入 Google 日曆（全天事件，合併為單一事件）
+### 匯出功能
 
-### 4. 管理記錄
-- 刪除單筆記錄：點擊記錄項目的「刪除」按鈕
-- 清除所有記錄：點擊「清除全部」按鈕
+從「⋯ 更多」選單選擇：
+- **匯出 TXT**：所有記錄匯出為文字檔
+- **加入 Google 日曆**：今日記錄匯出為 ICS 檔案（全天事件）
+- **清除全部**：刪除所有記錄（需確認）
+
+### 登入同步
+
+1. 點擊「登入同步」或底部登入橫幅的「立即登入」
+2. 輸入 Email 和密碼（僅授權帳號可存取）
+3. 登入後資料自動同步至 Firebase
+
+### 匯出 ICS 格式規範
+
+- SUMMARY 和 DESCRIPTION 為純文字，不使用 encodeURIComponent
+- 使用 CRLF 換行
+- 匯出為全天事件（DTSTART/DTEND 僅日期無時間）
+- 所有今日記錄合併為單一 VEVENT
+- 備註與計時寫入 DESCRIPTION
+
+## 同步狀態
+
+| 狀態 | 說明 |
+|------|------|
+| OFFLINE | 離線模式，資料僅存於本機 |
+| SYNCING | 正在同步中 |
+| SYNCED | 已同步至 Firebase |
 
 ## 技術細節
 
-### 1. 核心變數
-- `times`：儲存所有時間記錄的陣列
-- `timers`：儲存計時器狀態的物件
-- `TYPE_META`：記錄類型的元資料
+### 核心變數
 
-### 2. 主要函數
-- `render()`：渲染所有記錄
-- `startTimer()`：處理計時器邏輯
-- `queueSave()`：排程資料儲存
-- `saveToFirebase()`：同步到Firebase
-
-### 3. 計時器實現
 ```javascript
-function startTimer(idx) {
-  const item = times[idx];
-  if (!item) return;
-
-  const entryId = item.id;
-
-  if (timers[entryId]) {
-    // 停止計時器
-    clearInterval(timers[entryId].intervalId);
-    const elapsedTime = Date.now() - item.startTime;
-    delete timers[entryId];
-
-    // 直接記錄計時時間，不需要輸入第二則備註
-    item.note = `${item.note || ''}${item.note ? ' | ' : ''}計時 ${formatMsToHMS(elapsedTime)}`;
-    queueSave();
-    render(); // 重新渲染以更新按鈕狀態和顯示
-  } else {
-    // 開始計時器
-    timers[entryId] = {
-      startTime: Date.now(),
-      intervalId: setInterval(() => {
-        const displayElement = document.querySelector(`.timerDisplay[data-entry-id="${entryId}"]`);
-        if (displayElement) {
-          displayElement.textContent = formatMsToHMS(Date.now() - timers[entryId].startTime);
-        }
-      }, 1000)
-    };
-    item.startTime = timers[entryId].startTime; // 記錄開始時間到 item 中
-    queueSave(); // 保存 startTime
-    render(); // 重新渲染以更新按鈕狀態
-  }
-}
+let times = [];           // 所有記錄
+let timers = {};          // 進行中的計時器 {id: {startTime, intervalId}}
+let syncState = 'OFFLINE'; // 同步狀態
+let isFirstSync = true;   // 首次同步標記（保護本地數據）
+let lastSyncData = null;  // 上次同步數據（檢測刪除）
 ```
 
-## 注意事項
-1. 計時功能會自動將時間記錄到備註中，無需額外輸入
-2. 資料會自動同步到Firebase（需登入）
-3. 匯出功能支援TXT和ICS（Google 日曆）格式
-4. ICS 匯出為全天事件（無時間欄位），所有今日記錄合併為單一事件
-5. 計時器會即時更新顯示，無需手動刷新
-6. **背景計時限制**：瀏覽器在背景時 `setInterval` 會暫停，但重新開啟頁面後會自動恢復並計算完整經過時間
+### 主要流程
 
-## 修改歷史
+1. **初始化**：加載本地緩存 → 綁定按鈕事件 → 渲染記錄
+2. **Firebase 監聽**：登入後訂閱數據變更，合併策略優先本地
+3. **保存策略**：本地優先寫入 → 有登入時隊列寫 Firebase
+4. **計時恢復**：頁面載入時重啟 `setInterval`，計算實際經過時間
 
-### 2026-08-16 v1.2.1
-- **簡化通勤按鈕**：確定=出門，取消=返家，無需額外輸入備註
-- **完善計時詢問說明**：詳細解釋確定/取消的差異
-- **修復刪除同步問題**：重置 `isFirstSync` 標記，追蹤 `lastSyncData` 檢測刪除/新增
-- **修復密碼儲存**：改用 `<form>` 元素，瀏覽器可正確檢測提交動作
-- **移除重複事件監聽器**：清理 `loginSubmit` 引用（HTML 已改為 `<form>`）
-- 編碼檢查通過：無 BOM、無私有使用區字符、無死代碼
+### 相容性
 
-### 2026-08-16 v1.2.0
-- **修復刪除同步問題**：重置 `isFirstSync` 標記，追蹤 `lastSyncData` 檢測刪除/新增
-- **修復密碼儲存**：改用 `<form>` 元素，瀏覽器可正確檢測提交動作
-- **移除重複事件監聽器**：清理 `loginSubmit` 引用（HTML 已改為 `<form>`）
-- **新增除錯日誌**：詳細記錄 Firebase 同步流程（可用於問題追蹤）
-- 編碼檢查通過：無 BOM、無私有使用區字符、無死代碼
+- 支援 GitHub Pages 部署（CSP 限制下使用 compat SDK）
+- Firefox / Chrome / Safari 最新兩版本
+- 移動端支援（響應式設計）
 
-### 2026-08-16 v1.1.1
-- 移除 `loginSubmit` 重複事件監聽器
-- 修復 `btnLogout` 事件監聽器
-- 添加詳細 Firebase 同步日誌
+## 版本歷史
 
-### 2026-08-14 v1.1.0
-- 新增「事件」按鈕（橘色配色）
-- 新增 Google 日曆匯出功能（ICS 格式）
-- 修正時區問題（改用本地時間）
-- 修正 normalizeTimes 函式支援 event 類型
-- 合併今日記錄為單一全天事件
-- **新增計時器持久化**：頁面關閉/重新整理後自動恢復進行中的計時器
-- **修復計時器恢復問題**：確保 DOM 載入後才恢復計時器
+### v1.2.30
+- 修復離線模式刷新後數據不顯示問題（先渲染後顯示登入橫幅）
 
-### 2026-08-14
-- 新增計時功能
-- 修正計時顯示問題
-- 優化計時器邏輯
+### v1.2.29
+- 修復離線模式刷新後數據不顯示（等待登入橫幅動畫完成）
+
+### v1.2.24
+- 修復首次同步時不刪除本地數據
+- 修復重複記錄問題（Firebase 同步條件優化）
+
+### v1.2.18
+- 修復 Firebase 返回空數據時不刪除本地數據
+
+### v1.2.12
+- 修復按鈕事件重複綁定（initBtns 只執行一次）
+- 等待按鈕元素存在後再綁定事件
+
+### v1.2.0
+- 新增計時器持久化（跨頁面關閉恢復）
+- 新增 Google 日曆匯出（ICS 格式）
+- 新增事件類型記錄
+- 大批量數據保存優化（分批 100 筆）
+- 刪除操作優化（單筆刪除不觸發全量寫入）
+
+## 部署
+
+### 手動部署
+```bash
+# 複製檔案至 GitHub Pages 倉庫
+copy "C:\Users\chiwe\Downloads\TimeClock\app.js" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\app.js"
+copy "C:\Users\chiwe\Downloads\TimeClock\index.html" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\index.html"
+copy "C:\Users\chiwe\Downloads\TimeClock\output.css" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\output.css"
+copy "C:\Users\chiwe\Downloads\TimeClock\styles.css" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\styles.css"
+
+# 提交變更
+cd C:\Users\chiwe\Documents\GitHub\Website\TimeClock
+git add -A && git commit -m "v1.2.30: 修復離線模式刷新問題" && git push
+```
+
+### 編譯 CSS
+```bash
+cd C:\Users\chiwe\Downloads\TimeClock
+npm run build:css
+```
+
+## 授權
+
+本專案為個人使用，未開放授權。
