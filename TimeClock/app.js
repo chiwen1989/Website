@@ -74,18 +74,19 @@ function setupFirebaseListeners() {
         hideLoginBanner(); // 已登入，隱藏提示
         initAfterAuth();
       } else {
-        cleanupFirebaseListener();
-        userId = null;
-        document.getElementById('btnLogin').style.display = '';
-        document.getElementById('btnLogout').style.display = 'none';
-        if (user) {
-          alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
-          auth.signOut();
-        }
-        setSyncState('OFFLINE', lastSyncAt || '');
-        showLoginBanner(); // 未登入，顯示提示
-        initAfterAuth();
-      }
+              cleanupFirebaseListener();
+              userId = null;
+              document.getElementById('btnLogin').style.display = '';
+              document.getElementById('btnLogout').style.display = 'none';
+              if (user) {
+                alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
+                auth.signOut();
+              }
+              setSyncState('OFFLINE', lastSyncAt || '');
+              // 先初始化應用，渲染完成後再顯示登入橫幅，避免離線模式下橫幅遮擋內容
+              initAfterAuth();
+              showLoginBanner(); // 移到這裡，在初始化完成後顯示
+            }
     });
   } else {
     setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
@@ -121,10 +122,17 @@ document.getElementById('bannerClose').addEventListener('click', () => { documen
 document.getElementById('bannerLoginBtn').addEventListener('click', () => { document.getElementById('loginBanner').classList.add('hidden'); document.getElementById('loginModal').style.display = 'flex'; setTimeout(() => document.getElementById('loginEmail').focus(), 100); });
 
 document.getElementById('appContainer').style.display = 'block';
+console.log('[init] appContainer 已顯示');
 // initAfterAuth 在 onAuthStateChanged 回調中調用，確保 Firebase 已就緒
 setupFirebaseListeners(); // 啟動 Firebase 監聽器
+console.log('[init] setupFirebaseListeners 已調用');
 
 function initAfterAuth() {
+  console.log('[initAfterAuth] 開始初始化...');
+  console.log('[initAfterAuth] commuteBtn 存在:', !!document.getElementById('commuteBtn'));
+  console.log('[initAfterAuth] workBtn 存在:', !!document.getElementById('workBtn'));
+  console.log('[initAfterAuth] shoppingBtn 存在:', !!document.getElementById('shoppingBtn'));
+  console.log('[initAfterAuth] eventBtn 存在:', !!document.getElementById('eventBtn'));
   log = document.getElementById('log');
   recordCountLabel = document.getElementById('recordCountLabel');
   recordStat = document.getElementById('recordStat');
@@ -139,18 +147,62 @@ function initAfterAuth() {
   sideNowLabel = document.getElementById('sideNowLabel');
 
   times = loadLocalCache();
-  // 只在未登入時設為 OFFLINE，保留登入後的狀態
-  if (!userId) syncState = 'OFFLINE';
-  lastSyncAt = '';
-  saveTimer = null;
+    console.log('[initAfterAuth] 本地緩存數據:', times.length, '筆記錄');
 
-  initBtns();
-  render();
-  rehydrateTimers(); // 恢復頁面關閉前的計時器
-  setTimeout(() => render(), 150); // 重新渲染以更新按鈕狀態
-  updateNow();
-  setInterval(updateNow, 1000);
-}
+    // 只在未登入時設為 OFFLINE，保留登入後的狀態
+    if (!userId) syncState = 'OFFLINE';
+    lastSyncAt = '';
+    saveTimer = null;
+
+    initBtns();
+        // 離線模式：等待登入橫幅動畫完成後再渲染，避免內容被遮擋
+        if (!userId) {
+          const banner = document.getElementById('loginBanner');
+          const waitForBannerAnimation = () => new Promise(resolve => {
+            if (!banner || banner.classList.contains('hidden')) {
+              resolve();
+              return;
+            }
+            // 檢查動畫是否已完成
+            const style = getComputedStyle(banner);
+            if (style.opacity === '1' && style.transform === 'none') {
+              resolve();
+              return;
+            }
+            // 等待動畫結束
+            banner.addEventListener('transitionend', () => resolve(), { once: true });
+            // 保險：最多等 800ms
+            setTimeout(resolve, 800);
+          });
+          waitForBannerAnimation().then(() => {
+            doInitialRender();
+          });
+        } else {
+          doInitialRender();
+        }
+
+        function doInitialRender() {
+          log = document.getElementById('log');
+          recordCountLabel = document.getElementById('recordCountLabel');
+          recordStat = document.getElementById('recordStat');
+          commuteCountStat = document.getElementById('commuteCountStat');
+          workCountStat = document.getElementById('workCountStat');
+          shoppingCountStat = document.getElementById('shoppingCountStat');
+          eventCountStat = document.getElementById('eventCountStat');
+          exportMenu = document.getElementById('exportMenu');
+          syncBadge = document.getElementById('syncBadge');
+          syncStateLabel = document.getElementById('syncStateLabel');
+          updatedAtLabel = document.getElementById('updatedAtLabel');
+          sideNowLabel = document.getElementById('sideNowLabel');
+
+          render();
+          console.log('[initAfterAuth] 初始渲染完成，數據數量:', times.length);
+          rehydrateTimers(); // 恢復頁面關閉前的計時器
+          setTimeout(() => render(), 150); // 重新渲染以更新按鈕狀態
+          updateNow();
+          setInterval(updateNow, 1000);
+        }
+      }
 
 function cleanupFirebaseListener() {
   if (firebaseTimesRef && firebaseTimesListener) { firebaseTimesRef.off('value', firebaseTimesListener); }
@@ -197,38 +249,40 @@ function setupFirebaseListener() {
     console.log('[Firebase] 合併後數據:', merged.map(t => t.id).join(', '));
 
     // 檢查是否有變化
-    const changed = JSON.stringify(merged) !== JSON.stringify(times);
-    console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length);
+        const changed = JSON.stringify(merged) !== JSON.stringify(times);
+        console.log('[Firebase] 數據有變化:', changed, '刪除數量:', toDelete.length, '新增數量:', toAdd.length);
 
-    // 如果數據有變化，更新
-    // 首次同步時不刪除任何本地數據（保護離線操作）
-    if (changed || (toDelete.length > 0 && !isFirstSync) || toAdd.length > 0) {
-      console.log('[Firebase] 執行更新，刪除前本地:', times.map(t => t.id).join(', '));
-      // 首次同步時不刪除，只添加遠端新增的項目
-      if (toDelete.length > 0 && !isFirstSync) {
-        times = times.filter(t => !toDelete.includes(t.id));
-        console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '), '刪除後:', times.map(t => t.id).join(', '));
-      }
-      // 再合併數據
-      times = merged;
-      persistLocalCache();
-      rehydrateTimers();
-      render();
-      console.log('[Firebase] 更新完成，最終:', times.map(t => t.id).join(', '));
-      // 更新最後同步數據
-      lastSyncData = [...times];
-      setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
-    } else {
-      console.log('[Firebase] 數據無變化，跳過更新');
-      // 即使無變化，也更新 lastSyncData
-      if (!lastSyncData || lastSyncData.length !== remote.length) {
-        lastSyncData = [...remote];
-      }
+        // 如果數據有變化，更新
+        if (changed || toAdd.length > 0) {
+          console.log('[Firebase] 執行更新，刪除前本地:', times.map(t => t.id).join(', '));
+      
+          // 首次同步時不刪除任何本地數據（保護離線操作）
+          // 只有非首次同步時才執行刪除
+          if (!isFirstSync && toDelete.length > 0) {
+            times = times.filter(t => !toDelete.includes(t.id));
+            console.log('[Firebase] 已刪除本地記錄:', toDelete.join(', '), '刪除後:', times.map(t => t.id).join(', '));
+          }
+      
+          // 再合併數據
+          times = merged;
+          persistLocalCache();
+          rehydrateTimers();
+          render();
+          console.log('[Firebase] 更新完成，最終:', times.map(t => t.id).join(', '));
+          // 更新最後同步數據
+          lastSyncData = [...times];
+          setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
+        } else {
+          console.log('[Firebase] 數據無變化，跳過更新');
+          // 即使無變化，也更新 lastSyncData
+          if (!lastSyncData || lastSyncData.length !== remote.length) {
+            lastSyncData = [...remote];
+          }
+        }
+      };
+      firebaseTimesRef.on('value', firebaseTimesListener);
+      console.log('[Firebase] 監聽器設置完成，isFirstSync:', isFirstSync);
     }
-  };
-  firebaseTimesRef.on('value', firebaseTimesListener);
-  console.log('[Firebase] 監聽器設置完成，isFirstSync:', isFirstSync);
-}
 
 function normalizeTimes(list) {
   if (!Array.isArray(list)) return [];
@@ -569,18 +623,46 @@ let btnsInitialized = false;
 
 function initBtns() {
   if (btnsInitialized) return; // 已經初始化，跳過
+
+  // 檢查按鈕是否存在
+  const commuteBtn = document.getElementById('commuteBtn');
+  const workBtn = document.getElementById('workBtn');
+  const shoppingBtn = document.getElementById('shoppingBtn');
+  const eventBtn = document.getElementById('eventBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const refreshBtn = document.getElementById('refreshBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  const gcalBtn = document.getElementById('gcalBtn');
+
+  // 如果任何按鈕不存在，等待再試
+  if (!commuteBtn || !workBtn || !shoppingBtn || !eventBtn || !clearBtn || !refreshBtn || !exportBtn || !gcalBtn) {
+    console.log('[initBtns] 按鈕元素尚未存在，等待中...');
+    setTimeout(initBtns, 100);
+    return;
+  }
+
   btnsInitialized = true;
-  document.getElementById('commuteBtn').onclick = () => promptForNoteAndAddEntry('commute');
-  document.getElementById('workBtn').onclick = () => promptForNoteAndAddEntry('work');
-  document.getElementById('shoppingBtn').onclick = () => promptForNoteAndAddEntry('shopping');
-  document.getElementById('eventBtn').onclick = () => promptForNoteAndAddEntry('event');
-  document.getElementById('clearBtn').onclick = clearAll;
-  document.getElementById('refreshBtn').onclick = () => location.reload();
-  document.getElementById('exportBtn').onclick = () => { exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block'; };
-  document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) exportMenu.style.display = 'none'; });
-  exportMenu.querySelectorAll('button[data-export]').forEach(btn => { btn.addEventListener('click', () => exportAs(btn.dataset.export)); });
-  exportMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => { exportMenu.style.display = 'none'; }); });
-  document.getElementById('gcalBtn').onclick = addToGoogleCalendarToday;
+
+  // 直接綁定 onclick
+  commuteBtn.onclick = () => promptForNoteAndAddEntry('commute');
+  workBtn.onclick = () => promptForNoteAndAddEntry('work');
+  shoppingBtn.onclick = () => promptForNoteAndAddEntry('shopping');
+  eventBtn.onclick = () => promptForNoteAndAddEntry('event');
+  clearBtn.onclick = clearAll;
+  refreshBtn.onclick = () => location.reload();
+  exportBtn.onclick = () => {
+    if (!exportMenu) return;
+    exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block';
+  };
+  gcalBtn.onclick = addToGoogleCalendarToday;
+
+  // 文件級監聽器
+  if (!document.dataset._exportMenuListener) {
+    document.addEventListener('click', e => {
+      if (exportMenu && !e.target.closest('.dropdown')) exportMenu.style.display = 'none';
+    });
+    document.dataset._exportMenuListener = 'true';
+  }
 }
 
 function updateNow() {
