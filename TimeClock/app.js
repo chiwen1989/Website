@@ -564,7 +564,24 @@ function exportAs() {
 
 function clearAll() { if (!confirm('確定清除全部時間？')) return; times = []; for (const k in timers) { clearInterval(timers[k].intervalId); } timers = {}; persistLocalCache(); setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant')); render(); saveToFirebase(); }
 
-function initBtns() { document.getElementById('commuteBtn').onclick = () => promptForNoteAndAddEntry('commute'); document.getElementById('workBtn').onclick = () => promptForNoteAndAddEntry('work'); document.getElementById('shoppingBtn').onclick = () => promptForNoteAndAddEntry('shopping'); document.getElementById('eventBtn').onclick = () => promptForNoteAndAddEntry('event'); document.getElementById('clearBtn').onclick = clearAll; document.getElementById('refreshBtn').onclick = () => location.reload(); document.getElementById('exportBtn').onclick = () => { exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block'; }; document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) exportMenu.style.display = 'none'; }); exportMenu.querySelectorAll('button[data-export]').forEach(btn => { btn.addEventListener('click', () => exportAs(btn.dataset.export)); }); exportMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => { exportMenu.style.display = 'none'; }); }); document.getElementById('gcalBtn').onclick = addToGoogleCalendarToday; }
+// 防止 initBtns 被重複調用
+let btnsInitialized = false;
+
+function initBtns() {
+  if (btnsInitialized) return; // 已經初始化，跳過
+  btnsInitialized = true;
+  document.getElementById('commuteBtn').onclick = () => promptForNoteAndAddEntry('commute');
+  document.getElementById('workBtn').onclick = () => promptForNoteAndAddEntry('work');
+  document.getElementById('shoppingBtn').onclick = () => promptForNoteAndAddEntry('shopping');
+  document.getElementById('eventBtn').onclick = () => promptForNoteAndAddEntry('event');
+  document.getElementById('clearBtn').onclick = clearAll;
+  document.getElementById('refreshBtn').onclick = () => location.reload();
+  document.getElementById('exportBtn').onclick = () => { exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block'; };
+  document.addEventListener('click', e => { if (!e.target.closest('.dropdown')) exportMenu.style.display = 'none'; });
+  exportMenu.querySelectorAll('button[data-export]').forEach(btn => { btn.addEventListener('click', () => exportAs(btn.dataset.export)); });
+  exportMenu.querySelectorAll('button').forEach(btn => { btn.addEventListener('click', () => { exportMenu.style.display = 'none'; }); });
+  document.getElementById('gcalBtn').onclick = addToGoogleCalendarToday;
+}
 
 function updateNow() {
   const now = fmtDate(new Date());
