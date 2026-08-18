@@ -38,10 +38,9 @@ let btnsInitialized = false;
 let initAfterAuthCalled = false;
 let clockIntervalId = null; // 修正：用來記錄時鐘定時器，避免重複設定
 
+// ============================================================
 // DOM 元素引用
-let log, recordCountLabel, recordStat, commuteCountStat, workCountStat;
-let shoppingCountStat, eventCountStat, exportMenu, syncBadge;
-let syncStateLabel, updatedAtLabel, sideNowLabel, userIdLabel;
+// ============================================================
 
 // ============================================================
 // 核心功能
@@ -137,10 +136,6 @@ function getTimerBtnClass(item) {
     ? 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
     : 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20';
 }
-
-// ============================================================
-// 渲染功能
-// ============================================================
 
 function render() {
   if (!log) return;
@@ -448,6 +443,14 @@ function initBtns() {
     };
   }
   if (gcalBtn) gcalBtn.onclick = addToGoogleCalendarToday;
+
+  const exportTxtBtn = exportMenu?.querySelector('[data-export="txt"]');
+  if (exportTxtBtn) {
+    exportTxtBtn.onclick = () => {
+      exportToTxt();
+      if (exportMenu) exportMenu.style.display = 'none';
+    };
+  }
   
   if (!document.dataset?._exportMenuListener) {
     document.addEventListener('click', e => {
@@ -476,8 +479,12 @@ function setupFirebaseListener() {
     const remoteItems = normalizeRemoteSnapshot(remoteData);
 
     // 修正：使用純文字結構比對，阻斷因為非同步傳輸產生的無窮重繪與 UI 卡死
-    const localStr = JSON.stringify(times.map(t => ({id:t.id, note:t.note, startTime:t.startTime})).sort((a,b)=>a.id.localeCompare(b.id)));
-    const remoteStr = JSON.stringify(remoteItems.map(r => ({id:r.id, note:r.note, startTime:r.startTime})).sort((a,b)=>a.id.localeCompare(b.id)));
+    const fingerprint = items => JSON.stringify(
+      items.map(t => ({ id: t.id, t: t.t, type: t.type, note: t.note, startTime: t.startTime }))
+        .sort((a, b) => a.id.localeCompare(b.id))
+    );
+    const localStr = fingerprint(times);
+    const remoteStr = fingerprint(remoteItems);
 
     if (localStr !== remoteStr) {
       if (isFirstSync) {
@@ -553,6 +560,25 @@ function saveToFirebase() {
 // ============================================================
 // 匯出功能
 // ============================================================
+
+function exportToTxt() {
+  if (!times.length) {
+    alert('目前沒有記錄可以匯出');
+    return;
+  }
+  const lines = getGroupedTimes().flatMap(([date, entries]) => [
+    date,
+    ...entries.map(({ item }) => formatEntrySummary(item)),
+    ''
+  ]);
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `timeclock-${formatDateKey(new Date())}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function addToGoogleCalendarToday() {
   if (!times.length) {
@@ -692,6 +718,7 @@ function handleAuthStateChange(user) {
     }
     setSyncState('OFFLINE', lastSyncAt || '');
     if (!initAfterAuthCalled) initAfterAuth();
+    showLoginBanner();
   }
 }
 
@@ -699,6 +726,7 @@ function setupFirebaseListeners() {
   if (!auth) {
     setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
     if (!initAfterAuthCalled) initAfterAuth();
+    showLoginBanner();
     return;
   }
   auth.onAuthStateChanged(handleAuthStateChange);
