@@ -133,19 +133,19 @@ function getTimerDisplay(item) {
 
 function getTimerBtnClass(item) {
   return timers[item.id]
-    ? 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
-    : 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20';
+    ? 'timerBtn rounded-md border !px-6 py-1.5 text-[11px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
+    : 'timerBtn rounded-md border !px-6 py-1.5 text-[11px] font-semibold transition border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20';
 }
 
 function render() {
   if (!log) return;
-  
+
   log.innerHTML = '';
   recordCountLabel.textContent = times.length;
   recordStat.textContent = times.length;
-  
+
   const groups = getGroupedTimes();
-  
+
   if (!groups.length) {
     const empty = document.createElement('div');
     empty.className = 'stat-card rounded-lg border border-slate-800 bg-slate-950/70 p-4';
@@ -154,16 +154,15 @@ function render() {
     calcSelectedSummary();
     return;
   }
-  
+
   const today = new Date();
   const todayKey = formatDateKey(today);
-  
+
   groups.forEach(([date, entries]) => {
-    const det = document.createElement('details');
+    const det = document.createElement('div');
     det.className = 'group overflow-hidden rounded-lg border border-slate-800 bg-slate-900/70';
-    det.open = date === todayKey;
-    
-    const sum = document.createElement('summary');
+
+    const sum = document.createElement('div');
     sum.className = 'flex cursor-pointer items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/60 px-3 py-2.5 text-[12px] text-slate-200';
     sum.innerHTML = `
       <div class="flex items-center justify-between w-full">
@@ -172,51 +171,58 @@ function render() {
           <span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">${entries.length} 筆</span>
         </span>
         <div class="flex items-center gap-2">
-          <button type="button" class="px-2 py-1 text-[10px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-sky-300" onclick="event.stopPropagation(); exportToTxt('${date}')">TXT</button>
-          <button type="button" class="px-2 py-1 text-[10px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-blue-400" onclick="event.stopPropagation(); exportToIcs('${date}')">iCal</button>
+          <button type="button" class="!px-6 py-1.5 text-[11px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-sky-300" onclick="event.stopPropagation(); exportToTxt('${date}')">TXT</button>
+          <button type="button" class="!px-6 py-1.5 text-[11px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-blue-400" onclick="event.stopPropagation(); exportToIcs('${date}')">iCal</button>
         </div>
       </div>
     `;
-    det.appendChild(sum);
-    
+
     const wrap = document.createElement('div');
     wrap.className = 'entries space-y-2 p-2';
-    
-    entries.forEach(({ item }) => {
-      wrap.appendChild(createEntryElement(item)); // 修正：不再傳遞不安全的 idx
+    wrap.style.display = date === todayKey ? '' : 'none';
+
+    sum.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return;
+      wrap.style.display = wrap.style.display === 'none' ? '' : 'none';
     });
-    
+
+    det.appendChild(sum);
+
+    entries.forEach(({ item }) => {
+      wrap.appendChild(createEntryElement(item));
+    });
+
     det.appendChild(wrap);
     log.appendChild(det);
   });
-  
+
   calcSelectedSummary();
 }
 
 function createEntryElement(item) {
   const row = document.createElement('article');
   row.className = 'entry rounded-lg border border-slate-800 bg-slate-950/70 p-3';
-  
+
   const main = document.createElement('div');
   main.className = 'entry-main flex flex-col gap-2';
-  
+
   // 時間和類型標籤
   const top = document.createElement('div');
   top.className = 'entry-top flex flex-wrap items-center gap-2';
-  
+
   const tTxt = document.createElement('span');
   tTxt.className = 'entry-time text-[12px] font-semibold text-slate-100';
   tTxt.textContent = formatEntryTime(new Date(item.t));
-  
+
   const typeTag = document.createElement('span');
   const meta = TYPE_META[item.type] || TYPE_META.unknown;
   const colorClass = getTypeColorClass(item.type);
   typeTag.className = `tag rounded-full border px-2 py-0.5 text-[10px] font-semibold ${colorClass}`;
   typeTag.textContent = meta.label;
-  
+
   top.append(tTxt, typeTag);
   main.appendChild(top);
-  
+
   // 備註輸入
   const note = document.createElement('input');
   note.className = 'entry-note w-full rounded-md border border-slate-700 bg-slate-900/80 px-2.5 py-2 text-[11px] text-slate-100 placeholder:text-slate-500 focus:border-sky-400 focus:outline-none';
@@ -226,28 +232,28 @@ function createEntryElement(item) {
   note.dataset.id = item.id; // 修正：綁定唯一 ID
   note.addEventListener('input', onNoteInput);
   main.appendChild(note);
-  
+
   // 計時控制
   const timerCont = document.createElement('div');
   timerCont.className = 'timer-controls flex items-center gap-2 mt-2';
-  
+
   const timerBtn = document.createElement('button');
   timerBtn.type = 'button';
   timerBtn.className = getTimerBtnClass(item);
   timerBtn.textContent = timers[item.id] ? '停止計時' : '計時';
   timerBtn.dataset.entryId = item.id;
   timerBtn.onclick = () => startTimerById(item.id); // 修正：改用 ID 控制
-  
+
   const timerDisp = document.createElement('span');
   timerDisp.className = 'timerDisplay text-[10px] text-amber-300';
   timerDisp.dataset.entryId = item.id;
   timerDisp.textContent = getTimerDisplay(item);
-  
+
   timerCont.append(timerBtn, timerDisp);
   main.appendChild(timerCont);
-  
+
   row.appendChild(main);
-  
+
   // 操作按鈕
   const act = document.createElement('div');
   act.className = 'entry-actions mt-2 flex justify-end';
@@ -257,7 +263,7 @@ function createEntryElement(item) {
   del.textContent = '刪除';
   del.onclick = e => { e.stopPropagation(); removeEntryById(item.id); }; // 修正：改用 ID 刪除
   act.appendChild(del);
-  
+
   row.appendChild(act);
   return row;
 }
@@ -267,7 +273,7 @@ function calcSelectedSummary() {
   const workCount = times.filter(t => t.type === 'work').length;
   const shoppingCount = times.filter(t => t.type === 'shopping').length;
   const eventCount = times.filter(t => t.type === 'event').length;
-  
+
   if (commuteCountStat) commuteCountStat.textContent = commuteCount;
   if (workCountStat) workCountStat.textContent = workCount;
   if (shoppingCountStat) shoppingCountStat.textContent = shoppingCount;
@@ -300,12 +306,12 @@ function promptForNoteAndAddEntry(type) {
     addEntry('commute', note);
     return;
   }
-  
+
   const note = prompt('請輸入備註（可留空）');
   if (note === null) return;
-  
+
   const newItem = addEntry(type, note || '');
-  
+
   const startTimer = confirm('是否立即開始計時？\n\n按「確定」：自動開始計時\n按「取消」：僅保存備註');
   if (startTimer) {
     startTimerById(newItem.id); // 修正：直接用 ID 啟動
@@ -315,22 +321,22 @@ function promptForNoteAndAddEntry(type) {
 // 修正：完全改用 ID 定位刪除，徹底移除舊有不安全的 index 依賴
 function removeEntryById(id) {
   if (!id) return;
-  
+
   if (timers[id]) {
     clearInterval(timers[id].intervalId);
     delete timers[id];
   }
-  
+
   times = times.filter(t => t.id !== id);
   persistLocalCache();
-  
+
   if (fbReady && userId && firebaseTimesRef) {
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     firebaseTimesRef.child(id).remove()
       .then(() => setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant')))
       .catch(() => setSyncState('OFFLINE', lastSyncAt || ''));
   }
-  
+
   render();
 }
 
@@ -367,7 +373,7 @@ function onNoteInput(e) {
 function startTimerById(id) {
   const item = times.find(t => t.id === id);
   if (!item) return;
-  
+
   if (timers[item.id]) {
     clearInterval(timers[item.id].intervalId);
     const elapsed = Date.now() - item.startTime;
@@ -428,7 +434,7 @@ function rehydrateTimers() {
 
 function initBtns() {
   if (btnsInitialized) return;
-  
+
   const commuteBtn = document.getElementById('commuteBtn');
   const workBtn = document.getElementById('workBtn');
   const shoppingBtn = document.getElementById('shoppingBtn');
@@ -436,9 +442,9 @@ function initBtns() {
   const clearBtn = document.getElementById('clearBtn');
   const refreshBtn = document.getElementById('refreshBtn');
   const exportBtn = document.getElementById('exportBtn');
-  
+
   btnsInitialized = true;
-  
+
   if (commuteBtn) commuteBtn.onclick = () => promptForNoteAndAddEntry('commute');
   if (workBtn) workBtn.onclick = () => promptForNoteAndAddEntry('work');
   if (shoppingBtn) shoppingBtn.onclick = () => promptForNoteAndAddEntry('shopping');
@@ -453,7 +459,7 @@ function initBtns() {
     };
   }
 
-  
+
   if (!document.dataset?._exportMenuListener) {
     document.addEventListener('click', e => {
       if (exportMenu && !e.target.closest('.dropdown')) {
@@ -472,10 +478,10 @@ function initBtns() {
 function setupFirebaseListener() {
   cleanupFirebaseListener();
   if (!userId) return;
-  
+
   firebaseTimesRef = firebase.database().ref(`users/${userId}/times`);
   isFirstSync = true;
-  
+
   firebaseTimesListener = firebaseTimesRef.on('value', snapshot => {
     const remoteData = snapshot.val();
     const remoteItems = normalizeRemoteSnapshot(remoteData);
@@ -538,7 +544,7 @@ function queueSave() {
 // 修正：重寫正確的扁平資料物件（Payload）更新邏輯
 function saveToFirebase() {
   if (!fbReady || !userId || !firebaseTimesRef) return;
-  
+
   const payload = {};
   times.forEach(t => {
     payload[t.id] = {
@@ -548,7 +554,7 @@ function saveToFirebase() {
       startTime: t.startTime
     };
   });
-  
+
   firebaseTimesRef.set(payload)
     .then(() => {
       setSyncState('SYNCED', new Date().toLocaleTimeString('zh-Hant'));
@@ -568,15 +574,15 @@ function exportToIcs(targetDate) {
     alert('目前沒有記錄可以匯出');
     return;
   }
-  
+
   const dateKey = targetDate || formatDateKey(new Date());
   const targetEntries = times.filter(t => formatDateKey(new Date(t.t)) === dateKey);
-  
+
   if (!targetEntries.length) {
     alert('該日期沒有記錄');
     return;
   }
-  
+
   const icsLines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
@@ -589,7 +595,7 @@ function exportToIcs(targetDate) {
     'END:VEVENT',
     'END:VCALENDAR'
   ];
-  
+
   const icsContent = icsLines.join('\r\n');
   const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
   const url = URL.createObjectURL(blob);
@@ -662,7 +668,7 @@ function isAuthorizedUser(user) {
 function initAfterAuth() {
   if (initAfterAuthCalled) return;
   initAfterAuthCalled = true;
-  
+
   // 恢復持久化的 userId（防页面刷新後丟失）
   const savedUserId = localStorage.getItem('daKaUserId');
   if (savedUserId) userId = savedUserId;
@@ -680,19 +686,19 @@ function initAfterAuth() {
   updatedAtLabel = document.getElementById('updatedAtLabel');
   sideNowLabel = document.getElementById('sideNowLabel');
   userIdLabel = document.getElementById('userIdLabel');
-  
+
   times = loadLocalCache();
-  
+
   if (!userId) syncState = 'OFFLINE';
   lastSyncAt = '';
   saveTimer = null;
-  
+
   initBtns();
-  
+
   render();
   rehydrateTimers();
   updateNow();
-  
+
   // 修正：先清空舊的 Interval 避免時鐘疊加變快
   if (clockIntervalId) clearInterval(clockIntervalId);
   clockIntervalId = setInterval(updateNow, 1000);
@@ -705,8 +711,8 @@ function handleAuthStateChange(user) {
     if (userIdLabel) userIdLabel.textContent = userId;
     const btnL = document.getElementById('btnLogin');
     const btnOut = document.getElementById('btnLogout');
-    if(btnL) btnL.style.display = 'none';
-    if(btnOut) btnOut.style.display = '';
+    if (btnL) btnL.style.display = 'none';
+    if (btnOut) btnOut.style.display = '';
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     setupFirebaseListener();
     hideLoginBanner();
@@ -718,8 +724,8 @@ function handleAuthStateChange(user) {
     if (userIdLabel) userIdLabel.textContent = '—';
     const btnL = document.getElementById('btnLogin');
     const btnOut = document.getElementById('btnLogout');
-    if(btnL) btnL.style.display = '';
-    if(btnOut) btnOut.style.display = 'none';
+    if (btnL) btnL.style.display = '';
+    if (btnOut) btnOut.style.display = 'none';
     if (user) {
       alert('未授權的帳號拒絕存取：' + (user.email || '未知'));
       auth.signOut();
@@ -745,15 +751,15 @@ async function doLogin() {
     alert('Firebase SDK 無法載入');
     return;
   }
-  
+
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
-  
+
   if (!email || !pass) {
     alert('請輸入 Email 和密碼');
     return;
   }
-  
+
   try {
     await auth.signInWithEmailAndPassword(email, pass);
     document.getElementById('loginModal').style.display = 'none';
@@ -773,9 +779,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (appContainer) {
     appContainer.style.display = 'block';
   }
-  
+
   setupFirebaseListeners();
-  
+
   const btnLogin = document.getElementById('btnLogin');
   const btnLogout = document.getElementById('btnLogout');
   const loginForm = document.getElementById('loginForm');
@@ -783,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const loginPass = document.getElementById('loginPass');
   const bannerClose = document.getElementById('bannerClose');
   const bannerLoginBtn = document.getElementById('bannerLoginBtn');
-  
+
   if (btnLogin) {
     btnLogin.addEventListener('click', () => {
       if (!fbReady) { alert('Firebase SDK 無法載入'); return; }
@@ -791,27 +797,27 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => document.getElementById('loginEmail').focus(), 100);
     });
   }
-  
+
   if (loginForm) {
     loginForm.addEventListener('submit', e => { e.preventDefault(); doLogin(); });
   }
-  
+
   if (btnLogout) {
     btnLogout.addEventListener('click', () => { if (fbReady) auth.signOut(); });
   }
-  
+
   if (loginCancel) {
     loginCancel.addEventListener('click', () => { document.getElementById('loginModal').style.display = 'none'; });
   }
-  
+
   if (loginPass) {
     loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   }
-  
+
   if (bannerClose) {
     bannerClose.addEventListener('click', () => { document.getElementById('loginBanner').classList.add('hidden'); });
   }
-  
+
   if (bannerLoginBtn) {
     bannerLoginBtn.addEventListener('click', () => {
       document.getElementById('loginBanner').classList.add('hidden');
