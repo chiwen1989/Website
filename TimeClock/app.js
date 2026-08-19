@@ -165,7 +165,18 @@ function render() {
     
     const sum = document.createElement('summary');
     sum.className = 'flex cursor-pointer items-center justify-between gap-2 border-b border-slate-800 bg-slate-950/60 px-3 py-2.5 text-[12px] text-slate-200';
-    sum.innerHTML = `<span class="group-title flex items-center gap-2"><strong class="text-sky-300">${date}</strong><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">${entries.length} 筆</span></span><span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">點擊可收合</span>`;
+    sum.innerHTML = `
+      <div class="flex items-center justify-between w-full">
+        <span class="group-title flex items-center gap-2">
+          <strong class="text-sky-300">${date}</strong>
+          <span class="rounded border border-slate-700 bg-slate-900/70 px-2 py-0.5 text-[10px] text-slate-400">${entries.length} 筆</span>
+        </span>
+        <div class="flex items-center gap-2">
+          <button type="button" class="px-2 py-1 text-[10px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-sky-300" onclick="event.stopPropagation(); exportToTxt('${date}')">TXT</button>
+          <button type="button" class="px-2 py-1 text-[10px] bg-slate-800 border border-slate-700 rounded hover:bg-slate-700 text-blue-400" onclick="event.stopPropagation(); exportToIcs('${date}')">iCal</button>
+        </div>
+      </div>
+    `;
     det.appendChild(sum);
     
     const wrap = document.createElement('div');
@@ -425,7 +436,6 @@ function initBtns() {
   const clearBtn = document.getElementById('clearBtn');
   const refreshBtn = document.getElementById('refreshBtn');
   const exportBtn = document.getElementById('exportBtn');
-  const gcalBtn = document.getElementById('gcalBtn');
   
   btnsInitialized = true;
   
@@ -442,15 +452,7 @@ function initBtns() {
       }
     };
   }
-  if (gcalBtn) gcalBtn.onclick = addToGoogleCalendarToday;
 
-  const exportTxtBtn = exportMenu?.querySelector('[data-export="txt"]');
-  if (exportTxtBtn) {
-    exportTxtBtn.onclick = () => {
-      exportToTxt();
-      if (exportMenu) exportMenu.style.display = 'none';
-    };
-  }
   
   if (!document.dataset?._exportMenuListener) {
     document.addEventListener('click', e => {
@@ -561,37 +563,17 @@ function saveToFirebase() {
 // 匯出功能
 // ============================================================
 
-function exportToTxt() {
-  if (!times.length) {
-    alert('目前沒有記錄可以匯出');
-    return;
-  }
-  const lines = getGroupedTimes().flatMap(([date, entries]) => [
-    date,
-    ...entries.map(({ item }) => formatEntrySummary(item)),
-    ''
-  ]);
-  const blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `timeclock-${formatDateKey(new Date())}.txt`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function addToGoogleCalendarToday() {
+function exportToIcs(targetDate) {
   if (!times.length) {
     alert('目前沒有記錄可以匯出');
     return;
   }
   
-  const today = new Date();
-  const todayKey = formatDateKey(today);
-  const todayEntries = times.filter(t => formatDateKey(new Date(t.t)) === todayKey);
+  const dateKey = targetDate || formatDateKey(new Date());
+  const targetEntries = times.filter(t => formatDateKey(new Date(t.t)) === dateKey);
   
-  if (!todayEntries.length) {
-    alert('今天沒有記錄');
+  if (!targetEntries.length) {
+    alert('該日期沒有記錄');
     return;
   }
   
@@ -600,10 +582,10 @@ function addToGoogleCalendarToday() {
     'VERSION:2.0',
     'PRODID:-//TimeClock//ZH',
     'BEGIN:VEVENT',
-    `DTSTART:${todayKey.replace(/-/g, '')}`,
-    `DTEND:${todayKey.replace(/-/g, '')}`,
+    `DTSTART:${dateKey.replace(/-/g, '')}`,
+    `DTEND:${dateKey.replace(/-/g, '')}`,
     `SUMMARY:請填寫行程標題`,
-    `DESCRIPTION:${todayEntries.map(e => formatEntrySummary(e)).join('\\n')}`,
+    `DESCRIPTION:${targetEntries.map(e => formatEntrySummary(e)).join('\\n')}`,
     'END:VEVENT',
     'END:VCALENDAR'
   ];
@@ -613,10 +595,36 @@ function addToGoogleCalendarToday() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `timeclock-${todayKey}.ics`;
+  a.download = `timeclock-${dateKey}.ics`;
   a.click();
   URL.revokeObjectURL(url);
 }
+
+
+function exportToTxt(targetDate) {
+  if (!times.length) {
+    alert('目前沒有記錄可以匯出');
+    return;
+  }
+  let groups = getGroupedTimes();
+  if (targetDate) {
+    groups = groups.filter(([date]) => date === targetDate);
+  }
+  const lines = groups.flatMap(([date, entries]) => [
+    date,
+    ...entries.map(({ item }) => formatEntrySummary(item)),
+    ''
+  ]);
+  const blob = new Blob([lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `timeclock-${targetDate || formatDateKey(new Date())}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
 
 function formatEntrySummary(item) {
   const time = formatEntryTime(new Date(item.t));
