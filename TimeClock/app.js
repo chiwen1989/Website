@@ -133,8 +133,8 @@ function getTimerDisplay(item) {
 
 function getTimerBtnClass(item) {
   return timers[item.id]
-    ? 'timerBtn rounded-md border !px-6 py-1.5 text-[11px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
-    : 'timerBtn rounded-md border !px-6 py-1.5 text-[11px] font-semibold transition border-amber-500/30 bg-amber-500/10 text-amber-300 hover:bg-amber-500/20';
+    ? 'timerBtn running'
+    : 'timerBtn';
 }
 
 function render() {
@@ -421,7 +421,7 @@ function rehydrateTimers() {
         const timerBtn = document.querySelector(`.timerBtn[data-entry-id="${item.id}"]`);
         if (timerBtn) {
           timerBtn.textContent = '停止計時';
-          timerBtn.className = 'timerBtn rounded-md border px-2.5 py-1.5 text-[10px] font-semibold transition border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20';
+          timerBtn.className = 'timerBtn running';
         }
       }
     });

@@ -56,7 +56,7 @@
               
               <button type="button" id="clearBtn" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-rose-400 transition hover:bg-slate-800">清除全部</button>
                             
-                            <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登入同步</button>
+              <button type="button" id="btnLogin" class="block w-full border-b border-slate-800 px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登入同步</button>
               <button type="button" id="btnLogout" class="block w-full px-3 py-2 text-left text-[11px] font-semibold text-amber-300 transition hover:bg-slate-800">登出</button>
             </div>
           </div>
@@ -131,20 +131,33 @@
     </div>
   </div>
 
-  <!-- 登入 modal（email + 密碼，無 popup 無 redirect） -->
-  <div id="loginModal" class="hidden fixed inset-0 z-[200] items-center justify-center bg-black/55" style="display:none;">
-    <div class="panel w-80 rounded-xl border border-slate-700 bg-slate-900/95 p-5 shadow-2xl shadow-black/40">
-      <h3 class="mb-4 text-sm font-semibold text-slate-100">🔑 登入同步</h3>
-      <form id="loginForm" autocomplete="on">
-        <input id="loginEmail" type="email" name="email" placeholder="Email" class="mb-3 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none" required>
-        <input id="loginPass" type="password" name="password" placeholder="密碼" class="mb-4 w-full rounded-md border border-emerald-700/50 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 focus:border-sky-400 focus:outline-none" required autocomplete="current-password">
-        <div class="flex gap-2.5">
-          <button type="submit" class="btn btn-primary flex-1">登入</button>
-          <button type="button" class="btn btn-ghost" id="loginCancel">取消</button>
+<div id="loginModal" class="hidden fixed inset-0 z-[200] flex items-center justify-center p-4" style="display:none; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);">
+      <div class="login-card glass w-full max-w-sm rounded-2xl border border-slate-700/50 bg-slate-900/60 backdrop-blur-xl p-6 shadow-2xl shadow-black/70">
+        <div class="login-header mb-5 text-center">
+          <div class="login-icon mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-sky-500/15 border border-sky-500/30">
+            <svg class="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-semibold text-slate-100 font-mono">🔑 登入同步</h3>
+          <p class="mt-1 text-sm text-slate-400">登入後可在多個裝置間同步記錄</p>
         </div>
-      </form>
+        <form id="loginForm" autocomplete="on" class="space-y-4">
+          <div class="input-group">
+            <label class="input-label block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Email</label>
+            <input id="loginEmail" type="email" name="email" placeholder="your@email.com" class="login-input w-full border border-slate-700/60 bg-slate-950/80 px-4 py-3 text-base text-slate-100 placeholder:text-slate-500 focus:border-sky-500/60 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-all" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">密碼</label>
+            <input id="loginPass" type="password" name="password" placeholder="••••••••" class="login-input w-full border border-slate-700/60 bg-slate-950/80 px-4 py-3 text-base text-slate-100 placeholder:text-slate-500 focus:border-sky-500/60 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-all" required autocomplete="current-password">
+          </div>
+          <div class="flex gap-3 pt-1">
+            <button type="submit" class="login-btn-primary flex-1 min-h-[48px]">登入</button>
+            <button type="button" class="login-btn-ghost min-h-[48px] px-6" id="loginCancel">取消</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div>
 
 </div>
 <script src="app.js"></script>
