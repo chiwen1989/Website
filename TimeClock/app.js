@@ -233,38 +233,34 @@ function createEntryElement(item) {
   note.addEventListener('input', onNoteInput);
   main.appendChild(note);
 
-  // 計時控制
-  const timerCont = document.createElement('div');
-  timerCont.className = 'timer-controls flex items-center gap-2 mt-2';
+  // 計時控制列
+  const controls = document.createElement('div');
+  controls.className = 'entry-controls';
 
   const timerBtn = document.createElement('button');
   timerBtn.type = 'button';
-  timerBtn.className = getTimerBtnClass(item);
-  timerBtn.textContent = timers[item.id] ? '停止計時' : '計時';
+  timerBtn.className = `ctrl-btn ${timers[item.id] ? 'btn-stop' : 'btn-start'}`;
   timerBtn.dataset.entryId = item.id;
-  timerBtn.onclick = () => startTimerById(item.id); // 修正：改用 ID 控制
+  timerBtn.innerHTML = timers[item.id]
+    ? '<span>⏹</span> 停止計時'  // 安全：固定文字，無使用者輸入
+    : '<span>▶</span> 計時';
+  timerBtn.onclick = () => startTimerById(item.id);
 
   const timerDisp = document.createElement('span');
-  timerDisp.className = 'timerDisplay text-[10px] text-amber-300';
+  timerDisp.className = 'timer-display';
   timerDisp.dataset.entryId = item.id;
   timerDisp.textContent = getTimerDisplay(item);
 
-  timerCont.append(timerBtn, timerDisp);
-  main.appendChild(timerCont);
+  const delBtn = document.createElement('button');
+  delBtn.type = 'button';
+  delBtn.className = 'ctrl-btn btn-delete';
+  delBtn.textContent = '🗑 刪除';
+  delBtn.onclick = e => { e.stopPropagation(); removeEntryById(item.id); };
+
+  controls.append(timerBtn, timerDisp, delBtn);
+  main.appendChild(controls);
 
   row.appendChild(main);
-
-  // 操作按鈕
-  const act = document.createElement('div');
-  act.className = 'entry-actions mt-2 flex justify-end';
-  const del = document.createElement('button');
-  del.type = 'button';
-  del.className = 'delBtn rounded-md border border-rose-500/30 bg-rose-500/10 px-2.5 py-1.5 text-[10px] font-semibold text-rose-300 transition hover:bg-rose-500/20';
-  del.textContent = '刪除';
-  del.onclick = e => { e.stopPropagation(); removeEntryById(item.id); }; // 修正：改用 ID 刪除
-  act.appendChild(del);
-
-  row.appendChild(act);
   return row;
 }
 
@@ -388,7 +384,7 @@ function startTimerById(id) {
     timers[item.id] = {
       startTime: nowTime,
       intervalId: setInterval(() => {
-        const display = document.querySelector(`.timerDisplay[data-entry-id="${item.id}"]`);
+        const display = document.querySelector(`.timer-display[data-entry-id="${item.id}"]`);
         if (display) {
           display.textContent = formatMsToHMS(Date.now() - timers[item.id].startTime);
         }
@@ -403,28 +399,24 @@ function startTimerById(id) {
 
 function rehydrateTimers() {
   setTimeout(() => {
+    let hasRunning = false;
     times.forEach((item) => {
       if (item.startTime && !item.note?.includes('計時') && !timers[item.id]) {
         timers[item.id] = {
           startTime: item.startTime,
           intervalId: setInterval(() => {
-            const displayElement = document.querySelector(`.timerDisplay[data-entry-id="${item.id}"]`);
+            const displayElement = document.querySelector(`.timer-display[data-entry-id="${item.id}"]`);
             if (displayElement) {
               displayElement.textContent = formatMsToHMS(Date.now() - timers[item.id].startTime);
             }
           }, 1000)
         };
-        const displayElement = document.querySelector(`.timerDisplay[data-entry-id="${item.id}"]`);
-        if (displayElement) {
-          displayElement.textContent = formatMsToHMS(Date.now() - item.startTime);
-        }
-        const timerBtn = document.querySelector(`.timerBtn[data-entry-id="${item.id}"]`);
-        if (timerBtn) {
-          timerBtn.textContent = '停止計時';
-          timerBtn.className = 'timerBtn running';
-        }
+        hasRunning = true;
       }
     });
+    if (hasRunning) {
+      render();
+    }
   }, 0);
 }
 
@@ -538,7 +530,7 @@ function queueSave() {
     if (!fbReady || !userId || !firebaseTimesRef) return;
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     saveToFirebase();
-  }, 800);
+  }, 700);
 }
 
 // 修正：重寫正確的扁平資料物件（Payload）更新邏輯
@@ -705,6 +697,7 @@ function initAfterAuth() {
 }
 
 function handleAuthStateChange(user) {
+  const loginView = document.getElementById('loginView');
   if (user && isAuthorizedUser(user)) {
     userId = user.uid;
     localStorage.setItem('daKaUserId', userId);
@@ -715,7 +708,8 @@ function handleAuthStateChange(user) {
     if (btnOut) btnOut.style.display = '';
     setSyncState('SYNCING', new Date().toLocaleTimeString('zh-Hant'));
     setupFirebaseListener();
-    hideLoginBanner();
+    // 登入成功後隱藏登入畫面
+    if (loginView) loginView.classList.add('hidden');
     if (!initAfterAuthCalled) initAfterAuth();
   } else {
     cleanupFirebaseListener();
@@ -732,7 +726,7 @@ function handleAuthStateChange(user) {
     }
     setSyncState('OFFLINE', lastSyncAt || '');
     if (!initAfterAuthCalled) initAfterAuth();
-    showLoginBanner();
+    // 登出後不強制顯示登入畫面，保持應用程式可用
   }
 }
 
@@ -740,7 +734,7 @@ function setupFirebaseListeners() {
   if (!auth) {
     setSyncState('OFFLINE', '離線模式（無 Firebase SDK）');
     if (!initAfterAuthCalled) initAfterAuth();
-    showLoginBanner();
+    // 無 Firebase 時仍顯示應用程式，不強制登入
     return;
   }
   auth.onAuthStateChanged(handleAuthStateChange);
@@ -762,7 +756,8 @@ async function doLogin() {
 
   try {
     await auth.signInWithEmailAndPassword(email, pass);
-    document.getElementById('loginModal').style.display = 'none';
+    const loginView = document.getElementById('loginView');
+    if (loginView) loginView.classList.add('hidden');
     document.getElementById('loginEmail').value = '';
     document.getElementById('loginPass').value = '';
   } catch (err) {
@@ -776,6 +771,12 @@ async function doLogin() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const appContainer = document.getElementById('appContainer');
+  const loginView = document.getElementById('loginView');
+
+  // 預設顯示主應用程式（離線模式可用），登入畫面預設隱藏
+  if (loginView) {
+    loginView.classList.add('hidden');
+  }
   if (appContainer) {
     appContainer.style.display = 'block';
   }
@@ -785,16 +786,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogin = document.getElementById('btnLogin');
   const btnLogout = document.getElementById('btnLogout');
   const loginForm = document.getElementById('loginForm');
-  const loginCancel = document.getElementById('loginCancel');
   const loginPass = document.getElementById('loginPass');
-  const bannerClose = document.getElementById('bannerClose');
-  const bannerLoginBtn = document.getElementById('bannerLoginBtn');
 
   if (btnLogin) {
     btnLogin.addEventListener('click', () => {
       if (!fbReady) { alert('Firebase SDK 無法載入'); return; }
-      document.getElementById('loginModal').style.display = 'flex';
-      setTimeout(() => document.getElementById('loginEmail').focus(), 100);
+      if (loginView) {
+        loginView.classList.remove('hidden');
+      }
+      setTimeout(() => {
+        const emailInput = document.getElementById('loginEmail');
+        if (emailInput) emailInput.focus();
+      }, 100);
     });
   }
 
@@ -806,23 +809,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLogout.addEventListener('click', () => { if (fbReady) auth.signOut(); });
   }
 
-  if (loginCancel) {
-    loginCancel.addEventListener('click', () => { document.getElementById('loginModal').style.display = 'none'; });
-  }
-
   if (loginPass) {
     loginPass.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  }
-
-  if (bannerClose) {
-    bannerClose.addEventListener('click', () => { document.getElementById('loginBanner').classList.add('hidden'); });
-  }
-
-  if (bannerLoginBtn) {
-    bannerLoginBtn.addEventListener('click', () => {
-      document.getElementById('loginBanner').classList.add('hidden');
-      document.getElementById('loginModal').style.display = 'flex';
-      setTimeout(() => document.getElementById('loginEmail').focus(), 100);
-    });
   }
 });

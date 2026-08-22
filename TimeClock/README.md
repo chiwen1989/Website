@@ -1,4 +1,4 @@
-# TimeClock 打卡記錄工具 v1.1.0
+# TimeClock 打卡記錄工具 v1.3.1
 
 ## 概述
 
@@ -10,7 +10,7 @@ TimeClock 是一個輕量級時間記錄工具，用於記錄通勤、工作、�
 - **單一檔案**：整個應用僅兩個檔案（HTML + JS），部署零配置
 - **最小依賴**：僅使用 Firebase compat SDK，無框架無構建流程
 - **計時持久化**：頁面關閉後重新打開，進行中的計時器自動恢復
-- **小檔案哲學**：app.js 814 行，index.html 153 行，避免過度工程
+- **小檔案哲學**：app.js 約 820 行，index.html 153 行，避免過度工程
 
 ## 功能清單
 
@@ -98,22 +98,55 @@ let lastSyncData = null;  // 上次同步數據（檢測刪除）
 
 ## 版本歷史
 
-### v1.1.0
+### v1.3.1 (2026-08-22)
+- **計時器修復**：修正 `.timer-display` 修改後，因 JS 選取器大小寫與類別名稱不一致導致無法計時的問題。
+- **重構重啟邏輯**：簡化 `rehydrateTimers` 邏輯，改為由 timers 狀態變更後直接調用 `render()` 自動同步 UI，防止破壞 Tailwind 樣式。
+
+### v1.3.0 (2026-08-22)
+- **統一按鈕控制列**：計時、停止計時、刪除按鈕整合為單一 `.entry-controls` 行。
+- **按鈕與計時樣式**：新增綠色計時按鈕（btn-start）、紅色脈衝停止按鈕（btn-stop）、暗紅刪除按鈕（btn-delete），與黃色邊框之計時顯示徽章（.timer-display）。
+
+### v1.2.0 (2026-08-16)
+- **Firebase 同步與優化**：恢復 Firebase compat SDK，修復首次同步數據丟失與刪除同步問題。
+- **離線狀態持久化**：修復離線模式刷新後數據消失問題。
+- **按鈕觸發優化**：檢查按鈕元素存在後才綁定事件，防止重複綁定與按鈕失效。
+
+### v1.1.0 (2026-08-14)
 - 新增各日期匯出功能：每筆日期右側增加 TXT 與 iCal 按鈕，可獨立匯出單日記錄
 - 移除「更多」選單中的匯出選項，改下放至記錄區各日期群組
 - 更新匯出說明文件
 
-### v1.0.0
-- 新增 userId 持久化（localStorage），頁面刷新後登入狀態不丟失
-- 修復離線模式下首次同步時 Firebase 覆蓋本地數據問題（id-based merge，優先本地）
-- 修復按鈕事件重複綁定（initBtns 只執行一次）
-- 修復 Firebase 返回空數據時不刪除本地數據
-- 新增計時器持久化（跨頁面關閉恢復）
-- 新增 Google 日曆匯出（ICS 格式）
-- 新增事件類型記錄
-- 大批量數據保存優化（分批 100 筆）
-- 刪除操作優化（單筆刪除不觸發全量寫入）
-- 新增 TXT 匯出功能（按日期分組）
+## 編碼與部署前檢查
+
+部署前務必執行以下檢查，確保程式碼品質與正確的文字編碼（防止中文亂碼）：
+
+### 1. 語法檢查
+```bash
+node --check app.js
+```
+
+### 2. 編碼檢查（防止 UTF-8 BOM 與 PUA 私有區字元）
+```bash
+python3 -c "
+import re
+with open('app.js', 'r', encoding='utf-8') as f:
+    js = f.read()
+# 檢查 BOM
+with open('app.js', 'rb') as f:
+    bom = f.read(3)
+    assert bom != b'\xef\xbb\xbf', '有 BOM'
+# 檢查私有使用區字元 (PUA)
+pua = re.findall(r'[\ue000-\uf8ff]', js)
+assert len(pua) == 0, f'有 {len(pua)} 個 PUA 字元'
+print('✓ app.js 編碼與 PUA 檢查通過')
+"
+```
+
+### 3. 元素引用檢查
+```bash
+# 確保所有 getElementById 的元素引用正確
+grep -n "getElementById" app.js | grep -v "null\|undefined"
+```
 
 ## 部署
 
@@ -123,11 +156,7 @@ let lastSyncData = null;  // 上次同步數據（檢測刪除）
 copy "C:\Users\chiwe\Downloads\TimeClock\app.js" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\app.js"
 copy "C:\Users\chiwe\Downloads\TimeClock\index.html" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\index.html"
 copy "C:\Users\chiwe\Downloads\TimeClock\output.css" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\output.css"
-copy "C:\Users\chiwe\Downloads\TimeClock\styles.css" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\styles.css"
-
-# 提交變更
-cd C:\Users\chiwe\Documents\GitHub\Website\TimeClock
-git add -A && git commit -m "v1.0.0: userId 持久化 + 離線合併修復" && git push
+copy "C:\Users\chiwe\Downloads\TimeClock\README.md" "C:\Users\chiwe\Documents\GitHub\Website\TimeClock\README.md"
 ```
 
 ### 編譯 CSS
